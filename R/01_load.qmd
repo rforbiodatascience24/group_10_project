@@ -27,7 +27,7 @@ Read_raw_data <- read_excel(path = str_c(raw_dir, "raw_data.xlsx"))
 
 # Write the data to a TSV file
 write_tsv(x = read_raw_data, file = str_c(save_dir, "01_dat_load.tsv"))
->>>>>>> 24c8185cbde06a2468b3305909168736441fc72b
+
 ```
 
 The `echo: false` option disables the printing of code (only output is displayed).
