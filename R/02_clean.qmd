@@ -26,5 +26,18 @@ As the three rules for making a data set tidy are satisfied. Each variable has i
 The primary data wrangling will therefore focus on removing empty cells and selecting relevant variables for data analysis.
 
 ```{r}
-raw_data <- raw_data
+
+raw_data <- raw_data |>
+  filter(age != "N/A") |>
+   mutate(age_group = case_when(
+    age > 20 & age <= 30 ~ "(20,30]",
+    age > 30 & age <= 40 ~ "(30,40]",
+    age > 40 & age <= 50 ~ "(40,50]",
+    age > 50 & age <= 60 ~ "(50,60]",
+    age > 60 & age <= 70 ~ "(60,70]",
+    age > 70 & age <= 80 ~ "(70,80]")) |>
+    mutate(Age_group = factor(Age_group,
+                            levels =  c("(20,30]", "(30,40]",
+                                        "(40,50]", "(50,60]",
+                                        "(60,70]","(70,80]")))
 ```
