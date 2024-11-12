@@ -4,17 +4,12 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## Loading the raw data
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-library(tidyverse)
+```{r}
+#Loading libraries
+library(tidyverse) 
 library(readxl)
-
 ```
 
 ```{r}
@@ -29,5 +24,3 @@ Read_raw_data <- read_excel(path = str_c(raw_dir, "raw_data.xlsx"))
 write_tsv(x = read_raw_data, file = str_c(save_dir, "01_dat_load.tsv"))
 
 ```
-
-The `echo: false` option disables the printing of code (only output is displayed).
