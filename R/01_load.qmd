@@ -13,6 +13,29 @@ library(readxl)
 library(here)
 ```
 
+
+
+
+```{r}
+raw_dir <- here("_raw/")
+data_file <- "abm.xls"
+data_loc <- "https://hbiostat.org/data/repo/"
+
+if( !dir.exists(raw_dir) ){
+  dir.create(path = raw_dir)
+}
+
+if( !file.exists(str_c(raw_dir,data_file)) ){
+  download.file(
+    url = str_c(data_loc,data_file),
+    destfile = str_c(raw_dir, data_file))
+}
+
+#load(file = str_c(raw_dir, data_file))
+```
+
+
+
 ```{r}
 # Define directories
 raw_dir <- here("_raw/")
