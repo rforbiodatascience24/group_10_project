@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Data wrangling
+## Library load
 
 Loading libraries which will be used for the data wrangling
 
@@ -12,24 +12,57 @@ Loading libraries which will be used for the data wrangling
 library("tidyverse")
 library("purrr")
 library("broom")
-
+library("readr")
 ```
 
-Viewing the data to get the number of observations and variables in the raw data
+## Data load
+
+Loading the tsv file from the data folder.
 
 ```{r}
-View(raw_data)
+data <- read_tsv("../data/01_dat_load.tsv")
 ```
 
-The three rules for making a data set tidy are not satisfied. Each variable must have its own column, each observation have its own row and each value have its own cell.
+## View data
 
-It can be observed in the data the there are multiple values in each cells for many of the variables.
+Viewing the data to get the number of observations and variables in the raw data.
+
+```{r}
+# View the first few observations
+head(data)
+```
+
+The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row and each value have its own cell.
+
+It can be observed from viewing the data that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy.
 
 To make sure the data is tidy these values are separated into different columns/variables.
 
 ```{r}
+clean_data <- data |>
+  separate(`Medicine Name`, into = c("Medicine Name", "Medication administration"), sep = " ")
 
 ```
+
+```{r}
+clean_data <- data |>
+  extract(
+    `Medicine Name`, 
+    into = c("Medicine Name", "Medication administration"),
+    regex = "^([^ ]+)[ ]?(.*)$", 
+    remove = FALSE # Retains original column if needed
+  ) |>
+  extract(`Medication administration`,
+          into = c("Medication administration","Remove"),
+          regex = "^([^ ]+)[ ]?(.*)$",
+          remove = FALSE)
+
+
+```
+
+Note:
+
+\^(\[\^ \]+): Captures the first word up to space, (.\*)$: Captures the rest of the string, (.*)$: Captures the rest of the string up to space
 
 ```{r}
 
