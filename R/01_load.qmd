@@ -8,43 +8,44 @@ editor: visual
 
 ```{r}
 #Loading libraries
-library(tidyverse) 
-library(readxl)
+rm(list=ls())
 library(here)
+library(httr)
+library(readr)
 ```
-
-
-
 
 ```{r}
 raw_dir <- here("_raw/")
-data_file <- "abm.xls"
-data_loc <- "https://hbiostat.org/data/repo/"
+data_dir <- here("data/")
 
-if( !dir.exists(raw_dir) ){
+if (!dir.exists(raw_dir)) {
   dir.create(path = raw_dir)
+  message("Created directory: ", raw_dir)
 }
 
-if( !file.exists(str_c(raw_dir,data_file)) ){
-  download.file(
-    url = str_c(data_loc,data_file),
-    destfile = str_c(raw_dir, data_file))
+if (!dir.exists(data_dir)) {
+  dir.create(path = data_dir)
+  message("Created directory: ", data_dir)
 }
 
-#load(file = str_c(raw_dir, data_file))
-```
+url <- "https://www.kaggle.com/api/v1/datasets/download/aadyasingh55/drug-dataset"
+temp_zip <- tempfile(fileext = ".zip")   
+temp_dir <- tempdir()  
 
+response <- GET(url, write_disk(temp_zip, overwrite = TRUE))
 
+unzip(temp_zip, exdir = temp_dir)
 
-```{r}
-# Define directories
-raw_dir <- here("_raw/")
-save_dir <- here("data/")
+extracted_files <- list.files(temp_dir, full.names = TRUE)
+message("Extracted files: ", paste(extracted_files, collapse = ", "))
 
-# Read the Excel file
-Read_raw_data <- read_excel(path = str_c(raw_dir, "raw_data.xlsx"))
+csv_file <- grep("\\.csv$", extracted_files, value = TRUE)
 
-# Write the data to a TSV file
-write_tsv(x = Read_raw_data, file = str_c(save_dir, "01_dat_load.tsv"))
+dataset <- read_csv(csv_file[1])
+
+target_file <- file.path(raw_dir, basename(csv_file[1]))
+  
+file.rename(csv_file[1], target_file)
+
 
 ```
