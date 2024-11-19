@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Loading the raw data
+## Loading libraries
 
 ```{r}
 #Loading libraries
@@ -13,6 +13,8 @@ library(here)
 library(httr)
 library(readr)
 ```
+
+## Loading of raw data from url 
 
 ```{r}
 raw_dir <- here("_raw/")
@@ -43,9 +45,30 @@ csv_file <- grep("\\.csv$", extracted_files, value = TRUE)
 
 dataset <- read_csv(csv_file[1])
 
-target_file <- file.path(raw_dir, basename(csv_file[1]))
-  
-file.rename(csv_file[1], target_file)
 
+```
+
+## Saving raw data as csv in raw data folder 
+
+A raw data is stored in order to always have a original copy of the data used for the project.
+
+```{r}
+# Specify the file path with the new name
+file_path <- file.path(raw_dir, "raw_data.csv")
+
+# Save the dataframe as a CSV file
+write.csv(dataset, file_path, row.names = FALSE)
+```
+
+## Saving raw data as tsv in data folder 
+
+The data is furthermore stored in the data folder, which will allow for augmenting and such for later use in analysis and visualization.
+
+```{r}
+
+save_path <- file.path(data_dir, "01_dat_load.tsv")
+
+# Save the dataframe as a CSV file
+write_tsv(dataset, save_path)
 
 ```
