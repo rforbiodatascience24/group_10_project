@@ -23,6 +23,56 @@ View(raw_data)
 
 As the three rules for making a data set tidy are satisfied. Each variable has its own column, each observation has its own row and each value has its own cell. The unit will not be changed as they are comparable and already in the preferred imperial system.
 
+To make the data more interpretative, any variable not relevant for the project is removed from the raw data. Furthermore, rows consisting of only NAs will be removed from the dataset.
+
+```{r}
+
+# Selection of relevant columns from the raw data
+
+clean_data <- rawdata |>
+  # Selecting relevant variables 
+  select(c(casenum,
+           year, 
+           month, 
+           age, 
+           race, 
+           sex, 
+           wbc,
+           pmn,
+           bloodgl, 
+           gl, 
+           pr, 
+           reds, 
+           whites, 
+           polys, 
+           lymphs, 
+           monos, 
+           abm)) |>
+  
+  # Renaming selected variables 
+  rename(wbc_blood = wbc,
+         pmn_blood = pmn,
+         gl_blood = bloodgl,
+         gl_CSF = gl,
+         pr_CSF = pr,
+         reds_CSF = reds,
+         whites_CSF = whites, 
+         pmn_CSF = polys, 
+         lymphs_CSF = lymphs, 
+         monos_CSF = monos,
+         AM_type = amb) |>
+  
+  # Remvoing complete NA rows
+  
+  
+  
+  
+  
+
+
+
+```
+
 The primary data wrangling will therefore focus on removing empty cells and selecting relevant variables for data analysis.
 
 ```{r}
