@@ -21,9 +21,15 @@ Viewing the data to get the number of observations and variables in the raw data
 View(raw_data)
 ```
 
-As the three rules for making a data set tidy are satisfied. Each variable has its own column, each observation has its own row and each value has its own cell. The unit will not be changed as they are comparable and already in the preferred imperial system.
+The three rules for making a data set tidy are not satisfied. Each variable must have its own column, each observation have its own row and each value have its own cell.
 
-To make the data more interpretative, any variable not relevant for the project is removed from the raw data. Furthermore, rows consisting of only NAs will be removed from the dataset.
+It can be observed in the data the there are multiple values in each cells for many of the variables.
+
+To make sure the data is tidy these values are separated into different columns/variables.
+
+```{r}
+
+```
 
 ```{r}
 
