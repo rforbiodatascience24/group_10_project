@@ -10,17 +10,18 @@ editor: visual
 #Loading libraries
 library(tidyverse) 
 library(readxl)
+library(here)
 ```
 
 ```{r}
 # Define directories
-raw_dir <- "/net/pupil1/home/people/s203566/Exercises/group_10_project/_raw/"
-save_dir <- "/net/pupil1/home/people/s203566/Exercises/group_10_project/data/"
+raw_dir <- here("_raw/")
+save_dir <- here("data/")
 
 # Read the Excel file
 Read_raw_data <- read_excel(path = str_c(raw_dir, "raw_data.xlsx"))
 
 # Write the data to a TSV file
-write_tsv(x = read_raw_data, file = str_c(save_dir, "01_dat_load.tsv"))
+write_tsv(x = Read_raw_data, file = str_c(save_dir, "01_dat_load.tsv"))
 
 ```
