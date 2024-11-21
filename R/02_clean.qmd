@@ -127,5 +127,47 @@ The "Composition" variable contains information about both the different drugs t
 Firstly this variable is split into a column per different drug type, by separating by the +'s. Secondly each of these new variables are split into a "Drug name" and a "Drug dose" column.
 
 ```{r}
+clean_data3 <- data |>
+  separate(
+    `Composition`, 
+    into = c("Drug name 1", "Drug name 2", "Drug name 3", "Drug name 4", "Drug name 5", "Drug name 6", "Drug name 7", "Drug name 8", "Drug name 9"), 
+    sep = " \\+ ",       # Split at " + " (space plus space)
+    fill = "right",      # Ensures rows without a "+" will have NA in "Drug name 2"
+    extra = "merge"      # In case there are multiple "+" signs, keep the rest in "Drug name 2"
+  )
+```
+
+Again, checking when there is a column with only NAs, so there shouldn't be made any more Drug name variables:
+
+```{r}
+clean_data3 |>
+  summarize(non_na_count = sum(!is.na(`Drug name 9`))) |> # Counts non-NA columns
+  pull(non_na_count) # Extract calculated count
+```
+
+At the 10th type of drug there is no non-NA values.
+
+Then for splitting name of the specific drug and amount of drug, we see that there is always brackets around the drug amount, therefore we can split by the first "(".
+
+(blev ikke helt færdig med det her, de har nogle mærkelige navne)
+
+```{r}
+clean_data4 <- clean_data3 |>
+  pivot_longer(
+    cols = starts_with("Drug name"),         
+    names_to = "Drug Column",               
+    values_to = "Drug Info"                 
+  ) |>
+  separate(
+    `Drug Info`, 
+    into = c("Drug Name", "Drug dose"),  
+    sep = " \\(",  
+    extra = "merge", 
+    fill = "right"                        
+  ) |>
+  pivot_wider(
+    names_from = `Drug Column`,         
+    values_from = c("Drug Name", "Drug dose")
+  )
 
 ```
