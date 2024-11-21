@@ -9,6 +9,7 @@ editor: visual
 Loading libraries which will be used for the data wrangling
 
 ```{r}
+rm(list=ls())
 library("tidyverse")
 library("purrr")
 library("broom")
@@ -28,32 +29,74 @@ data <- read_tsv("../data/01_dat_load.tsv")
 Viewing the data to get the number of observations and variables in the raw data.
 
 ```{r}
-# View the first few observations
+# View the first few observations and variables
 head(data)
 ```
 
-The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row and each value have its own cell.
+The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
 
-It can be observed from viewing the data that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy.
+It can be observed, from viewing the data, that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy.
 
 To make sure the data is tidy these values are separated into different columns/variables.
 
+## Data wrangling
+
+The variable "Uses" contains the many different ways the drug is being used by the specific patient. It can be observed that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage.
+
 ```{r}
 clean_data <- data |>
-  separate(`Medicine Name`, into = c("Medicine Name", "Medication administration"), sep = " ")
-
+  separate(
+    Uses,
+    into = c("Application 1", "Application 2", "Application 3", "Application 4", "Application 5", "Application 6", "Application 7", "Application 8", "Application 9"), 
+    sep = "(?=Treatment)", # Splits if the word "Treatment" occurs
+    extra = "merge", # Additional content is merged into the last column 
+    fill = "right" # Fills empty columns with NA
+  )
 ```
 
+To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.\
+It isn't until application number 10 that there are only NAs. Therefore 9 application columns are made.
+
 ```{r}
-clean_data <- data |>
+clean_data |>
+  summarize(non_na_count = sum(!is.na(`Application 9`))) |> # Counts non-NA columns
+  pull(non_na_count) # Extract calculated count
+```
+
+It is interesting to investigate how many unique usages there are for the drugs. This is done in the code below where all application variables are put into one variable called "Observations", all duplicate observations are removed by using the "distinct" command, and all NAs are excluded using "filter".
+
+(this code should probably be moved to augment og describe doc)
+
+```{r}
+unique_observations <- clean_data |>
+  select("Application 1", "Application 2", "Application 3", 
+         "Application 4", "Application 5", "Application 6", 
+         "Application 7", "Application 8", "Application 9") |>
+  pivot_longer(cols = everything(), values_to = "Observations") |>
+  distinct(Observation) |>
+  filter(!is.na(Observation))
+
+print(unique_observations)
+```
+
+There are 680 unique usages for the drugs.\
+
+Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
+
+Because there are different routes of administration the units for the dose are also different. For instance tablets are given in mg, a cream or a gel in percentages, Syrups in ml, a Penfill is given in IU (biological activity) etc.
+
+Information about the dose is also available in the variable "Composition", and in this variable it is more detailed. In the "Medicine Name" variable it isn't always explained which unit, the number is given in. Because information about the dose can be found in both variables, but the unit is unsure in "Medicine Name", information about the dose is just removed and discarded from this variable.
+
+```{r}
+clean_data1 <- data |>
   extract(
     `Medicine Name`, 
-    into = c("Medicine Name", "Medication administration"),
+    into = c("Medicine Name", "Administration route"),
     regex = "^([^ ]+)[ ]?(.*)$", 
     remove = FALSE # Retains original column if needed
   ) |>
-  extract(`Medication administration`,
-          into = c("Medication administration","Remove"),
+  extract(`Administration route`,
+          into = c("Dose","Administration route"),
           regex = "^([^ ]+)[ ]?(.*)$",
           remove = FALSE)
 
@@ -62,71 +105,27 @@ clean_data <- data |>
 
 Note:
 
-\^(\[\^ \]+): Captures the first word up to space, (.\*)$: Captures the rest of the string, (.*)$: Captures the rest of the string up to space
+\^(\[\^ \]+): Captures the first word up to space,
+
+(.\*)\$: Captures the rest of the string up to space
+
+Got stuck on this. \
+Tried to split by the first number occuring below instead:
 
 ```{r}
-
-# Selection of relevant columns from the raw data
-
-clean_data <- rawdata |>
-  # Selecting relevant variables 
-  select(c(casenum,
-           year, 
-           month, 
-           age, 
-           race, 
-           sex, 
-           wbc,
-           pmn,
-           bloodgl, 
-           gl, 
-           pr, 
-           reds, 
-           whites, 
-           polys, 
-           lymphs, 
-           monos, 
-           abm)) |>
-  
-  # Renaming selected variables 
-  rename(wbc_blood = wbc,
-         pmn_blood = pmn,
-         gl_blood = bloodgl,
-         gl_CSF = gl,
-         pr_CSF = pr,
-         reds_CSF = reds,
-         whites_CSF = whites, 
-         pmn_CSF = polys, 
-         lymphs_CSF = lymphs, 
-         monos_CSF = monos,
-         AM_type = amb) |>
-  
-  # Remvoing complete NA rows
-  
-  
-  
-  
-  
-
-
-
+clean_data2 <- data |>
+  extract(
+    `Medicine Name`, 
+    into = c("Medicine Name", "Rest"),
+    regex = "^([^0-9]+)(.*)$",  # Splits at the first number
+    remove = FALSE
+  )
 ```
 
-The primary data wrangling will therefore focus on removing empty cells and selecting relevant variables for data analysis.
+The "Composition" variable contains information about both the different drugs the overall medication is made of, and the amount of each different drug. This should also be put into different variables.
+
+Firstly this variable is split into a column per different drug type, by separating by the +'s. Secondly each of these new variables are split into a "Drug name" and a "Drug dose" column.
 
 ```{r}
 
-raw_data <- raw_data |>
-  filter(age != "N/A") |>
-   mutate(age_group = case_when(
-    age > 0 & age <= 0.5 ~ "(0,0.5]",
-    age > 0.5 & age <= 40 ~ "(0.5, 1]",
-    age > 1 & age <= 3 ~ "(1,3]",
-    age > 3 & age <= 5 ~ "(3,5]",
-    age > 5 & age <= 55 ~ "(5,55]",
-    age > 55 & age <= 100 ~ "(55,100]")) |>
-    mutate(Age_group = factor(Age_group,
-                            levels =  c("(20,30]", "(30,40]",
-                                        "(40,50]", "(50,60]",
-                                        "(60,70]","(70,80]")))
 ```
