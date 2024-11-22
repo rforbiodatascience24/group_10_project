@@ -14,7 +14,7 @@ library(httr)
 library(readr)
 ```
 
-## Loading of raw data from url 
+## Loading of raw data from url
 
 ```{r}
 raw_dir <- here("_raw/")
@@ -48,7 +48,7 @@ dataset <- read_csv(csv_file[1])
 
 ```
 
-## Saving raw data as csv in raw data folder 
+## Saving raw data as csv in raw data folder
 
 A raw data is stored in order to always have a original copy of the data used for the project.
 
@@ -60,13 +60,13 @@ file_path <- file.path(raw_dir, "raw_data.csv")
 write.csv(dataset, file_path, row.names = FALSE)
 ```
 
-## Saving raw data as tsv in data folder 
+## Saving raw data as tsv in data folder
 
 The data is furthermore stored in the data folder, which will allow for augmenting and such for later use in analysis and visualization.
 
 ```{r}
 
-save_path <- file.path(data_dir, "01_dat_load.tsv")
+save_path <- file.path(data_dir, "01_data_load.tsv")
 
 # Save the dataframe as a CSV file
 write_tsv(dataset, save_path)
