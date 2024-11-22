@@ -157,8 +157,35 @@ Information about the dose is also available in the variable "Composition", and 
 
 Amalie
 
+Kig på unnest_wider til split split af data application og sideeffects.
+
 ```{r}
-clean_data1 <- data |>
+clean_data1 <- clean_data |>
+
+  mutate(API = str_split(Composition, pattern = "\\+")) |>
+
+  unnest_wider(API, names_sep = "_")
+
+
+```
+
+```{r}
+
+###THIS IS NOT DONE
+clean_data1 <- clean_data1 |> 
+  mutate(
+    Dose_1 = str_extract(API_1, "\\d+"),  # Extract dose for the first compound
+    Unit_1 = str_extract(API_1, "(?<=\\d)[a-zA-Z/%.]+"),  # Extract unit for the first compound
+    
+    Dose_2 = str_extract(API_2, "\\d+"),  # Extract dose for the second compound
+    Unit_2 = str_extract(API_2, "(?<=\\d)[a-zA-Z/%.]+")   # Extract unit for the second compound
+  )
+
+
+```
+
+```{r}
+clean_data1 <- clean_data |>
   extract(
     `Medicine Name`, 
     into = c("Medicine Name", "Administration route"),
