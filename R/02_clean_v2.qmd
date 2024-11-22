@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Library load
+## Loading Libraries
 
 Loading libraries which will be used for the data wrangling
 
@@ -17,7 +17,7 @@ library("readr")
 library("here")
 ```
 
-## Data load
+## Loading Data
 
 Loading the tsv file from the data folder.
 
@@ -25,17 +25,16 @@ Loading the tsv file from the data folder.
 data <- read_tsv(here("data/01_data_load.tsv"))
 ```
 
-## View data
+## Inspect Data
 
-Viewing the data to get the number of observations and variables in the raw data.
+Inspecting the data to get the number of observations and variables in the raw data.
 
 ```{r}
 # View the first few observations and variables
 
+# Print the dimensions of the dataframe
 data |>
   dim_desc()
-
-
 ```
 
 The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
@@ -44,7 +43,7 @@ It can be observed, from viewing the data, that multiple of the variables contai
 
 To make sure the data is tidy these values are separated into different columns/variables.
 
-## Data wrangling
+## Data Wrangling
 
 The variable "Uses" contains the many different ways the drug is being used by the specific patient.
 
@@ -57,10 +56,9 @@ data |>
 It can be observed that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage.
 
 ```{r}
+#Removing "Treatment of", "Prevention of", "Treatment and prevention of" in each row and anything in parenthensis to isolate types of usage.
 
-
-#We start by remocing the patterns to isolate symtoms.
-clean_data <- data |> 
+clean_data <- data |>
   mutate(Uses = str_replace_all(Uses,
                                 "(?<!\\s)Treatment of",
                                 "")) |> 
@@ -70,31 +68,41 @@ clean_data <- data |>
   mutate(Uses = str_replace_all(Uses,
                                 "(?<!\\s)Treatment and prevention of",
                                 "")) |> 
+  
+  # Removing information in parenthensis.
   mutate(Uses = str_replace_all(Uses,
                                 "\\(.*?\\)", 
                                 ""))
- 
+
+# Printing only unique, partially cleaned "Uses" data
 clean_data |> 
   select(Uses) |>
   distinct() |>
   print()
-  
-
-
 ```
+
+As can be seen from the "Uses" of only unique observations, the data is not yet tidy. We would like to separate the usage types based on splitting at every encounter with capital letters. However, examples of abbreviations such as "HIV" is present in the data set and does not result in correct splitting. Therefore, the data is cleaned further by removing periods, backslash, and hyphens, as they do not convey any more information.
 
 ```{r}
 clean_data <- clean_data |> 
+  
+  #Period, backslash, and hyphen are removed.
   mutate(Uses = str_replace_all(Uses,
                                 "[./-]",
                                 "")) |> 
-  mutate(Uses = str_replace_all(Uses,"HIV",
-                                "Hiv")) |> 
-  mutate(Uses = str_replace_all(Uses, "\\b[A-Z]+\\b", ~str_to_lower(.)))
   
- 
-
+  #"HIV" is converted to only have the first letter as a capital letter.
+  mutate(Uses = str_replace_all(Uses,
+                                "HIV",
+                                "Hiv")) |> 
+  
+  #Every word consisting of only capital letters are converted to lower case.
+  mutate(Uses = str_replace_all(Uses, 
+                                "\\b[A-Z]+\\b", 
+                                ~str_to_lower(.)))
 ```
+
+The data is now ready to be split into applications.
 
 ```{r}
 
@@ -102,50 +110,61 @@ clean_data <- clean_data |>
 clean_data <- clean_data |>
   separate(
     Uses,
-    into = str_c("Application_",seq(1,10)), #spli
+    into = str_c("Application_",seq(1,10)), #Creating application colomns
     sep = "(?=[A-Z])", # Splits if the word starts with capital letter
     extra = "merge", # Additional content is merged into the last column 
     fill = "right" # Fills empty columns with NA
   )
 
-
+clean_data |> 
+  select("Medicine Name", 
+         Application_1:Application_10)
 ```
 
-To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.\
-It isn't until application number 10 that there are only NAs. Therefore 9 application columns are made.
+To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.
 
 ```{r}
+
+#### Tror det her kunne blive mere pipet :)
+
 clean_data |>
-  summarize(non_na_count = sum(!is.na(`Application_9`))) |> # Counts non-NA columns
+  summarize(non_na_count = sum(!is.na(`Application_9`))) |> # Counts non-NA in column Application_9 
   pull(non_na_count) # Extract calculated count
+
+
 clean_data |>
   summarize(non_na_count = sum(!is.na(`Application_10`))) |> # Counts non-NA columns
   pull(non_na_count) # Extract calculated count
 ```
 
-It is interesting to investigate how many unique usages there are for the drugs. This is done in the code below where all application variables are put into one variable called "Observations", all duplicate observations are removed by using the "distinct" command, and all NAs are excluded using "filter".
+It isn't until application number 10 that there are only NAs. Therefore 9 application columns are sufficient.
+
+It is interesting to investigate how many unique usages there are for the drugs. This is done in the code below where all application variables are put into one variable called "Observations". All duplicate observations are removed by using the "distinct" command, and all NAs are excluded using "filter".
 
 (this code should probably be moved to augment og describe doc)
 
 ```{r}
-unique_observations <- clean_data |>
-  select(str_c("Application_",seq(1,10))) |>
-  pivot_longer(cols = everything(), values_to = "Observations") |> 
+observations_count <- clean_data |>
+  select(str_c("Application_",
+               seq(1,10))) |>
+  pivot_longer(cols = everything(), 
+               values_to = "Observations") |> 
   filter(!is.na(Observations)) |> 
   print()
 ```
 
+Here we see that there are a total of 30,364 observations if the observations are not collected into unique types of usage. This is done in the following code by the use of distinct:
+
 ```{r}
-unique_observations <- clean_data |>
-  select(str_c("Application_",seq(1,10))) |>
-  pivot_longer(cols = everything(), values_to = "Observations") |>
-  distinct(Observations) |>
+unique_observations <- observations_count |> 
+  distinct(Observations) |> 
   filter(!is.na(Observations))
 
 print(unique_observations)
+  
 ```
 
-There are 680 unique usages for the drugs.\
+There are a total of 628 unique usages for the drugs.\
 
 Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
 
