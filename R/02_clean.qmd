@@ -14,6 +14,7 @@ library("tidyverse")
 library("purrr")
 library("broom")
 library("readr")
+library("here")
 ```
 
 ## Data load
@@ -21,7 +22,7 @@ library("readr")
 Loading the tsv file from the data folder.
 
 ```{r}
-data <- read_tsv("../data/01_dat_load.tsv")
+data <- read_tsv(here("data/01_data_load.tsv"))
 ```
 
 ## View data
@@ -30,7 +31,11 @@ Viewing the data to get the number of observations and variables in the raw data
 
 ```{r}
 # View the first few observations and variables
-head(data)
+
+data |>
+  dim_desc()
+
+
 ```
 
 The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
@@ -41,7 +46,15 @@ To make sure the data is tidy these values are separated into different columns/
 
 ## Data wrangling
 
-The variable "Uses" contains the many different ways the drug is being used by the specific patient. It can be observed that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage.
+The variable "Uses" contains the many different ways the drug is being used by the specific patient.
+
+```{r}
+data |>
+  select(Uses) |>
+  head()
+```
+
+It can be observed that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage.
 
 ```{r}
 clean_data <- data |>
@@ -52,6 +65,7 @@ clean_data <- data |>
     extra = "merge", # Additional content is merged into the last column 
     fill = "right" # Fills empty columns with NA
   )
+
 ```
 
 To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.\
@@ -73,8 +87,8 @@ unique_observations <- clean_data |>
          "Application 4", "Application 5", "Application 6", 
          "Application 7", "Application 8", "Application 9") |>
   pivot_longer(cols = everything(), values_to = "Observations") |>
-  distinct(Observation) |>
-  filter(!is.na(Observation))
+  distinct(Observations) |>
+  filter(!is.na(Observations))
 
 print(unique_observations)
 ```
@@ -82,6 +96,8 @@ print(unique_observations)
 There are 680 unique usages for the drugs.\
 
 Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
+
+**Create code section where we can show this**
 
 Because there are different routes of administration the units for the dose are also different. For instance tablets are given in mg, a cream or a gel in percentages, Syrups in ml, a Penfill is given in IU (biological activity) etc.
 
@@ -109,7 +125,7 @@ Note:
 
 (.\*)\$: Captures the rest of the string up to space
 
-Got stuck on this. \
+Got stuck on this.\
 Tried to split by the first number occuring below instead:
 
 ```{r}
