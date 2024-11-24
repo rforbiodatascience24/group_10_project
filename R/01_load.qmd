@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Loading libraries
+## Loading Libraries
 
 ```{r}
 #Loading libraries
@@ -66,9 +66,9 @@ The data is furthermore stored in the data folder, which will allow for augmenti
 
 ```{r}
 
-save_path <- file.path(data_dir, "01_dat_load.tsv")
+save_path <- file.path(data_dir, "01_data_load.tsv")
 
-# Save the dataframe as a CSV file
+# Save the dataframe as a TSV file
 write_tsv(dataset, save_path)
 
 ```
