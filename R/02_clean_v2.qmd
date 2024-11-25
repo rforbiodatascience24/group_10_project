@@ -181,7 +181,7 @@ Kig på unnest_wider til split split af data application og sideeffects.
 ### Splitting side effects into columns for each, by Captial letter
 
 ```{r}
-clean_data3 <- clean_data |>
+clean_data <- clean_data |>
   # Split the string on capital letters, skipping the first character
   mutate(SE = map(Side_effects, ~ {
     #defining first character and saving for adding later
@@ -203,7 +203,7 @@ clean_data3 <- clean_data |>
 ```
 
 ```{r}
-clean_data1 <- clean_data |>
+clean_data <- clean_data |>
 
   mutate(API = str_split(Composition, pattern = "\\+")) |>
 
@@ -214,34 +214,49 @@ clean_data1 <- clean_data |>
 
 ```{r}
 
-###THIS IS NOT DONE
-clean_data1 <- clean_data1 |> 
+clean_data <- clean_data |> 
   mutate(
-    Dose_1 = str_extract(API_1, "\\d+"),  # Extract dose for the first compound
-    Unit_1 = str_extract(API_1, "(?<=\\d)[a-zA-Z/%.]+"),  # Extract unit for the first compound
-    
-    Dose_2 = str_extract(API_2, "\\d+"),  # Extract dose for the second compound
-    Unit_2 = str_extract(API_2, "(?<=\\d)[a-zA-Z/%.]+")   # Extract unit for the second compound
-  )
+    # Extract drug name (everything before the first number)
+    across(starts_with("API"), ~ str_extract(.x, "^[a-zA-Z\\s]+"), .names = "name_{.col}"),
+    across(starts_with("API"), ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")), .names = "amount_{.col}"),
+    across(starts_with("API"), 
+           ~ str_sub(.x, 
+                     start = str_locate(.x, "\\(")[, 1] + str_length(str_extract(.x, "\\d+\\.?\\d*")) + 1, 
+                     end = str_locate(.x, "\\)")[, 1] - 1), 
+           .names = "unit_{.col}"))
+
+
 
 
 ```
 
 ```{r}
-clean_data1 <- clean_data |>
-  extract(
-    `Medicine Name`, 
-    into = c("Medicine Name", "Administration route"),
-    regex = "^([^ ]+)[ ]?(.*)$", 
-    remove = FALSE # Retains original column if needed
-  ) |>
-  extract(`Administration route`,
-          into = c("Dose","Administration route"),
-          regex = "^([^ ]+)[ ]?(.*)$",
-          remove = FALSE)
+clean_data <- clean_data |>
+  mutate(
 
+    `Medicine Name` = str_extract(`Medicine Name`,
+                                  "^[^0-9]+"))
+clean_data <- clean_data |>
+  mutate(
+    `Administration_route` = str_extract(`Medicine Name`, "\\w+$")  
+    )
 
 ```
+
+```{r}
+#removing columns we don't need anymore
+
+clean_data1 <- clean_data %>%
+  select(-Composition, -`Side_effects`, -starts_with("API_"))
+```
+
+```{r}
+
+```
+
+\#############################################################
+
+FROM here I havent edited anything else.
 
 Note:
 
