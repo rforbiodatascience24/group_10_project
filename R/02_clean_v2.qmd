@@ -256,7 +256,7 @@ clean_data1 <- clean_data %>%
 
 \#############################################################
 
-FROM here I havent edited anything else.
+FROM HERE I HAVE MADE nothing.
 
 Note:
 
