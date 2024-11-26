@@ -210,9 +210,12 @@ clean_data <- clean_data |>
 
 ## Sofie + Malou
 
+In the Medicine Name variable information about the type of administration for the specific drug is given. This information should be separated into its own variable called Administration_type. There is no apparent pattern in the Medicine Name variable in terms of application type and how to distinguish this from the other information in Medicine Name. Therefore, a more manual approach is taken where the raw data is analyzed for different administration types, where the name, of each type found, is added to a vector.\
+A search is done for the words in the vector and if a word appears in Medicine Name it is added to the new variable Administration_type. To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 333 observations left which were NAs, these different administration types were changed to "Other".
+
 ```{r}
 
-routes <- c("Injection", "Tablet", "Syrup", "Cream", "Oral Suspension", "Capsule", "Eye Drop", "Liquid", "Suspension", "Inhaler", "Gel", "Drops", "Lozenges", "Eye/Ear Drops", "Expectorant", "Nasal Spray", "Respules", "Eye Ointment", "Soap", "Penfill", "Scalp Solution", "Respirator Solution", "Cartridge", "Eye Drops", "Ophthalmic Solution", "Nail Lacquer", "Infusion", "Drop", "Readymix", "Oral Solution")
+t <- c("Injection", "Tablet", "Syrup", "Cream", "Oral Suspension", "Capsule", "Eye Drop", "Liquid", "Suspension", "Inhaler", "Gel", "Drops", "Lozenges", "Eye/Ear Drops", "Expectorant", "Nasal Spray", "Respules", "Eye Ointment", "Soap", "Penfill", "Scalp Solution", "Respirator Solution", "Cartridge", "Eye Drops", "Ophthalmic Solution", "Nail Lacquer", "Infusion", "Drop", "Readymix", "Oral Solution")
 
 updated_routes <- c("Solution", "Lotion", "solution", "Vaccine", "gel", "Inhalation", "Shampoo", "tablet", "Ointment", "Transhaler", "Powder", "Spray")
 
