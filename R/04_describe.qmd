@@ -17,31 +17,14 @@ write.tsv(aug_clean_data, file_path, row.names = FALSE)
 
 ## Descriptive statistics of the data
 
-The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds.
+The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds. \
+The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer. This will streamline the project and make it easier to make concrete conclusions.
 
-The data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excelent reviews by percentages.
+The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
 
 The purpose of the data is to assist healthcare professionals and patients in making decisions when choosing/using a medication. Therefore, the description and analysis of the data focuses on this perspective and introduces plots that can further aid in this aim.
 
 The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
-
-The variables include:
-
--   Medicine Name
-
--   Manufacturer
-
--   Excellent review %, Average Review %, Poor Review %
-
--   Application
-
--   name_API
-
--   amount_API
-
--   unit_API
-
--   Side_Effects
 
 #### Dimensionality
 
