@@ -18,10 +18,12 @@ use clean_data3
 
 ```{r}
 # defining the augment (this shoudl be done when loading )
-clean_data <- clean_data3
+clean_data <- clean_data
 ```
 
-#### Making count variables for 'Side_Effects'
+#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'. 
+
+It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables as well, for each observation.
 
 ```{r}
 aug_clean_data <- clean_data |>
@@ -30,18 +32,11 @@ aug_clean_data <- clean_data |>
   rowwise() |>
   
   # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
-  mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))))
-  
+  mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))), 
+         API_count = sum(!is.na(c_across(contains("name_API_")))),
+         Application_count = sum(!is.na(c_across(contains("Application_")))))
+
+          
 ```
 
-#### Making count variable for 'name_API'
-
-```{r}
-aug_clean_data <- clean_data |>
-  
-  # Counting for each row, as nr. of side effects might differ
-  rowwise() |>
-  
-  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
-  mutate(API_count = sum(!is.na(c_across(contains("name_API_")))))
-```
+#### 
