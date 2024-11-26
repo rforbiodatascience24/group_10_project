@@ -229,7 +229,7 @@ clean_data <- clean_data |>
 ```
 
 In the Medicine Name variable information about the type of administration for the specific drug is given. This information should be separated into its own variable called Administration_type. There is no apparent pattern in the Medicine Name variable in terms of application type and how to distinguish this from the other information in Medicine Name. Therefore, a more manual approach is taken where the raw data is analyzed for different administration types, where the name, of each type found, is added to a vector.\
-A search is done for the words in the vector and if a word appears in Medicine Name it is added to the new variable Administration_type. To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 333 observations left which were NAs, these different administration types were changed to "Other".
+A search is done for the words in the vector and if a word appears in Medicine Name it is added to the new variable Administration_type.
 
 ```{r}
 
@@ -282,7 +282,11 @@ clean_data |>
   filter(str_detect(Administration_type, "Other")) |>
   print()
 
+```
 
+To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 336 observations left which were NAs, these different administration types were changed to "Other".
+
+```{r}
 
 # Adding more administration types from those looking at the data with the string "Other".
 updated_types <- c("Solution", 
@@ -297,10 +301,6 @@ updated_types <- c("Solution",
                    "Transhaler", 
                    "Powder", 
                    "Spray")
-
-
-
-### Synes vi skal dele chuncken op her ### 
 
 
 # Second iteration of creating Administration_type as more types have been added to the list.
@@ -319,7 +319,10 @@ clean_data |>
   select(`Medicine Name`, Administration_type) |>
   filter(str_detect(Administration_type, "Other")) |>
   print()
+
 ```
+
+The last 336 administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into others.
 
 ### Splitting side effects into columns for each, by captial letter
 
