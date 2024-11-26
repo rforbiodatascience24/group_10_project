@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Quarto
+### Loading Libraries
 
 ```{r}
 library(tidyverse)
@@ -12,26 +12,38 @@ library(dplyr)
 library(readr)
 ```
 
-Application, name_API, Side_Effects skal tælles og have en count kolonne for hver.
-
-use clean_data3
+### Loading cleaned data
 
 ```{r}
-# defining the augment (this shoudl be done when loading )
+# Specifying directory for loading file
+dir_load <- here("data/")
+# Specify the file path with the new name
+file_path <- file.path(dir_load, "02_dat_clean.tsv")
+
+# Save the dataframe as a CSV file
+write.csv(clean_data, file_path, row.names = FALSE)
+```
+
+```{r}
+# Defining the augment (this should be done when loading
 clean_data <- clean_data
 ```
+
+### Augmentation of clean data
 
 #### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
 
 It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables as well, for each observation.
 
 ```{r}
+
+# Defining augmented cleaned data.
 aug_clean_data <- clean_data |>
   
-  # Counting for each row, as nr. of side effects might differ
+  # Counting for each row, as count might differ between observations.
   rowwise() |>
   
-  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
+  # Making new count variables based on number of columns containing relevant string,       different from NA. 
   mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))), 
          API_count = sum(!is.na(c_across(contains("name_API_")))),
          Application_count = sum(!is.na(c_across(contains("Application_")))))
@@ -42,5 +54,17 @@ aug_clean_data <- clean_data |>
 To ensure the new variables are included in the augmented cleaned data set, the data is viewed. This is done using the view() function.
 
 ```{r}
+# Viewing augmented dataset. 
 view(aug_clean_data)
+```
+
+#### Saving augmented cleaned data as .tsv file
+
+```{r}
+dir_save <- here("data/")
+save_path <- file.path(data_dir, "03_dat_aug.tsv")
+
+# Save the dataframe as a TSV file
+write_tsv(aug_clean_data, save_path)
+
 ```
