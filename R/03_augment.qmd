@@ -4,57 +4,107 @@ format: html
 editor: visual
 ---
 
-## Loading libraries and files
+## Loading libraries and data file
 
 ### Loading libraries
 
+Loading the relevant libraries.
+
 ```{r}
-library(tidyverse)
-library(dplyr)
-library(readr)
+rm(list=ls())
+library("tidyverse")
+library("dplyr")
+library("readr")
 ```
 
-### Loading clean file
+### Loading cleaned data file
+
+Loading the cleaned data file from the data folder as a .tsv file.
 
 ```{r}
-dir_load <- here("/data")
-file_path <- file.path(dir_load, "02_dat_clean.tsv")
+#| message: false
 
-# Loading the clean data tsv file
-write.tsv(clean_data, file_path, row.names = FALSE)
-```
+# Loading the clean data tsv file 
+clean_data <- read_tsv(here('data/02_dat_clean.tsv'))
 
-```{r}
-# defining the augment (this shoudl be done when loading )
-clean_data <- clean_data
 ```
 
 ## Augmentation of data
 
 #### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
 
-It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables as well, for each observation.
+It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables, as it is of interest how many application each drug carry.
 
 ```{r}
+
 aug_clean_data <- clean_data |>
   
   # Counting for each row, as nr. of side effects might differ
   rowwise() |>
   
-  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
+  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side effects listed for each row 
   mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))), 
          API_count = sum(!is.na(c_across(contains("name_API_")))),
          Application_count = sum(!is.na(c_across(contains("Application_")))))
 
-          
+
+```
+
+```{r}
+aug_clean_data <- clean_data %>%
+  
+  group_by(Medicine_Name) %>%
+  
+  mutate(case_id = row_number()) %>%
+  
+  ungroup() %>%
+  
+  group_by(Medicine_Name, case_id) %>%
+  
+  mutate(Side_Effect_count= sum (!is.na(distinct(.,Side_Effect_type ))))
+    
+    
+    
+    
+ #   !is.na(c_across(contains("Side_Effects_"))))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ #  
+ #  
+ # # mutate(
+ #  #  Side_Effects_count = sum(str_detect(Side_Effect_type,)),
+ #    API_count = sum(grepl("name_API_", variable)),
+ #    Application_count = sum(grepl("Application_", variable))
+ #  ) %>%
+ #  
+ #  ungroup()
+
+  
 ```
 
 ## Saving augmented cleaned data
 
+Saving the cleaned augmented data as a .tsv in the data folder.
+
 ```{r}
+
+# Defining the directory which the file should be saved to
 dir_save <- here("/data")
+# Defining the save path with correct name and directory
 save_path <- file.path(dir_save, "03_dat_aug.tsv")
 
-# Save the augmented data as a TSV file
+# Save the augmented data as a tsv file in data folder
 write_tsv(aug_clean_data, save_path)
+
 ```
