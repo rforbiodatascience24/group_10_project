@@ -390,3 +390,15 @@ clean_data <- clean_data |>
 clean_data <- clean_data |>
   select(-`Image URL`)
 ```
+
+```{r}
+clean_data <- clean_data |> 
+  
+  rename(
+    `Medicine_Name` = `Medicine Name`,
+    "Excellent_Review_%" = `Excellent Review %`,
+    "Average_Review_%" = `Average Review %`,
+    "Poor_Review_%" = `Poor Review %`,
+    
+  )
+```
