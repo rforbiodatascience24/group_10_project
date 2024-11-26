@@ -137,37 +137,7 @@ clean_data <- clean_data |>
 
 ```
 
-```{r}
-
-clean_data <- clean_data |>
-  separate(
-    Uses,
-    into = str_c("Application_",seq(1,10)), #Creating application colomns
-    sep = "(?=[A-Z])", # Splits if the word starts with capital letter
-    extra = "merge", # Additional content is merged into the last column 
-    fill = "right" # Fills empty columns with NA
-  )
-
-clean_data |> 
-  select("Medicine Name", 
-         Application_1:Application_10)
-```
-
 To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.
-
-```{r}
-
-#### Tror det her kunne blive mere pipet :)
-
-clean_data |>
-  summarize(non_na_count = sum(!is.na(`Application_9`))) |> # Counts non-NA in column Application_9 
-  pull(non_na_count) # Extract calculated count
-
-
-clean_data |>
-  summarize(non_na_count = sum(!is.na(`Application_10`))) |> # Counts non-NA columns
-  pull(non_na_count) # Extract calculated count
-```
 
 It isn't until application number 10 that there are only NAs. Therefore 9 application columns are sufficient.
 
@@ -178,14 +148,14 @@ It is interesting to investigate how many unique usages there are for the drugs.
 ```{r}
 observations_count <- clean_data |>
   select(str_c("Application_",
-               seq(1,10))) |>
+               seq(1,8))) |>
   pivot_longer(cols = everything(), 
                values_to = "Observations") |> 
   filter(!is.na(Observations)) |> 
   print()
 ```
 
-Here we see that there are a total of 30,364 observations if the observations are not collected into unique types of usage. This is done in the following code by the use of distinct:
+Here we see that there are a total of 18,672 observations if the observations are not collected into unique types of usage. This is done in the following code by the use of distinct:
 
 ```{r}
 unique_observations <- observations_count |> 
@@ -201,7 +171,7 @@ There are a total of 628 unique usages for the drugs.\
 Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
 
 ```{r}
-data |>
+clean_data |>
   select('Medicine Name') |>
   slice()
 
@@ -303,5 +273,5 @@ clean_data <- clean_data |>
 # Removing columns we do not need anymore
 
 clean_data <- clean_data |>
-  select(-Composition, -`Side_effects`, -starts_with("API_"), -Application_10, -`Image URL`)
+  select(-Composition,-Uses, -`Side_effects`, -starts_with("API_"), -`Image URL`)
 ```
