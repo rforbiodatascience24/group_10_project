@@ -104,6 +104,8 @@ clean_data <- clean_data |>
 
 The data is now ready to be split into applications.
 
+## Amalie
+
 ```{r}
 
 
@@ -206,6 +208,8 @@ clean_data <- clean_data |>
 
 ```
 
+## Sofie + Malou
+
 ```{r}
 clean_data <- clean_data |>
   mutate(
@@ -222,6 +226,8 @@ clean_data <- clean_data |>
 ### Splitting side effects into columns for each, by captial letter
 
 All the side effects from the various medicines are collected in a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters
+
+## Johanna
 
 ```{r}
 clean_data <- clean_data |>
@@ -249,8 +255,8 @@ clean_data <- clean_data |>
 ```{r}
 # Removing columns we do not need anymore
 
-clean_data1 <- clean_data %>%
-  select(-Composition, -`Side_effects`, -starts_with("API_"), -Application_10)
+clean_data <- clean_data %>%
+  select(-Composition, -`Side_effects`, -starts_with("API_"), -Application_10, -`Image URL`)
 ```
 
 \#############################################################
