@@ -211,15 +211,30 @@ clean_data <- clean_data |>
 ## Sofie + Malou
 
 ```{r}
-clean_data <- clean_data |>
-  mutate(
 
-    `Medicine Name` = str_extract(`Medicine Name`,
-                                  "^[^0-9]+"))
-clean_data <- clean_data |>
+routes <- c("Injection", "Tablet", "Syrup", "Cream", "Oral Suspension", "Capsule", "Eye Drop", "Liquid", "Suspension", "Inhaler", "Gel", "Drops", "Lozenges", "Eye/Ear Drops", "Expectorant", "Nasal Spray", "Respules", "Eye Ointment", "Soap", "Penfill", "Scalp Solution", "Respirator Solution", "Cartridge", "Eye Drops", "Ophthalmic Solution", "Nail Lacquer", "Infusion", "Drop", "Readymix", "Oral Solution")
+
+updated_routes <- c("Solution", "Lotion", "solution", "Vaccine", "gel", "Inhalation", "Shampoo", "tablet", "Ointment", "Transhaler", "Powder", "Spray")
+
+variable_name <- 'Medicine Name'
+
+data_test <- data %>%
   mutate(
-    `Administration_route` = str_extract(`Medicine Name`, "\\w+$")  
-    )
+    Administration_route = str_extract(
+      `Medicine Name`, 
+      paste(c(routes, updated_routes), collapse = "|")
+    ) |>
+      replace_na("Other")
+  )
+
+data_test |>
+  select(Administration_route, `Medicine Name`) |>
+  filter(str_detect(Administration_route, "Other")) |>
+  print()
+
+
+
+# 333 in the data
 
 ```
 
