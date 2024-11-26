@@ -50,7 +50,7 @@ data |>
 It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
 
 ```{r}
-#Removing "Treatment of", "Prevention of", "Treatment and prevention of" in each row and anything in parenthensis to isolate types of usage.
+# Removing "Treatment of", "Prevention of", "Treatment and prevention of" in each row and anything in parenthensis to isolate types of usage.
 
 clean_data <- data |>
   mutate(Uses = str_replace_all(Uses,
@@ -63,7 +63,7 @@ clean_data <- data |>
                                 "(?<!\\s)Treatment and prevention of",
                                 "")) |> 
   
-  # Removing information in parenthensis.
+  # Removing all information in the parenthensis.
   mutate(Uses = str_replace_all(Uses,
                                 "\\(.*?\\)", 
                                 ""))
@@ -80,17 +80,17 @@ As can be seen from the "Uses" of only unique observations, the data is not yet 
 ```{r}
 clean_data <- clean_data |> 
   
-  #Period, backslash, and hyphen are removed.
+  # Period, backslash, and hyphen are removed.
   mutate(Uses = str_replace_all(Uses,
                                 "[./-]",
                                 "")) |> 
   
-  #"HIV" is converted to only have the first letter as a capital letter.
+  # "HIV" is converted to only have the first letter as a capital letter.
   mutate(Uses = str_replace_all(Uses,
                                 "HIV",
                                 "Hiv")) |> 
   
-  #Every word consisting of only capital letters are converted to lower case e.g. "Vitamin B" becomes "Vitamin b"
+  # Every word consisting of only capital letters are converted to lower case e.g. "Vitamin B" becomes "Vitamin b"
   mutate(Uses = str_replace_all(Uses, 
                                 "\\b[A-Z]+\\b", 
                                 ~str_to_lower(.)))
@@ -103,13 +103,13 @@ The data is now ready to be split into applications.
 ```{r}
 clean_data <- clean_data |>
   
-  # Split the string on capital letters, skipping the first character
+  # Splitting the string on capital letter (not first letter as this would be empty)
   mutate(Application = map(Uses, ~ {
     
-    # starts by removing the leading whitespaces (if any).
+    # Starts by removing the leading whitespaces (if any).
     trimmed_string <- str_trim(.x)
     
-    # defines the first character to save the first apllication for a correct split
+    # Defines the first character to save the first apllication for a correct split
     
     first_char <- str_sub(trimmed_string, 1, 1)
     
@@ -124,7 +124,7 @@ clean_data <- clean_data |>
     c(str_c(first_char, split_rest[1]), split_rest[-1])
   }))  |>
   
-  # Unnest the list column into multiple columns
+  # Unnest the list column and unnest them into multiple columns
   unnest_wider(Application, names_sep = "_")
 
 clean_data <- clean_data |>
@@ -143,6 +143,7 @@ It is interesting to investigate how many unique usages there are for the drugs.
 (this code should probably be moved to augment og describe doc)
 
 ```{r}
+
 observations_count <- clean_data |>
   select(str_c("Application_",
                seq(1,8))) |>
@@ -155,6 +156,9 @@ observations_count <- clean_data |>
 Here we see that there are a total of 18,672 observations if the observations are not collected into unique types of usage. This is done in the following code by the use of distinct:
 
 ```{r}
+
+# Print the unique observations
+
 unique_observations <- observations_count |> 
   distinct(Observations) |> 
   filter(!is.na(Observations))
@@ -168,9 +172,10 @@ There are a total of 628 unique usages for the drugs.\
 Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
 
 ```{r}
+
+# Printing the variabe "Medicine Name"
 clean_data |>
-  select('Medicine Name') #|>
-  #slice()
+  select('Medicine Name') 
 
 ```
 
@@ -181,9 +186,13 @@ Information about the dose is also available in the variable "Composition", and 
 ```{r}
 clean_data <- clean_data |>
 
+  # Splits on "+" charater.
   mutate(API = str_split(Composition, pattern = "\\+")) |>
 
+  # For each API column make a new column for each element and make the new name seqential after a "_"
   unnest_wider(API, names_sep = "_")
+
+# Delete the row "Composition" that has now been unnested to multiple variables
 
 clean_data <- clean_data |>
   select(-Composition)
@@ -193,14 +202,17 @@ clean_data <- clean_data |>
 ```{r}
 clean_data <- clean_data |> 
   mutate(
-    # Extract drug name (everything before the first number)
+    # Extract drug name (everything before the first digit in the string)
     across(starts_with("API"),
            ~ str_extract(.x, "^[a-zA-Z\\s]+"),
            .names = "name_{.col}"),
     
+    # Takes the first digit and all connecting digits (including decimal numebers) until other than digit
     across(starts_with("API"),
            ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")),
            .names = "amount_{.col}"),
+    
+    # Extracts the location of the digit that was saved as amout_API. Hereafter adding the length of that digit, to find startlocation of the rest of the string, which is saved as unit
     
     across(starts_with("API"), 
            
@@ -310,6 +322,15 @@ clean_data |>
 
 ```
 
+```{r}
+clean_data <- clean_data |>
+  mutate(
+    `Medicine Name` = str_extract(`Medicine Name`, "^[^0-9 ]+"
+)
+  )
+
+```
+
 The last 336 administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into others.
 
 ### Splitting side effects into columns for each, by captial letter
@@ -319,10 +340,11 @@ All the side effects from the various medicines are collected in a single variab
 ```{r}
 clean_data <- clean_data |> 
   
-  #Every word consisting of only capital letters are converted to lower case e.g. "Anormal ACG" becomes "Abnormal acg"
+# Every word that consists of multiple capital letters are converted to lower case eg. "Anormal ACG" becomes "Abnormal acg"
   mutate(Side_effects = str_replace_all(Side_effects, 
                                 "\\b[A-Z]+\\b", 
                                 ~str_to_lower(.)))
+
 ```
 
 ```{r}
@@ -331,18 +353,18 @@ clean_data <- clean_data |>
   # Split the string on capital letters, skipping the first character
   mutate(Side_Effects = map(Side_effects, ~ {
     
-    #trimmed_side_effect_string
-    #defining first character and saving for adding later
+
+    # Defining first character and saving for adding later
     
     first_char <- str_sub(.x, 1, 1)
     
-    # defining rest which we now can split on
+    # Defining the rest of the string which we now can split on
     rest <- substring(.x, 2)
     
-    # splitting on substring with removed first captial letter to avoid empty first         column
+    # Splitting on substring with removed first captial letter to avoid empty first column
     split_rest <- str_split(rest, pattern = "(?=[A-Z])")[[1]]
     
-    # and adding the first character back for the first SE column for each row 
+    # And adding the first character back for the first Side-Effects column for each row 
     c(paste0(first_char, split_rest[1]), split_rest[-1])
   }))  |>
   
@@ -356,13 +378,14 @@ clean_data <- clean_data |>
 To ensure that the side effects can be factorized and compared are trailing spaces removed
 
 ```{r}
+# Removes whitespaces from the end of the data string.
 clean_data <- clean_data |>
   mutate(across(starts_with("Side_Effects_"),
                 ~ str_trim(.x, side = "right")))
 ```
 
 ```{r}
-# Removing columns we do not need anymore
+# Removing columns we do not need anymore.
 
 clean_data <- clean_data |>
   select(-`Image URL`)
