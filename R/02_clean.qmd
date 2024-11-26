@@ -360,7 +360,8 @@ To ensure that the side effects can be factorized and compared are trailing spac
 
 ```{r}
 clean_data <- clean_data |>
-  mutate(across(starts_with("Side_Effects_"), ~ str_trim(.x, side = "right")))
+  mutate(across(starts_with("Side_Effects_"),
+                ~ str_trim(.x, side = "right")))
 ```
 
 ```{r}
