@@ -322,6 +322,15 @@ clean_data |>
 
 ```
 
+```{r}
+clean_data <- clean_data |>
+  mutate(
+    `Medicine Name` = str_extract(`Medicine Name`, "^[^0-9 ]+"
+)
+  )
+
+```
+
 The last 336 administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into others.
 
 ### Splitting side effects into columns for each, by captial letter
