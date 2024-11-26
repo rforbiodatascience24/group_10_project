@@ -133,6 +133,9 @@ clean_data <- clean_data |>
   # Unnest the list column into multiple columns
   unnest_wider(Application, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-Uses)
+
 
 
 ```
@@ -172,8 +175,8 @@ Furthermore, the variable "Medicine Name" also contains multiple values in each 
 
 ```{r}
 clean_data |>
-  select('Medicine Name') |>
-  slice()
+  select('Medicine Name') #|>
+  #slice()
 
 ```
 
@@ -188,6 +191,8 @@ clean_data <- clean_data |>
 
   unnest_wider(API, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-Composition)
 
 ```
 
@@ -195,14 +200,23 @@ clean_data <- clean_data |>
 clean_data <- clean_data |> 
   mutate(
     # Extract drug name (everything before the first number)
-    across(starts_with("API"), ~ str_extract(.x, "^[a-zA-Z\\s]+"), .names = "name_{.col}"),
-    across(starts_with("API"), ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")), .names = "amount_{.col}"),
+    across(starts_with("API"),
+           ~ str_extract(.x, "^[a-zA-Z\\s]+"),
+           .names = "name_{.col}"),
+    
+    across(starts_with("API"),
+           ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")),
+           .names = "amount_{.col}"),
+    
     across(starts_with("API"), 
+           
            ~ str_sub(.x, 
                      start = str_locate(.x, "\\(")[, 1] + str_length(str_extract(.x, "\\d+\\.?\\d*")) + 1, 
                      end = str_locate(.x, "\\)")[, 1] - 1), 
            .names = "unit_{.col}"))
 
+clean_data <- clean_data |>
+  select(-starts_with("API_"))
 
 
 
@@ -275,6 +289,8 @@ clean_data <- clean_data |>
   # Unnest the list column into multiple columns
   unnest_wider(Side_Effects, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-`Side_effects`)
 ```
 
 To ensure that the side effects can be factorized and compared are trailing spaces removed
@@ -288,5 +304,5 @@ clean_data <- clean_data |>
 # Removing columns we do not need anymore
 
 clean_data <- clean_data |>
-  select(-Composition,-Uses, -`Side_effects`, -starts_with("API_"), -`Image URL`)
+  select(-`Image URL`)
 ```
