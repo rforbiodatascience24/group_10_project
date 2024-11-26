@@ -17,11 +17,17 @@ write.tsv(aug_clean_data, file_path, row.names = FALSE)
 
 ## Descriptive statistics of the data
 
-The data is introduced after both cleaning and augmentation have been performed. The aim is to introduce descriptive statistics in regards to distribution of classes in the different variables.
+The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds.
 
-#### Dimentionality
+The data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excelent reviews by percentages.
 
-Firstly, the dimensionality is investigated to get an idea of the size.
+The purpose of the data is to assist healthcare professionals and patients in making decisions when choosing/using a medication. Therefore, the description and analysis of the data focuses on this perspective and introduces plots that can further aid in this aim.
+
+The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
+
+#### Dimensionality
+
+Firstly, the dimensionality of the data set is investigated to get an idea of its size.
 
 ```{r}
 # Checking for dimensionality of dataset 
@@ -35,16 +41,26 @@ data |>
 -   hvor mange NA optræder for forskellige variable
 
 ```{r}
+NA_observations <- clean_data |> 
+  select() |>
+  filter(is.na())
 
+print(NA_observations)
 ```
 
 -   Beregne means hvor general gentagelse af drugs
 
 ```{r}
+### 
+clean_data |> 
+  select(variable) |>
+  summarise(x_mu = mean(x), x_max = max(x))
+
+
 
 ```
 
--   plotte hvor mange gange hver drug går i gen (plot)
+-   plotte hvor mange gange hver drug går igen (plot)
 
 ```{r}
 
@@ -62,7 +78,7 @@ data |>
 
 ```
 
--   unikke antal type af medicn
+-   unikke antal type af medicin
 
 ```{r}
 
