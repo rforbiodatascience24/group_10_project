@@ -272,7 +272,7 @@ clean_data <- clean_data |>
   # Split the string on capital letters, skipping the first character
   mutate(Side_Effects = map(Side_effects, ~ {
     
-    trimmed_side_effect_string
+    #trimmed_side_effect_string
     #defining first character and saving for adding later
     
     first_char <- str_sub(.x, 1, 1)
