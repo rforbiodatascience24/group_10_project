@@ -6,21 +6,42 @@ editor: visual
 
 ## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+library(tidyverse)
+library(dplyr)
+library(readr)
 ```
 
-You can add options to executable code like this
+Application, name_API, Side_Effects skal tælles og have en count kolonne for hver.
+
+use clean_data3
 
 ```{r}
-#| echo: false
-2 * 2
+# defining the augment (this shoudl be done when loading )
+clean_data <- clean_data3
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+#### Making count variables for 'Side_Effects'
+
+```{r}
+aug_clean_data <- clean_data |>
+  
+  # Counting for each row, as nr. of side effects might differ
+  rowwise() |>
+  
+  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
+  mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))))
+  
+```
+
+#### Making count variable for 'name_API'
+
+```{r}
+aug_clean_data <- clean_data |>
+  
+  # Counting for each row, as nr. of side effects might differ
+  rowwise() |>
+  
+  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side       effects listed for each row 
+  mutate(API_count = sum(!is.na(c_across(contains("name_API_")))))
+```
