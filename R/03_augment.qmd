@@ -4,7 +4,9 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## Loading libraries and files
+
+### Loading libraries
 
 ```{r}
 library(tidyverse)
@@ -12,16 +14,24 @@ library(dplyr)
 library(readr)
 ```
 
-Application, name_API, Side_Effects skal tælles og have en count kolonne for hver.
+### Loading clean file
 
-use clean_data3
+```{r}
+dir_load <- here("/data")
+file_path <- file.path(dir_load, "02_dat_clean.tsv")
+
+# Loading the clean data tsv file
+write.tsv(clean_data, file_path, row.names = FALSE)
+```
 
 ```{r}
 # defining the augment (this shoudl be done when loading )
 clean_data <- clean_data
 ```
 
-#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'. 
+## Augmentation of data
+
+#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
 
 It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables as well, for each observation.
 
@@ -39,4 +49,12 @@ aug_clean_data <- clean_data |>
           
 ```
 
-#### 
+## Saving augmented cleaned data
+
+```{r}
+dir_save <- here("/data")
+save_path <- file.path(dir_save, "03_dat_aug.tsv")
+
+# Save the augmented data as a TSV file
+write_tsv(aug_clean_data, save_path)
+```
