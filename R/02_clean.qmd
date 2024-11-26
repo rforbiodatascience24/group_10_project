@@ -272,7 +272,7 @@ clean_data |>
 
 ```
 
-To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 333 observations left which were NAs, these different administration types were changed to "Other".
+To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 336 observations left which were NAs, these different administration types were changed to "Other".
 
 ```{r}
 
