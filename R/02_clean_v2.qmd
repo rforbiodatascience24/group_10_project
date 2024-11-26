@@ -247,10 +247,10 @@ clean_data <- clean_data |>
 ```
 
 ```{r}
-#removing columns we don't need anymore
+# Removing columns we do not need anymore
 
 clean_data1 <- clean_data %>%
-  select(-Composition, -`Side_effects`, -starts_with("API_"))
+  select(-Composition, -`Side_effects`, -starts_with("API_"), -Application_10)
 ```
 
 \#############################################################
@@ -323,7 +323,4 @@ Then for splitting name of the specific drug and amount of drug, we see that the
 #     names_from = `Drug Column`,         
 #     values_from = c("Drug Name", "Drug dose")
 #   )
-
 ```
-
-.
