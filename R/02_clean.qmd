@@ -127,6 +127,9 @@ clean_data <- clean_data |>
   # Unnest the list column into multiple columns
   unnest_wider(Application, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-Uses)
+
 
 
 ```
@@ -166,8 +169,8 @@ Furthermore, the variable "Medicine Name" also contains multiple values in each 
 
 ```{r}
 clean_data |>
-  select('Medicine Name') |>
-  slice()
+  select('Medicine Name') #|>
+  #slice()
 
 ```
 
@@ -182,6 +185,8 @@ clean_data <- clean_data |>
 
   unnest_wider(API, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-Composition)
 
 ```
 
@@ -189,47 +194,119 @@ clean_data <- clean_data |>
 clean_data <- clean_data |> 
   mutate(
     # Extract drug name (everything before the first number)
-    across(starts_with("API"), ~ str_extract(.x, "^[a-zA-Z\\s]+"), .names = "name_{.col}"),
-    across(starts_with("API"), ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")), .names = "amount_{.col}"),
+    across(starts_with("API"),
+           ~ str_extract(.x, "^[a-zA-Z\\s]+"),
+           .names = "name_{.col}"),
+    
+    across(starts_with("API"),
+           ~ as.numeric(str_extract(.x, "\\d+\\.?\\d*")),
+           .names = "amount_{.col}"),
+    
     across(starts_with("API"), 
+           
            ~ str_sub(.x, 
                      start = str_locate(.x, "\\(")[, 1] + str_length(str_extract(.x, "\\d+\\.?\\d*")) + 1, 
                      end = str_locate(.x, "\\)")[, 1] - 1), 
            .names = "unit_{.col}"))
 
+clean_data <- clean_data |>
+  select(-starts_with("API_"))
 
 
 
 ```
 
-## Sofie + Malou
+In the Medicine Name variable information about the type of administration for the specific drug is given. This information should be separated into its own variable called Administration_type. There is no apparent pattern in the Medicine Name variable in terms of application type and how to distinguish this from the other information in Medicine Name. Therefore, a more manual approach is taken where the raw data is analyzed for different administration types, where the name, of each type found, is added to a vector.\
+A search is done for the words in the vector and if a word appears in Medicine Name it is added to the new variable Administration_type. To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 333 observations left which were NAs, these different administration types were changed to "Other".
 
 ```{r}
 
-routes <- c("Injection", "Tablet", "Syrup", "Cream", "Oral Suspension", "Capsule", "Eye Drop", "Liquid", "Suspension", "Inhaler", "Gel", "Drops", "Lozenges", "Eye/Ear Drops", "Expectorant", "Nasal Spray", "Respules", "Eye Ointment", "Soap", "Penfill", "Scalp Solution", "Respirator Solution", "Cartridge", "Eye Drops", "Ophthalmic Solution", "Nail Lacquer", "Infusion", "Drop", "Readymix", "Oral Solution")
+# List of administration types based on the first 333 rows in "Medicin Name" column.
+types <- c("Injection", 
+                 "Tablet", 
+                 "Syrup", 
+                 "Cream", 
+                 "Oral Suspension", 
+                 "Capsule", 
+                 "Eye Drop", 
+                 "Liquid", 
+                 "Suspension", 
+                 "Inhaler", 
+                 "Gel", 
+                 "Drops", 
+                 "Lozenges", 
+                 "Eye/Ear Drops", 
+                 "Expectorant", 
+                 "Nasal Spray", 
+                 "Respules", 
+                 "Eye Ointment", 
+                 "Soap", 
+                 "Penfill", 
+                 "Scalp Solution", 
+                 "Respirator Solution", 
+                 "Cartridge", 
+                 "Eye Drops",
+                 "Ophthalmic Solution", 
+                 "Nail Lacquer", 
+                 "Infusion", 
+                 "Drop", 
+                 "Readymix", 
+                 "Oral Solution")
 
-updated_routes <- c("Solution", "Lotion", "solution", "Vaccine", "gel", "Inhalation", "Shampoo", "tablet", "Ointment", "Transhaler", "Powder", "Spray")
 
-variable_name <- 'Medicine Name'
+# Creating Administration_type variable. If a type from the type list matches with Medicine Name, matching type is inserted under Administration_type.
+clean_data <- clean_data |>
+  mutate(Administration_type = str_extract(`Medicine Name`,
+                                           paste(types, 
+                                                 collapse = "|")
+                                           ) |>
+  # N/As are replaced with "Other".
+  replace_na("Other"))
 
-data_test <- data %>%
-  mutate(
-    Administration_route = str_extract(
-      `Medicine Name`, 
-      paste(c(routes, updated_routes), collapse = "|")
-    ) |>
-      replace_na("Other")
-  )
 
-data_test |>
-  select(Administration_route, `Medicine Name`) |>
-  filter(str_detect(Administration_route, "Other")) |>
+# Filtering the observations containing "Other" in administration type.
+clean_data |>
+  select(`Medicine Name`, Administration_type) |>
+  filter(str_detect(Administration_type, "Other")) |>
   print()
 
 
 
-# 333 in the data
+# Adding more administration types from those looking at the data with the string "Other".
+updated_types <- c("Solution", 
+                   "Lotion", 
+                   "solution", 
+                   "Vaccine", 
+                   "gel", 
+                   "Inhalation", 
+                   "Shampoo", 
+                   "tablet", 
+                   "Ointment", 
+                   "Transhaler", 
+                   "Powder", 
+                   "Spray")
 
+
+
+### Synes vi skal dele chuncken op her ### 
+
+
+# Second iteration of creating Administration_type as more types have been added to the list.
+clean_data <- clean_data |>
+  mutate(Administration_type = str_extract(`Medicine Name`,
+                                           paste(c(types,
+                                                   updated_types), 
+                                           collapse = "|")
+                                           ) |>
+  # N/As are replaced with "Other".
+  replace_na("Other"))
+
+
+# Filtering the observations containing "Other" in administration type to see how many have not been types have not been decided.
+clean_data |>
+  select(`Medicine Name`, Administration_type) |>
+  filter(str_detect(Administration_type, "Other")) |>
+  print()
 ```
 
 ### Splitting side effects into columns for each, by captial letter
@@ -269,18 +346,21 @@ clean_data <- clean_data |>
   # Unnest the list column into multiple columns
   unnest_wider(Side_Effects, names_sep = "_")
 
+clean_data <- clean_data |>
+  select(-`Side_effects`)
 ```
 
 To ensure that the side effects can be factorized and compared are trailing spaces removed
 
 ```{r}
 clean_data <- clean_data |>
-  mutate(across(starts_with("Side_Effects_"), ~ str_trim(.x, side = "right")))
+  mutate(across(starts_with("Side_Effects_"),
+                ~ str_trim(.x, side = "right")))
 ```
 
 ```{r}
 # Removing columns we do not need anymore
 
 clean_data <- clean_data |>
-  select(-Composition,-Uses, -`Side_effects`, -starts_with("API_"), -`Image URL`)
+  select(-`Image URL`)
 ```
