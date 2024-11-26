@@ -21,7 +21,7 @@ use clean_data3
 clean_data <- clean_data
 ```
 
-#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'. 
+#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
 
 It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables as well, for each observation.
 
@@ -39,4 +39,8 @@ aug_clean_data <- clean_data |>
           
 ```
 
-#### 
+To ensure the new variables are included in the augmented cleaned data set, the data is viewed. This is done using the view() function.
+
+```{r}
+view(aug_clean_data)
+```
