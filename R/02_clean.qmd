@@ -107,7 +107,37 @@ The data is now ready to be split into applications.
 ## Amalie
 
 ```{r}
+clean_data <- clean_data |>
+  
+  # Split the string on capital letters, skipping the first character
+  mutate(Application = map(Uses, ~ {
+    
+    # starts by removing the leading whitespaces (if any).
+    trimmed_string <- str_trim(.x)
+    
+    # defines the first character to save the first apllication for a correct split
+    
+    first_char <- str_sub(trimmed_string, 1, 1)
+    
+    # Define the rest of the string (from the second character onwards)
+    rest <- str_sub(trimmed_string, 2,str_length(trimmed_string))
+  
+    
+    # Split the rest on capital letters
+    split_rest <- str_split(rest, pattern = "(?=[A-Z])") [[1]]
+    
+    # Add the first character back to the first element and keep the rest
+    c(str_c(first_char, split_rest[1]), split_rest[-1])
+  }))  |>
+  
+  # Unnest the list column into multiple columns
+  unnest_wider(Application, names_sep = "_")
 
+
+
+```
+
+```{r}
 
 clean_data <- clean_data |>
   separate(
