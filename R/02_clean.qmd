@@ -22,7 +22,7 @@ library("here")
 Loading the tsv file from the data folder.
 
 ```{r}
-data <- read_tsv(here("data/01_data_load.tsv"))
+data <- read_tsv(here("data/01_dat_load.tsv"))
 ```
 
 ## Inspect Data
