@@ -402,3 +402,59 @@ clean_data <- clean_data |>
     
   )
 ```
+
+## Changing the data to long format
+
+```{r}
+# Cancer_dataset <- clean_data |>
+#   filter()
+```
+
+```{r}
+pivot_longer_1 <- clean_data[1, ] |>
+  pivot_longer(
+    cols = starts_with("Application_"),
+    names_to = "Application_number",
+    values_to = "Application_type"
+  ) 
+
+```
+
+```{r}
+pivot_longer_2 <- pivot_longer_1 |>
+  pivot_longer(
+    cols = starts_with("name_API_"),
+    names_to = "API_name_number",
+    values_to = "API_name"
+  )
+
+```
+
+```{r}
+pivot_longer_3 <- pivot_longer_2 |>
+  pivot_longer(
+    cols = starts_with("amount_API_"),
+    names_to = "API_amount_number",
+    values_to = "API_amount"
+  )
+```
+
+```{r}
+pivot_longer_4 <- pivot_longer_3 |>
+  pivot_longer(
+    cols = starts_with("unit_API_"),
+    names_to = "API_unit_number",
+    values_to = "API_unit"
+  )
+
+```
+
+```{r}
+clean_data_long <- pivot_longer_4 |>
+  pivot_longer(
+    cols = starts_with("Side_Effects_"),
+    names_to = "Side_Effect_number",
+    values_to = "Side_Effect_type"
+  )
+
+```
