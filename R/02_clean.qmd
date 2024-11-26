@@ -225,15 +225,22 @@ clean_data <- clean_data |>
 
 ### Splitting side effects into columns for each, by captial letter
 
-All the side effects from the various medicines are collected in a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters
+All the side effects from the various medicines are collected in a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters and words that only consist of capital letters are changed to lower case, so "Abnormal ACG" becomes "Abnormal acg"
 
-## Johanna
+```{r}
+clean_data <- clean_data |> 
+  
+  #Every word consisting of only capital letters are converted to lower case e.g. "Anormal ACG" becomes "Abnormal acg"
+  mutate(Side_effects = str_replace_all(Side_effects, 
+                                "\\b[A-Z]+\\b", 
+                                ~str_to_lower(.)))
+```
 
 ```{r}
 clean_data <- clean_data |>
   
   # Split the string on capital letters, skipping the first character
-  mutate(SE = map(Side_effects, ~ {
+  mutate(Side_Effects = map(Side_effects, ~ {
     #defining first character and saving for adding later
     first_char <- substr(.x, 1, 1)
     
@@ -248,14 +255,21 @@ clean_data <- clean_data |>
   }))  |>
   
   # Unnest the list column into multiple columns
-  unnest_wider(SE, names_sep = "_")
+  unnest_wider(Side_Effects, names_sep = "_")
 
+```
+
+To ensure that the side effects can be factorized and compared are trailing spaces removed
+
+```{r}
+clean_data <- clean_data |>
+  mutate(across(starts_with("Side_Effects_"), ~ str_trim(.x, side = "right")))
 ```
 
 ```{r}
 # Removing columns we do not need anymore
 
-clean_data <- clean_data %>%
+clean_data <- clean_data |>
   select(-Composition, -`Side_effects`, -starts_with("API_"), -Application_10, -`Image URL`)
 ```
 
