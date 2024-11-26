@@ -27,31 +27,27 @@ data <- read_tsv(here("data/01_dat_load.tsv"))
 
 ## Inspect Data
 
-Inspecting the data to get the number of observations and variables in the raw data.
+The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
 
 ```{r}
-# Print the dimensions of the dataframe
-data |>
-  dim_desc()
+View(data)
 ```
-
-The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
 
 It can be observed, from viewing the data, that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy.
 
-To make sure the data is tidy these values are separated into different columns/variables.
+To make sure the data is tidy these values are separated into different variables.
 
 ## Data Wrangling
 
-The variable "Uses" contains the many different ways the drug is being used by the specific patient.
+The variable "Uses" contains the many different diseases which the drug is being used for.
 
 ```{r}
 data |>
   select(Uses) |>
-  head()
+  View()
 ```
 
-It can be observed that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage.
+It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
 
 ```{r}
 #Removing "Treatment of", "Prevention of", "Treatment and prevention of" in each row and anything in parenthensis to isolate types of usage.
