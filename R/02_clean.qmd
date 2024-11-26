@@ -30,8 +30,6 @@ data <- read_tsv(here("data/01_dat_load.tsv"))
 Inspecting the data to get the number of observations and variables in the raw data.
 
 ```{r}
-# View the first few observations and variables
-
 # Print the dimensions of the dataframe
 data |>
   dim_desc()
