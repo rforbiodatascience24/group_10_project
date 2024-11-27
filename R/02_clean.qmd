@@ -389,6 +389,8 @@ clean_data <- clean_data |>
   select(-`Image URL`)
 ```
 
+### Changing names of variables to same style
+
 ```{r}
 clean_data <- clean_data |> 
   
