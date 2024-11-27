@@ -101,7 +101,7 @@ pivot_longer_4 <- pivot_longer_3 |>
 ```
 
 ```{r}
-clean_data_long <- pivot_longer_4 |>
+aug_clean_data_long <- pivot_longer_4 |>
   pivot_longer(
     cols = starts_with("Side_Effects_"),
     names_to = "Side_Effect_number",
@@ -115,7 +115,7 @@ clean_data_long <- pivot_longer_4 |>
 
 ```{r}
 
-unique_long_clean_data <- clean_data_long |>
+unique_aug_clean_data_long <- aug_clean_data_long |>
   distinct(across(-c(Application_number, API_name_number, API_amount_number, API_unit_number, Side_Effect_number)), .keep_all = TRUE)
 
 
@@ -129,10 +129,9 @@ Saving the cleaned augmented data as a .tsv in the data folder
 # Defining the directory which the file should be saved to} 
 dir_save <- here("data")
 # Defining the save path with correct name and directory
-save_path <- file.path(dir_save, "02_dat_clean.tsv")
+save_path <- file.path(dir_save, "03_dat_aug.tsv")
 
 # Save the augmented data as a TSV file
-write_tsv(unique_long_clean_data, save_path)
-```
+write_tsv(unique_aug_clean_data_long, save_path)
 
-## 
+```
