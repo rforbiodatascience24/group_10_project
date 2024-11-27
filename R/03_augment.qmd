@@ -29,6 +29,16 @@ clean_data <- read_tsv(here('data/02_dat_clean.tsv'))
 
 ```
 
+### Subsetting data into data related to cancer 
+
+```{r}
+# cancer_data <- clean_data |>
+#   filter(str_detect(starts_with("Application"), regex("cancer", ignore_case = TRUE)))
+
+cancer_data <- clean_data |>
+  filter(if_any(starts_with("Application"), ~ str_detect(., regex("cancer", ignore_case = TRUE))))
+```
+
 ## Augmentation of data
 
 #### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
@@ -37,74 +47,97 @@ It is of interest how many side effects each person has experienced for the diff
 
 ```{r}
 
-aug_clean_data <- clean_data |>
+aug_clean_data <- cancer_data |>
   
   # Counting for each row, as nr. of side effects might differ
   rowwise() |>
   
   # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side effects listed for each row 
-  mutate(Side_Effects_count = sum(!is.na(c_across(contains("Side_Effects_")))), 
-         API_count = sum(!is.na(c_across(contains("name_API_")))),
-         Application_count = sum(!is.na(c_across(contains("Application_")))))
+  mutate(Count_Side_Effects = sum(!is.na(c_across(contains("Side_Effects_")))), 
+         Count_API = sum(!is.na(c_across(contains("name_API_")))),
+         Count_Application = sum(!is.na(c_across(contains("Application_")))))
 
 
 ```
 
 ```{r}
-aug_clean_data <- clean_data %>%
-  
-  group_by(Medicine_Name) %>%
-  
-  mutate(case_id = row_number()) %>%
-  
-  ungroup() %>%
-  
-  group_by(Medicine_Name, case_id) %>%
-  
-  mutate(Side_Effect_count= sum (!is.na(distinct(.,Side_Effect_type ))))
-    
-    
-    
-    
- #   !is.na(c_across(contains("Side_Effects_"))))
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- #  
- #  
- # # mutate(
- #  #  Side_Effects_count = sum(str_detect(Side_Effect_type,)),
- #    API_count = sum(grepl("name_API_", variable)),
- #    Application_count = sum(grepl("Application_", variable))
- #  ) %>%
- #  
- #  ungroup()
 
   
 ```
 
-## Saving augmented cleaned data
+## Transforming the data into long format
 
-Saving the cleaned augmented data as a .tsv in the data folder.
+```{r}
+pivot_longer_1 <- aug_clean_data |>
+  pivot_longer(
+    cols = starts_with("Application_"),
+    names_to = "Application_number",
+    values_to = "Application_type"
+  ) 
+
+```
+
+```{r}
+pivot_longer_2 <- pivot_longer_1 |>
+  pivot_longer(
+    cols = starts_with("name_API_"),
+    names_to = "API_name_number",
+    values_to = "API_name"
+  )
+```
+
+```{r}
+pivot_longer_3 <- pivot_longer_2 |>
+  pivot_longer(
+    cols = starts_with("amount_API_"),
+    names_to = "API_amount_number",
+    values_to = "API_amount"
+  )
+```
+
+```{r}
+pivot_longer_4 <- pivot_longer_3 |>
+  pivot_longer(
+    cols = starts_with("unit_API_"),
+    names_to = "API_unit_number",
+    values_to = "API_unit"
+  )
+
+```
+
+```{r}
+clean_data_long <- pivot_longer_4 |>
+  pivot_longer(
+    cols = starts_with("Side_Effects_"),
+    names_to = "Side_Effect_number",
+    values_to = "Side_Effect_type"
+  )
+
+
+```
+
+### Extracting only unique rows in data 
 
 ```{r}
 
-# Defining the directory which the file should be saved to
-dir_save <- here("/data")
+unique_long_clean_data <- clean_data_long |>
+  distinct(across(-c(Application_number, API_name_number, API_amount_number, API_unit_number, Side_Effect_number)), .keep_all = TRUE)
+
+
+```
+
+## Saving augmented cleaned data .tsv
+
+Saving the cleaned augmented data as a .tsv in the data folder
+
+```{r}
+# Defining the directory which the file should be saved to} 
+dir_save <- here("data")
 # Defining the save path with correct name and directory
-save_path <- file.path(dir_save, "03_dat_aug.tsv")
+save_path <- file.path(dir_save, "02_dat_clean.tsv")
 
-# Save the augmented data as a tsv file in data folder
-write_tsv(aug_clean_data, save_path)
-
+# Save the augmented data as a TSV file
+write_tsv(unique_long_clean_data, save_path)
 ```
+
+## 
