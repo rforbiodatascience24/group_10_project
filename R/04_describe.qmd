@@ -6,18 +6,29 @@ editor: visual
 
 ## Loading libraries and data
 
-```{r}
-dir_load <- here("/data")
-# Specify the file path with the new name
-file_path <- file.path(dir_load, "03_dat_aug.tsv")
+### Loading libraries
 
-# Save the dataframe as a CSV file
-write.tsv(aug_clean_data, file_path, row.names = FALSE)
+Loading the relevant libraries.
+
+```{r}
+rm(list=ls())
+library("tidyverse")
+library("dplyr")
+library("readr")
+```
+
+### Loading long format augmented clean data
+
+```{r}
+#| message: false
+
+# Loading the clean data tsv file 
+aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
 
 ## Descriptive statistics of the data
 
-The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds. \
+The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds.\
 The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer. This will streamline the project and make it easier to make concrete conclusions.
 
 The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
@@ -28,12 +39,42 @@ The data is introduced after both cleaning and augmentation have been performed.
 
 #### Dimensionality
 
-Firstly, the dimensionality of the data set is investigated to get an idea of its size.
+Firstly, the dimensionality of the data set is investigated to get an idea of its size.\
+The number of variables is shown and a view of the data is given.
 
 ```{r}
 # Checking for dimensionality of dataset 
-data |> 
+aug_clean_data |> 
   dim_desc()
+
+# Finding number of variables
+aug_clean_data |> 
+  length()
+
+# Showing the data 
+aug_clean_data |> 
+  View()
+
+```
+
+### Investigating number of unique cancer types
+
+It is interesting to look at how many different cancer types there is in the data set and what types it is.
+
+```{r}
+# Find unique types of cancer from the Application_type variable
+unique_cancer_rows <- aug_clean_data |>
+  select(Application_type) |>
+  filter(str_detect(Application_type, regex("cancer", ignore_case = TRUE))) |>
+  # Getting the unique types
+  distinct() 
+
+# Number of different cancer types
+unique_cancer_rows |>
+  dim_desc()
+
+# Overview of the cancer types
+View(unique_cancer_rows)
 
 ```
 
@@ -55,7 +96,7 @@ print(NA_observations)
 ### 
 clean_data |> 
   select(variable) |>
-  summarise(x_mu = mean(x), x_max = max(x), x_min = min(x))
+  summarise(x_mu = mean(x), x_max = max(x), x_min = min(x), )
 
 
 
