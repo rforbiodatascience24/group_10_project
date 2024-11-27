@@ -29,7 +29,7 @@ clean_data <- read_tsv(here('data/02_dat_clean.tsv'))
 
 ```
 
-### Subsetting data into data related to cancer 
+### Subsetting data into data related to cancer
 
 ```{r}
 # cancer_data <- clean_data |>
@@ -111,7 +111,7 @@ clean_data_long <- pivot_longer_4 |>
 
 ```
 
-### Extracting only unique rows in data 
+### Extracting only unique rows in data
 
 ```{r}
 
