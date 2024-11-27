@@ -60,11 +60,6 @@ aug_clean_data <- cancer_data |>
 
 ```
 
-```{r}
-
-  
-```
-
 ## Transforming the data into long format
 
 ```{r}
