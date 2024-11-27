@@ -1,26 +1,43 @@
 ---
-title: "presentation"
-format: html
+title: "Project 10 presentation"
+subtitle: "Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643) and Malou Bech Jakobsen (s203515)"
+format:
+  revealjs: 
+    theme: solarized
 editor: visual
 ---
 
-## Quarto
+## Slide 1
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
 
-## Running Code
+## Slide 2
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Slide 3
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
 1 + 1
 ```
 
-You can add options to executable code like this
+## Slide 4
 
-```{r}
-#| echo: false
-2 * 2
-```
+## Slide 5
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Slide 6
+
+## Slide 7
+
+## Slide 8
+
+## Slide 9
+
+## Slide 10
+
+## 
