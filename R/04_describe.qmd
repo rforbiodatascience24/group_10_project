@@ -78,18 +78,6 @@ View(unique_cancer_rows)
 
 ```
 
-#### Variable and class distirbution
-
--   hvor mange NA optræder for forskellige variable
-
-```{r}
-NA_observations <- clean_data |> 
-  select() |>
-  filter(is.na())
-
-print(NA_observations)
-```
-
 -   Beregne means hvor general gentagelse af drugs
 
 ```{r}
