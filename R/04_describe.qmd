@@ -28,7 +28,7 @@ aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 ## Descriptive statistics of the data
 
-The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, pain relief, and common colds.\
+The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.\
 The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer. This will streamline the project and make it easier to make concrete conclusions.
 
 The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
@@ -37,10 +37,12 @@ The purpose of the data is to assist healthcare professionals and patients in ma
 
 The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
 
+The active pharmaceutical ingredient (API) describes the main ingredients in a medicine that causes the desired effect.
+
 #### Dimensionality
 
 Firstly, the dimensionality of the data set is investigated to get an idea of its size.\
-The number of variables is shown and a view of the data is given.
+The number of variables is shown and a view of the data given.
 
 ```{r}
 # Checking for dimensionality of dataset 
@@ -59,7 +61,7 @@ aug_clean_data |>
 
 ### Investigating number of unique cancer types
 
-It is interesting to look at how many different cancer types there is in the data set and what types it is.
+It is interesting to look at how many different cancer types are present is in the data set and which types it is.
 
 ```{r}
 # Find unique types of cancer from the Application_type variable
@@ -78,30 +80,62 @@ View(unique_cancer_rows)
 
 ```
 
--   Beregne means hvor general gentagelse af drugs
+### Mean, maximum, and minimum number of side effects
+
+The Count_Side_Effects variable is investigated in order to find the average number of side effects for all the cancer treatment drugs. Furthermore, the maximum and minimum number of side effects is also found.
 
 ```{r}
-### 
-clean_data |> 
-  select(variable) |>
-  summarise(x_mu = mean(x), x_max = max(x), x_min = min(x), )
-
-
+# Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
+aug_clean_data |> 
+  summarise(Mean_Side_Effect_count = mean(Count_Side_Effects), Max_Side_Effect_count = max(Count_Side_Effects), Min_Side_Effect_count = min(Count_Side_Effects))
 
 ```
+
+It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13.
+
+### Mean, maximum, and minimum number of active ingredients
+
+Now, the API_Count variable is investigated to look into the maximum, minimum, and average number of active pharmaceutical ingredients.
+
+```{r}
+# Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
+aug_clean_data |> 
+  summarise(Mean_API_count = mean(Count_API), Max_API_count = max(Count_API), Min_API_count = min(Count_API))
+
+```
+
+The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient.
+
+### Mean, maximum, and minimum number of applications
+
+Lastly, it is investigated what the minimum, maximum, and average number of applications is to see how many different uses the cancer treatment drugs have and how they are distributed.
+
+```{r}
+# Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
+aug_clean_data |> 
+  summarise(Mean_Application_count = mean(Count_Application), Max_Application_count = max(Count_Application), Min_Application_count = min(Count_Application))
+
+```
+
+There are up to six different applications of the different cancer drugs and minmum one application. The average number of applications for the drugs is around 3.
+
+### Investigating the different drugs
+
+Underneath it is investigated how many unique drugs there is in the cancer data set. To get an idea of how many times the different drugs appear a histogram is made.
 
 -   plotte hvor mange gange hver drug går igen (plot)
 
 ```{r}
 
+# Find unique types of cancer from the Application_type variable
+unique_drugs <- aug_clean_data |>
+  select(Medicine_Name) |>
+  # Getting the unique types
+  distinct() 
 
-
-```
-
--   gennemsnit sideffect for hver drug
-
-```{r}
-
+# Number of different cancer types
+unique_drugs |>
+  dim_desc()
 
 ```
 
