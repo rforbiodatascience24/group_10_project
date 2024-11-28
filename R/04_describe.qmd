@@ -31,13 +31,23 @@ aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
 The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.\
 The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer. This will streamline the project and make it easier to make concrete conclusions.
 
-The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
-
 The purpose of the data is to assist healthcare professionals and patients in making decisions when choosing/using a medication. Therefore, the description and analysis of the data focuses on this perspective and introduces plots that can further aid in this aim.
 
 The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
 
-The active pharmaceutical ingredient (API) describes the main ingredients in a medicine that causes the desired effect.
+The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
+
+Underneath an elaboraqtion of the specific can be found:
+
+-   The active pharmaceutical ingredient (API) describes the main ingredients in a medicine that causes the desired effect. In the cancer data set information can be found about the name, amount, and units of API.
+
+-   The variable Medicine_Name is the trade name of the medication.
+
+-   The variable Manufacturer is the pharmaceutical company that produces the medication.
+
+-   The variable Administration_type explains how the specific medication is taken by the patient.
+
+-   The side effect variable is split into number and type, and tells which adverse effects are associated with the medication.
 
 ### Dimensionality of the data
 
@@ -141,7 +151,7 @@ There are 53 different applications of the drugs, which means that 53 different 
 
 ### Investigating the different drugs
 
-Underneath it is investigated how many unique drugs there is in the cancer data set. To get an idea of how many times the different drugs appear a histogram is made.
+Underneath it is investigated how many unique drugs there is in the cancer data set. In order to get an idea of how many times the different drugs appear a histogram is made.
 
 -   plotte hvor mange gange hver drug går igen (plot)
 
@@ -171,6 +181,7 @@ drug_name_data <- aug_clean_data |>
   summarise(Proportion = n() / nrow(aug_clean_data)) |>
   ungroup()
 
+# A histogram of the 
 ggplot(data = drug_name_data, 
        mapping = aes(x = Medicine_Name, y = Proportion)) +
   geom_bar(stat = "identity") + 
@@ -197,7 +208,7 @@ aug_clean_data |>
 
 These are the 10 most common drugs for cancer treatment in the data set. Further analysis of these drugs can be done to see if there can be found a reason why these drugs are the most common. Fx if they have good reviews, fewer side effects, or maybe an easy to use administration type. (nåede jeg ikke lige at komme videre med)
 
-### Investigating which drugs have most excellent reviews and which have most poor reviews
+### Investigating which drugs have most excellent reviews and most poor reviews
 
 ```{r}
 
@@ -209,7 +220,7 @@ Best_reviewed_drugs <- aug_clean_data |>
 Best_reviewed_drugs
 ```
 
-It can be observed that multiple drugs have 100% excellent review, meaning these drugs have only gotten good reviews.
+It can be observed that multiple drugs have 100% excellent reviews, meaning these drugs have only gotten good reviews. Overall, there are 11 drugs with 85% or more excellent reviews.
 
 ```{r}
 Worst_reviewed_drugs <- aug_clean_data |>
@@ -220,7 +231,7 @@ Worst_reviewed_drugs <- aug_clean_data |>
 Worst_reviewed_drugs
 ```
 
-The same is true for poor reviews, that some drugs have only poor reviews.
+The same is true for poor reviews, that some drugs have only poor reviews. There are 7 drugs with 85% or more poor reviews.
 
 Based on these findings the reason behind the excellent and poor reviews for these drugs can be found. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews.
 
