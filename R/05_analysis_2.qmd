@@ -10,6 +10,7 @@ editor: visual
 rm(list=ls())
 library("tidyverse")
 library("readr")
+library("ggridges")
 ```
 
 ```{r}
@@ -19,9 +20,84 @@ analysis_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 ```{r}
 analysis_data |>
-  select(Administration_type, Count_API, Count_Side_Effects) |>
-  ggplot(aes(x = as.factor(Application_type), 
-             y = Count_Side_Effects, 
-             fill = as.factor(Administration_type))) +  
-  geom_point(size = 3) 
+  select(Administration_type, Review_level, `Review_%`, Count_Side_Effects, Count_Application) |>
+  filter(Review_level == "Excellent_Review_%") |>
+  ggplot(aes(
+    x = Count_Side_Effects, 
+    y = `Review_%`,  # Use column name directly without quotes
+    fill = as.factor(Administration_type)
+  )) +  
+  geom_point(shape = 21, size = 4) +
+  theme_minimal()+
+  labs(
+    title = "Number of Side Effects vs. Excellent Review %",
+    x = "Number of Side Effects",
+    y = "Excellent Review Percentage",
+    fill = "Administration Type"
+  )
+```
+
+```{r}
+analysis_data |>
+  select(Administration_type, API_amount, Count_Side_Effects, Count_Application, API_unit) |>
+  filter(Administration_type == "Injection" & API_unit == "IU") |>
+  nrow()
+```
+
+```{r}
+
+analysis_data |>
+  select(Administration_type, API_amount, Count_Side_Effects, Count_Application, API_unit) |>
+  filter(Administration_type == "Injection" & API_unit == "IU") |>
+  ggplot(aes(
+    x = API_amount, 
+    y = Count_Side_Effects
+  )) +
+  geom_point(alpha = 0.7, size = 3) +  
+  labs(
+    title = "API Amount vs. Side Effects",
+    x = "API Amount",
+    y = "Number of Side Effects",
+    color = "Count of Applications"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+analysis_data |>
+  select(Administration_type, Count_Side_Effects) |>
+  ggplot(aes(
+    x = Count_Side_Effects, 
+    y = as.factor(Administration_type),  
+    fill = as.factor(Administration_type)
+  )) +
+  geom_density_ridges(alpha = 0.5) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  theme(legend.position = 'bottom') +
+  labs(
+    title = "Distribution of Side Effects by Administration Type",
+    x = "Number of Side Effects",
+    y = "Administration Type",
+    fill = "Administration Type"
+  )
+```
+
+```{r}
+analysis_data |>
+  select(Administration_type, Review_level, `Review_%`, Count_Side_Effects, Count_Application) |>
+  filter(Review_level == "Excellent_Review_%" & Administration_type == "Injection") |>
+  ggplot(aes(
+    x = Count_Side_Effects, 
+    y = `Review_%`,  # Use column name directly without quotes
+    alpha = 0.5
+  )) +  
+  geom_point(shape = 21, size = 4) +
+  theme_minimal()+
+  labs(
+    title = "Number of Side Effects vs. Excellent Review %",
+    x = "Number of Side Effects",
+    y = "Excellent Review Percentage",
+    fill = "Administration Type"
+  )
 ```

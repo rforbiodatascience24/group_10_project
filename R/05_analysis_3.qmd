@@ -4,6 +4,81 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## Loading library
 
-Further analysis of these drugs can be done to see if there can be found a reason why these drugs are the most common. Fx if they have good reviews, fewer side effects, or maybe an easy to use administration type. (nåede jeg ikke lige at komme videre med)
+```{r}
+rm(list=ls()) 
+library("tidyverse") 
+library("dplyr") 
+library("readr")
+library('ggplot2')
+```
+
+## Loading cancer data file
+
+```{r}
+# Loading the cleaned and augmented file:  
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
+```
+
+# Analysis of the 10 most prevalent medicines
+
+A subset of the cancer data is made to investigate only the 10 most prevalent medicines, found from the descriptive statistics. These 10 medicines are chosen as these are the only ones exceeding 2% prevalence in the data set.
+
+The analysis aims to investigate potential reasons to why these exact medicines appears most common in relation to cancer treatment.
+
+### Subset of 10 most prevalent medicines
+
+T
+
+```{r}
+
+# Making list for subsetting cancer data based on drug prevalence
+Prevalent_10_medicine_names <- cancer_data |>
+  # Counting the medications and sort them in descending order
+  group_by(ID) |>
+  
+  summarise(Proportion = n() / nrow(cancer_data)) |>
+  
+  ungroup() |>
+  
+  arrange(desc(Proportion)) |>
+  
+  slice_head(n = 10)
+
+
+# Making subset of cancer data for 10 most prevalent drugs
+Most_prevalent_medicines <- cancer_data |>
+  
+  # Return all rows from list of top 10 which matches in cancer data by "medicine name"
+  semi_join(Prevalent_10_medicine_names, by = "ID")
+
+```
+
+## Relation to side effects
+
+```{r}
+
+Most_prevalent_medicines |>
+  group_by(Medicine_Name) |> 
+  distinct(Count_Side_Effects, .keep_all = TRUE) |>
+  ggplot(aes(x = Medicine_Name, y = Count_Side_Effects, fill=Administration_type)) + 
+  geom_bar(stat= 'identity') 
+
+
+# Make pretty 
+
+```
+
+## Relation to reviews
+
+```{r}
+
+```
+
+## Relation to administration type
+
+```{r}
+
+```
+
