@@ -105,8 +105,6 @@ clean_data <- clean_data |>
 
 The data is now ready to be split into applications.
 
-## Amalie
-
 ```{r}
 clean_data <- clean_data |>
   
