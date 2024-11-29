@@ -1,0 +1,27 @@
+---
+title: "05_analysis_2"
+format: html
+editor: visual
+---
+
+## 
+
+```{r}
+rm(list=ls())
+library("tidyverse")
+library("readr")
+```
+
+```{r}
+# Loading the clean data tsv file 
+analysis_data <- read_tsv(here('data/03_dat_aug.tsv'))
+```
+
+```{r}
+analysis_data |>
+  select(Administration_type, Count_API, Count_Side_Effects) |>
+  ggplot(aes(x = as.factor(Application_type), 
+             y = Count_Side_Effects, 
+             fill = as.factor(Administration_type))) +  
+  geom_point(size = 3) 
+```
