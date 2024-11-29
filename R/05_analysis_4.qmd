@@ -1,0 +1,81 @@
+---
+title: "05_analysis_4.qmd"
+format: html
+editor: visual
+---
+
+## Quarto
+
+```{r}
+# Step 1: Get the top 6 manufacturers with the most products
+top_manufacturers <- cancer_data %>%
+  group_by(Manufacturer) %>%  # Group by manufacturer
+  summarise(product_count = n()) %>%  # Count the number of products for each manufacturer
+  arrange(desc(product_count)) %>%  # Sort by the product count in descending order
+  slice_head(n = 6)  # Select the top 6 manufacturers
+
+# Step 2: Filter the original dataset to include only the top 6 manufacturers
+cancer_data_selected <- cancer_data %>%
+  filter(Manufacturer %in% top_manufacturers$Manufacturer)
+# Create the plot
+ggplot(cancer_data_selected, aes(x = Classification_Review, fill = Classification_Review)) +
+  geom_bar(stat = "count", show.legend = FALSE) + 
+  facet_wrap(~ Manufacturer) + 
+  labs(x = "Classification Review", y = "Count", title = "Counts of Classification Reviews by Manufacturer") +
+  theme_minimal() +  # Apply a minimal theme
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+```
+
+```{r}
+
+# Step 1: Get the top 6 manufacturers with the most products
+top_manufacturers <- cancer_data %>%
+  group_by(Manufacturer) %>%  # Group by manufacturer
+  summarise(product_count = n()) %>%  # Count the number of products for each manufacturer
+  arrange(desc(product_count)) %>%  # Sort by the product count in descending order
+  slice_head(n = 6)  # Select the top 6 manufacturers
+
+# Step 2: Filter the original dataset to include only the top 6 manufacturers
+cancer_data_selected <- cancer_data %>%
+  filter(Manufacturer %in% top_manufacturers$Manufacturer)
+# Create the plot
+ggplot(cancer_data_selected, aes(x = Classification_Review, fill = Classification_Review)) +
+  geom_bar(stat = "count", show.legend = FALSE) + 
+  facet_wrap(~ Manufacturer) + 
+  labs(x = "Classification Review", y = "Count", title = "Counts of Classification Reviews by Manufacturer") +
+  theme_minimal() +  # Apply a minimal theme
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+
+```
+
+```{r}
+
+
+# Step 1: Get the top 6 manufacturers with the most products
+top_API <- cancer_data %>%
+  filter(!is.na(API_name)) %>%  # Exclude rows where API_name is NA
+  group_by(API_name) %>%  # Group by API_name
+  summarise(API_count = n()) %>%  # Count the number of products for each API
+  arrange(desc(API_count)) %>%  # Sort by product count in descending order
+  slice_head(n = 6)  # Select the top 6 manufacturers
+
+# Step 2: Filter the original dataset to include only the top 6 manufacturers and exclude NAs
+cancer_data_selected <- cancer_data %>%
+  filter(API_name %in% top_API$API_name & !is.na(API_name))  # Exclude NA API names
+
+# Step 3: Reorder Classification_Review factor to ensure "Average" is in the middle
+cancer_data_selected <- cancer_data_selected %>%
+  mutate(Classification_Review = factor(Classification_Review, 
+                                       levels = c("Poor", "Average", "Excellent")))
+
+# Step 4: Create the plot
+ggplot(cancer_data_selected, aes(x = Classification_Review, fill = Classification_Review)) +
+  geom_bar(stat = "count", show.legend = FALSE) + 
+  facet_wrap(~ API_name) +  # Create a facet for each API_name
+  labs(x = "Classification Review", y = "Count", title = "Counts of Classification Reviews by Manufacturer") +
+  theme_minimal() +  # Apply a minimal theme
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+
+```
