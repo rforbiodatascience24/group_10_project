@@ -48,6 +48,12 @@ Underneath an elaboraqtion of the specific can be found:
 
 -   The side effect variable is split into number and type, and tells which adverse effects are associated with the medication.
 
+-   Review_level, classifying the review of each observation with one of three categories; poor, average, and excellent. Furthermore, Review\_%, describing the percentage of the three classes among each medicine.
+
+-   Classification_Review is a classification variable of review, showing the dominating class of review within each medicine.
+
+-   The variable ID refers to an identifier in case of medicine names appearing multiple times as unique observations.
+
 ### Dimensionality of the data
 
 Firstly, the dimensionality of the data set is investigated to get an idea of its size.\
