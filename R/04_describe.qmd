@@ -254,5 +254,6 @@ Based on these findings the reason behind the excellent and poor reviews for the
 ### Bonus
 
 -   hvor mange gange kan et bestemt drug f.eks. behandle kræft (eller anden sygdom) - her kan application bruges
+-   
 
 #### 
