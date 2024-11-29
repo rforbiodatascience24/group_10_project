@@ -21,7 +21,7 @@ ggplot(aug_clean_data,
            y = `Review_%`,
            color = Review_level)) +
   geom_point() +
-  labs(x = "Count of Side Effects", y = "Review Percentage", title = "Side Effects vs. Review Percentage by Review Level") +
+  labs(x = "Count of Side Effects", y = "Review Percentage", title = "Side Effects vs Review Percentage by the Review Level") +
   
   theme_minimal() +
   facet_wrap(~ Review_level)+
@@ -36,9 +36,53 @@ ggplot(aug_clean_data,
 
 ```
 
--   antal af gange administration type går igen (plot)
+```{r}
+
+ggplot(aug_clean_data,
+       aes(x = Administration_type,
+           y = `Review_%`,
+           color = Review_level)) +
+  geom_point() +
+  labs(x = "Count of Side Effects", y = "Review Percentage", title = "Side Effects vs Review Percentage by the Review Level") +
+  
+  theme_minimal() +
+  facet_wrap(~ Review_level)+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+
+
+```
+
+theme(panel.grid.major.x = element_blank(),
+
+panel.grid.minor.x = element_blank(),
+
+axis.text.x = element_text(angle = 45, hjust = 1)) \# Rotate x-axis labels 45
 
 ```{r}
+ggplot(aug_clean_data, aes(x = Administration_type, y = `Review_%`, color = Review_level)) +
+  geom_boxplot() +  # Create a violin plot for each Review_level
+  labs(x = "Administration Type", y = "Review Percentage", title = "Review Percentage by Administration Type and Review Level") +
+  theme_minimal() +  # Apply a minimal theme
+  facet_wrap(~ Review_level) +  # Create separate plots for each Review_level
+  theme(panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
+        panel.grid.minor.x = element_blank(),  # Remove minor vertical grid lines
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+
+numeric_data <- aug_clean_data |> 
+  select_if(is.numeric)
+
+# Optionally, scale the data (center and scale the variables)
+numeric_data_scaled <- scale(numeric_data)
+
+
+
+
+pca_result <- prcomp(numeric_data_scaled, center = TRUE, scale. = TRUE)
 
 
 

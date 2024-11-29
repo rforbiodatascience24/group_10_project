@@ -19,10 +19,10 @@ library("readr")
 
 ### Loading long format augmented clean data
 
-```{r, warning= FALSE}
+```{r, 'show_col_types= FALSE'}
 
 # Loading the clean data tsv file 
-aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
 
 ## Descriptive statistics of the data
@@ -48,6 +48,12 @@ Underneath an elaboraqtion of the specific can be found:
 
 -   The side effect variable is split into number and type, and tells which adverse effects are associated with the medication.
 
+-   Review_level, classifying the review of each observation with one of three categories; poor, average, and excellent. Furthermore, Review\_%, describing the percentage of the three classes among each medicine.
+
+-   Classification_Review is a classification variable of review, showing the dominating class of review within each medicine.
+
+-   The variable ID refers to an identifier in case of medicine names appearing multiple times as unique observations.
+
 ### Dimensionality of the data
 
 Firstly, the dimensionality of the data set is investigated to get an idea of its size.\
@@ -55,14 +61,16 @@ The number of variables is shown and a view of the data given.
 
 ```{r}
 # Checking for dimensionality of dataset 
-aug_clean_data |> 
+cancer_data |> 
   dim_desc()
 
 # Showing the data 
-aug_clean_data |> 
+cancer_data |> 
   View()
 
 ```
+
+The dimensionality of the data is 52.080 x 19, from which we get that the data include 52,080 rows, with 19 variables for each.
 
 ### Investigating number of unique cancer types
 
@@ -70,8 +78,10 @@ It is interesting to look at how many different cancer types are present is in t
 
 ```{r}
 # Find unique types of cancer from the Application_type variable
-unique_cancer_rows <- aug_clean_data |>
+unique_cancer_rows <- cancer_data |>
+  # Selecting respective column
   select(Application_type) |>
+  # Filtering selected column for rows containing 'cancer'
   filter(str_detect(Application_type, regex("cancer", ignore_case = TRUE))) |>
   # Getting the unique types
   distinct() 
@@ -86,13 +96,15 @@ unique_cancer_rows |>
 
 ```
 
+From dimensionality of the subset, containing only unique rows with 'cancer' related applications, 23 unique cancer applications of appaears in the dataset.
+
 ### Mean, maximum, and minimum number of side effects
 
-The Count_Side_Effects variable is investigated in order to find the average number of side effects for all the cancer treatment drugs. Furthermore, the maximum and minimum number of side effects is also found.
+The Count_Side_Effects variable is investigated to find the average number and median of side effects for all the cancer treatment drugs. Furthermore, the maximum and minimum number of side effects is also found.
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-aug_clean_data |> 
+cancer_data |> 
   summarise(Mean_Side_Effect_count = mean(Count_Side_Effects), 
             Median_Side_Effect_count = median(Count_Side_Effects),
             Max_Side_Effect_count = max(Count_Side_Effects), 
@@ -100,15 +112,15 @@ aug_clean_data |>
 
 ```
 
-It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13.
+It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13. The median of side effects is 10. When comparing the mean and median a slight skewing is observed, as the mean is slightly higher than the median, when also comparing with minimum and maximum values.
 
 ### Mean, maximum, and minimum number of active ingredients
 
-Now, the API_Count variable is investigated to look into the maximum, minimum, and average number of active pharmaceutical ingredients.
+Now, the API_Count variable is investigated to look into the maximum, minimum, median, and average number of active pharmaceutical ingredients.
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-aug_clean_data |> 
+cancer_data |> 
   summarise(Mean_API_count = mean(Count_API), 
             Median_API_count = median(Count_API),
             Max_API_count = max(Count_API), 
@@ -116,15 +128,15 @@ aug_clean_data |>
 
 ```
 
-The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient.
+The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient. The median and the mean are approximately the same size. When comparing this with the maximum and minimum value a left skewed distribution is indicated, as we otherwise would have observed an average at approx. 1.5 active pharmaceutical ingredients (APIs).
 
 ### Investigating the application variables
 
-Lastly, it is investigated what the minimum, maximum, and average number of applications is to see how many different uses the cancer treatment drugs have and how they are distributed.
+Lastly, the minimum, maximum, median, and average number of applications are found to see how many different uses the cancer treatment drugs have and how they are distributed.
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-aug_clean_data |> 
+cancer_data |> 
   summarise(Mean_Application_count = mean(Count_Application), 
             Median_Application = median(Count_Application),
             Max_Application_count = max(Count_Application), 
@@ -132,14 +144,13 @@ aug_clean_data |>
 
 ```
 
-There are up to six different applications of the different cancer drugs and minimum one application. The average number of applications for the drugs is around 3, which means most drugs can treat more than one type of cancer.
+There are up to six different applications of the different cancer drugs and minimum one application. The average number of applications for the drugs is around 3, which means most drugs can treat more than one type of cancer. There is a median of 2 applications pr. drug, slightly lower than the mean, however still somewhat close related. When comparing with the minimum and maximum value a clear left-skewed distribution appears, as at half of the data lies at 2 applications or less, shown from the median.
 
-\
-It is also investigated how many different applications there is and what there are.
+The number of unique applications is furthermore found to get a picture of the application span of the observations in the dataset.
 
 ```{r}
 # Finding unique drug names from the Medicine_Name variable
-unique_application <- aug_clean_data |>
+unique_application <- cancer_data |>
   filter(!is.na(Application_type)) |>
   select(Application_type) |>
   # Getting the unique types
@@ -154,18 +165,16 @@ unique_application |>
   View()
 ```
 
-There are 53 different applications of the drugs, which means that 53 different cancer types can be treated with the drugs from this data set. When looking at the output of the unique applications it can be seen that not all the 53 applications are meaningful. Some of the applications are e.g. Non, NA, cancer, H, and P. Withdrawing these applications yields 48 different cancers being treated with these drugs.
+**There are 49 different applications of the drugs, which means that 49 different cancer types can be treated with the drugs from this data set.**
 
 ### Investigating the different drugs
 
-Underneath it is investigated how many unique drugs there is in the cancer data set. In order to get an idea of how many times the different drugs appear a histogram is made.
-
--   plotte hvor mange gange hver drug går igen (plot)
+The number of unique drugs is in the cancer data set to get an idea of how many times the different drugs appear a histogram is made.
 
 ```{r}
 
 # Finding unique drug names from the Medicine_Name variable
-unique_drugs <- aug_clean_data |>
+unique_drugs <- cancer_data |>
   select(Medicine_Name) |>
   # Getting the unique types
   distinct() 
@@ -179,34 +188,38 @@ unique_drugs |>
   View()
 ```
 
+The dimensions of the cancer data show that it contains 131 unique drugs related to the application in 23 different types of cancer.
+
+The frequency of each drug is illustrated in a histogram, colored by a threshold of 2%. Drugs with a frequency of 2% or more are therefore highlighted.
+
 ```{r}
-
-# The data is changed into fractions for the Medicine_Name variable
-drug_name_data <- aug_clean_data |>
-  # Grouping categorial variable to distinct the medications
+# Creating the plot in one pipe
+cancer_data |>
+  # Grouping by mecidine name
   group_by(Medicine_Name) |>
-  # Taking each medicine and dividing by total number of medicines/rows
-  summarise(Proportion = n() / nrow(aug_clean_data)) |>
-  ungroup()
-
-# A histogram of the 
-ggplot(data = drug_name_data, 
-       mapping = aes(x = Medicine_Name, y = Proportion)) +
-  geom_bar(stat = "identity") + 
-  labs(title = "Frequency of different drugs",
-       x = "Drug",
-       y = "Amount") + 
-  # Adjusting the angle of the x-axis text and making it smaller
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size=5)) + 
-  # Making the proportions into percentages
-  scale_y_continuous(labels = scales::percent_format())
-
+  # Summarising the % of prevelance of each drug
+  summarise(Proportion = n() / nrow(cancer_data)) |>
+  ungroup() |>
+  # Making the ggplot of the % prevelance of each drug
+  ggplot(aes(x = Medicine_Name, 
+             y = Proportion, 
+             # Coloring by prevelance using threshold of 2%
+             fill = ifelse(Proportion > 0.02, "orange", "grey"))) +
+  geom_bar(stat = "identity", color = "black") + 
+  labs(x = "Drug name",
+       y = "Frequency of drug [%]") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5)) +
+  ggtitle("Frequency of unique drus in cancer data") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_identity() 
+  
 ```
 
-The histogram gives an overview of the distribution of the different drugs. When investigating the histogram it can be seen that there are 10 drugs that each account for 2% or more. Underneath these 10 drugs are extracted.
+The histogram gives an overview of the distribution of the different frequencies for each drug. It is observed that there are 10 drugs that each account for 2% or more. Underneath these 10 drugs are extracted, showing the 10 drugs with highest frequency in the data.
 
 ```{r}
-aug_clean_data |>
+cancer_data |>
   # Counting the medications and sort them in descending order
   count(Medicine_Name, sort = TRUE) |>
   # Selecting the first 10 rows 
@@ -214,17 +227,20 @@ aug_clean_data |>
 
 ```
 
-These are the 10 most common drugs for cancer treatment in the data set. Further analysis of these drugs can be done to see if there can be found a reason why these drugs are the most common. Fx if they have good reviews, fewer side effects, or maybe an easy to use administration type. (nåede jeg ikke lige at komme videre med)
+These are the 10 most common drugs for cancer treatment in the data set, based on the frequency.
 
-### Investigating which drugs have the most excellent, average, and poor reviews.
+### Drugs related to review category
+
+The data focus on the relationship between the different drugs and their review percentage in the three categories; poor, average, and excellent. Drugs related to high percentages in each category are therefore found.
 
 #### Drugs with 85% or more excellent reviews.
 
 ```{r}
 
-Best_reviewed_drugs <- aug_clean_data |>
-  filter(`Excellent_Review_%` > 85) |>
-  select(Medicine_Name, `Excellent_Review_%`) |>
+Best_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Excellent_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
   distinct()
 
 Best_reviewed_drugs |>
@@ -236,12 +252,15 @@ It can be observed that multiple drugs have 100% excellent reviews, meaning thes
 #### Drugs with 85% or more average reviews.
 
 ```{r}
-Average_reviewed_drugs <- aug_clean_data |>
-  filter(`Average_Review_%` > 85) |>
-  select(Medicine_Name, `Average_Review_%`) |>
-  distinct() 
 
-Average_reviewed_drugs 
+Average_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Average_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
+  distinct()
+
+Average_reviewed_drugs |>
+  View()
 ```
 
 It can be observed that no drugs have 85% or more % average reviews, meaning these drugs have gotten more than a total of 15% good and/or bad reviews.
@@ -249,14 +268,20 @@ It can be observed that no drugs have 85% or more % average reviews, meaning the
 #### Drugs with 85% or more poor reviews.
 
 ```{r}
-Worst_reviewed_drugs <- aug_clean_data |>
-  filter(`Poor_Review_%` > 85) |>
-  select(Medicine_Name, `Poor_Review_%`) |>
+
+Worst_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Poor_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
   distinct()
 
-Worst_reviewed_drugs
+Worst_reviewed_drugs |>
+  View()
+
 ```
 
 The same is true for poor reviews, that some drugs have only poor reviews. There are 7 drugs with 85% or more poor reviews.
+
+-   Skriv en fed afslutning
 
 #### 

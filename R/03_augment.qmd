@@ -60,6 +60,27 @@ aug_clean_data <- cancer_data |>
 
 ```
 
+Before we pivot longer
+
+```{r}
+
+aug_clean_data <- aug_clean_data |> 
+  rowwise() |> 
+  mutate(
+  
+    Classification_Review = case_when(
+      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Poor_Review_%` ~ "Poor",
+      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Average_Review_%` ~ "Average",
+      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Excellent_Review_%` ~ "Excellent"
+    )
+  )  |> 
+  ungroup() |>  
+  mutate(ID = row_number()) |>
+  select(ID, everything())
+  
+
+```
+
 ## Transforming the data into long format
 
 ```{r}
@@ -100,16 +121,14 @@ pivot_longer_4 <- pivot_longer_3 |>
 
 ```
 
-
 ```{r}
 pivot_longer_5 <- pivot_longer_4 |>
   pivot_longer(
-    cols = contains("Review"),
+    cols = contains("Review_%"),
     names_to = "Review_level",
     values_to = "Review_%"
   )
 ```
-
 
 ```{r}
 aug_clean_data_long <- pivot_longer_5 |>
