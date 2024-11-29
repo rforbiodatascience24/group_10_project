@@ -69,6 +69,8 @@ aug_clean_data |>
 
 ```
 
+*\*comment on what we see above*
+
 ### Investigating number of unique cancer types
 
 It is interesting to look at how many different cancer types are present is in the data set and which types it is.
@@ -90,6 +92,8 @@ View(unique_cancer_rows)
 
 ```
 
+\*comment on what we see above
+
 ### Mean, maximum, and minimum number of side effects
 
 The Count_Side_Effects variable is investigated in order to find the average number of side effects for all the cancer treatment drugs. Furthermore, the maximum and minimum number of side effects is also found.
@@ -101,11 +105,11 @@ aug_clean_data |>
 
 ```
 
-It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13.
+It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13. The median is observed to be 10. When comparing the median to the mean (accordingly 10 and \~13) it indicates few observations with many side effects skewing the mean to a higher value.
 
 ### Mean, maximum, and minimum number of active ingredients
 
-Now, the API_Count variable is investigated to look into the maximum, minimum, and average number of active pharmaceutical ingredients.
+Now, the Count_API variable is investigated to look into the maximum, minimum, and average number of active pharmaceutical ingredients.
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
@@ -114,7 +118,7 @@ aug_clean_data |>
 
 ```
 
-The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient.
+The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient. The median and the mean is approximately the same size, which indicates a left skewed distribution.
 
 ### Investigating the application variables
 
@@ -127,10 +131,10 @@ aug_clean_data |>
 
 ```
 
-There are up to six different applications of the different cancer drugs and minimum one application. The average number of applications for the drugs is around 3, which means most drugs can treat more than one type of cancer.
+There are up to six different applications of the different cancer drugs and minimum one application. The average number of applications for the drugs is around 3, which means most drugs can treat more than one type of cancer. When comparing the mean with the median of 2 it indicates a left skewed distribution. This show half of the observations having two or less applications.
 
 \
-It is also investigated how many different applications there is and what there are.
+It is also investigated how many different applications there are and what they are.
 
 ```{r}
 # Finding unique drug names from the Medicine_Name variable
