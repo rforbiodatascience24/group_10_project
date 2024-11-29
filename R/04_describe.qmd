@@ -114,7 +114,7 @@ Now, the API_Count variable is investigated to look into the maximum, minimum, m
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-aug_clean_data |> 
+cancer_data |> 
   summarise(Mean_API_count = mean(Count_API), 
             Median_API_count = median(Count_API),
             Max_API_count = max(Count_API), 
@@ -130,7 +130,7 @@ Lastly, the minimum, maximum, median, and average number of applications are fou
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-aug_clean_data |> 
+cancer_data |> 
   summarise(Mean_Application_count = mean(Count_Application), 
             Median_Application = median(Count_Application),
             Max_Application_count = max(Count_Application), 
@@ -144,7 +144,7 @@ The number of unique applications is furthermore found to get a picture of the a
 
 ```{r}
 # Finding unique drug names from the Medicine_Name variable
-unique_application <- aug_clean_data |>
+unique_application <- cancer_data |>
   filter(!is.na(Application_type)) |>
   select(Application_type) |>
   # Getting the unique types
@@ -159,7 +159,7 @@ unique_application |>
   View()
 ```
 
-**There are 53 different applications of the drugs, which means that 53 different cancer types can be treated with the drugs from this data set. When looking at the output of the unique applications it can be seen that not all the 53 applications are meaningful. Some of the applications are e.g. Non, NA, cancer, H, and P. Withdrawing these applications yields 48 different cancers being treated with these drugs.**
+**There are 49 different applications of the drugs, which means that 49 different cancer types can be treated with the drugs from this data set.**
 
 ### Investigating the different drugs
 
@@ -168,7 +168,7 @@ The number of unique drugs is in the cancer data set to get an idea of how many 
 ```{r}
 
 # Finding unique drug names from the Medicine_Name variable
-unique_drugs <- aug_clean_data |>
+unique_drugs <- cancer_data |>
   select(Medicine_Name) |>
   # Getting the unique types
   distinct() 
@@ -188,11 +188,11 @@ The frequency of each drug is illustrated in a histogram, colored by a threshold
 
 ```{r}
 # Creating the plot in one pipe
-aug_clean_data |>
+cancer_data |>
   # Grouping by mecidine name
   group_by(Medicine_Name) |>
   # Summarising the % of prevelance of each drug
-  summarise(Proportion = n() / nrow(aug_clean_data)) |>
+  summarise(Proportion = n() / nrow(cancer_data)) |>
   ungroup() |>
   # Making the ggplot of the % prevelance of each drug
   ggplot(aes(x = Medicine_Name, 
@@ -213,7 +213,7 @@ aug_clean_data |>
 The histogram gives an overview of the distribution of the different frequencies for each drug. It is observed that there are 10 drugs that each account for 2% or more. Underneath these 10 drugs are extracted, showing the 10 drugs with highest frequency in the data.
 
 ```{r}
-aug_clean_data |>
+cancer_data |>
   # Counting the medications and sort them in descending order
   count(Medicine_Name, sort = TRUE) |>
   # Selecting the first 10 rows 
@@ -231,9 +231,10 @@ The data focus on the relationship between the different drugs and their review 
 
 ```{r}
 
-Best_reviewed_drugs <- aug_clean_data |>
-  filter(`Excellent_Review_%` > 85) |>
-  select(Medicine_Name, `Excellent_Review_%`) |>
+Best_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Excellent_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
   distinct()
 
 Best_reviewed_drugs |>
@@ -245,12 +246,15 @@ It can be observed that multiple drugs have 100% excellent reviews, meaning thes
 #### Drugs with 85% or more average reviews.
 
 ```{r}
-Average_reviewed_drugs <- aug_clean_data |>
-  filter(`Average_Review_%` > 85) |>
-  select(Medicine_Name, `Average_Review_%`) |>
-  distinct() 
 
-Average_reviewed_drugs 
+Average_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Average_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
+  distinct()
+
+Average_reviewed_drugs |>
+  View()
 ```
 
 It can be observed that no drugs have 85% or more % average reviews, meaning these drugs have gotten more than a total of 15% good and/or bad reviews.
@@ -258,14 +262,20 @@ It can be observed that no drugs have 85% or more % average reviews, meaning the
 #### Drugs with 85% or more poor reviews.
 
 ```{r}
-Worst_reviewed_drugs <- aug_clean_data |>
-  filter(`Poor_Review_%` > 85) |>
-  select(Medicine_Name, `Poor_Review_%`) |>
+
+Worst_reviewed_drugs <- cancer_data |>
+  filter(Review_level == 'Poor_Review_%') |>
+  filter(`Review_%` > 85) |>
+  select(Medicine_Name, `Review_%`) |>
   distinct()
 
-Worst_reviewed_drugs
+Worst_reviewed_drugs |>
+  View()
+
 ```
 
 The same is true for poor reviews, that some drugs have only poor reviews. There are 7 drugs with 85% or more poor reviews.
+
+-   Skriv en fed afslutning
 
 #### 
