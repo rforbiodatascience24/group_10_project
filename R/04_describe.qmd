@@ -4,9 +4,9 @@ format: html
 editor: visual
 ---
 
-## Loading libraries and data
+## Loading Libraries and Data
 
-### Loading libraries
+### Loading Libraries
 
 Loading the relevant libraries.
 
@@ -17,7 +17,7 @@ library("tidyverse")
 library("readr")
 ```
 
-### Loading long format augmented clean data
+### Loading Long Format, Augmented, Clean Data
 
 ```{r, 'show_col_types= FALSE'}
 
@@ -25,18 +25,18 @@ library("readr")
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
 
-## Descriptive statistics of the data
+## Descriptive Statistics of the Data
 
-The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and Bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.\
+The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.\
 The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer. This will streamline the project and make it easier to make concrete conclusions.
 
 The purpose of the data is to assist healthcare professionals and patients in making decisions when choosing/using a medication. Therefore, the description and analysis of the data focuses on this perspective and introduces plots that can further aid in this aim.
 
 The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
 
-The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages. The sum of three categories of reviews adds up to collective of 100%.
+The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages. The sum of the three categories of reviews adds up to collective of 100%.
 
-Underneath an elaboraqtion of the specific can be found:
+Underneath an elaboration of the specific variables can be found:
 
 -   The active pharmaceutical ingredient (API) describes the main ingredients in a medicine that causes the desired effect. In the cancer data set information can be found about the name, amount, and units of API.
 
@@ -44,7 +44,7 @@ Underneath an elaboraqtion of the specific can be found:
 
 -   The variable Manufacturer is the pharmaceutical company that produces the medication.
 
--   The variable Administration_type explains how the specific medication is taken by the patient.
+-   The variable Administration_type explains how the specific medication is taken/used by the patient.
 
 -   The side effect variable is split into number and type, and tells which adverse effects are associated with the medication.
 
@@ -54,7 +54,7 @@ Underneath an elaboraqtion of the specific can be found:
 
 -   The variable ID refers to an identifier in case of medicine names appearing multiple times as unique observations.
 
-### Dimensionality of the data
+### Dimensionality of the Data
 
 Firstly, the dimensionality of the data set is investigated to get an idea of its size.\
 The number of variables is shown and a view of the data given.
@@ -70,11 +70,11 @@ cancer_data |>
 
 ```
 
-The dimensionality of the data is 52.080 x 19, from which we get that the data include 52,080 rows, with 19 variables for each.
+The dimensionality of the data is 155,424 x 20, from which we get that the data include 155,424 rows, with 20 variables for each.
 
-### Investigating number of unique cancer types
+### Number of Unique Cancer Types
 
-It is interesting to look at how many different cancer types are present is in the data set and which types it is.
+It is interesting to look at how many different cancer types are present in the data set and which types it is.
 
 ```{r}
 # Find unique types of cancer from the Application_type variable
@@ -96,9 +96,9 @@ unique_cancer_rows |>
 
 ```
 
-From dimensionality of the subset, containing only unique rows with 'cancer' related applications, 23 unique cancer applications of appaears in the dataset.
+From dimensionality of the subset, containing only unique rows with 'cancer' related applications, 23 unique cancer types appears in the cancer data set.
 
-### Mean, maximum, and minimum number of side effects
+### Distribution of Side Effects
 
 The Count_Side_Effects variable is investigated to find the average number and median of side effects for all the cancer treatment drugs. Furthermore, the maximum and minimum number of side effects is also found.
 
@@ -114,7 +114,7 @@ cancer_data |>
 
 It can be observed that the lowest number of side effects is one and the maximum number of side effects is 23. Furthermore, the average number of side effects for the drugs is around 13. The median of side effects is 10. When comparing the mean and median a slight skewing is observed, as the mean is slightly higher than the median, when also comparing with minimum and maximum values.
 
-### Mean, maximum, and minimum number of active ingredients
+### Distribution of Active Ingredients
 
 Now, the API_Count variable is investigated to look into the maximum, minimum, median, and average number of active pharmaceutical ingredients.
 
@@ -130,7 +130,7 @@ cancer_data |>
 
 The maximum number of active ingredients in the cancer treatment drugs is two and the minimum number is one. The average number of ingredients is close to one, therefore most drugs have one active ingredient. The median and the mean are approximately the same size. When comparing this with the maximum and minimum value a left skewed distribution is indicated, as we otherwise would have observed an average at approx. 1.5 active pharmaceutical ingredients (APIs).
 
-### Investigating the application variables
+### Distribution of Application Variables
 
 Lastly, the minimum, maximum, median, and average number of applications are found to see how many different uses the cancer treatment drugs have and how they are distributed.
 
@@ -165,11 +165,11 @@ unique_application |>
   View()
 ```
 
-**There are 49 different applications of the drugs, which means that 49 different cancer types can be treated with the drugs from this data set.**
+**There are 49 different applications of the drugs from the cancer data set. Hence, the cancer drugs can also be used for treatment of other diseases than cancer.**
 
-### Investigating the different drugs
+### Investigating the Different Drugs
 
-The number of unique drugs is in the cancer data set to get an idea of how many times the different drugs appear a histogram is made.
+The number of unique drugs in the cancer data set is investigated to get an idea of how many times the different drugs appear. This is shown in a histogram.
 
 ```{r}
 
@@ -208,8 +208,9 @@ cancer_data |>
   geom_bar(stat = "identity", color = "black") + 
   labs(x = "Drug name",
        y = "Frequency of drug [%]") + 
+  theme_minimal() + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5)) +
-  ggtitle("Frequency of unique drus in cancer data") +
+  ggtitle("Frequency of Unique Drugs in Cancer Data") +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent_format()) +
   scale_fill_identity() 
@@ -229,17 +230,17 @@ cancer_data |>
 
 These are the 10 most common drugs for cancer treatment in the data set, based on the frequency.
 
-### Drugs related to review category
+### Drugs Related to Review Category
 
 The data focus on the relationship between the different drugs and their review percentage in the three categories; poor, average, and excellent. Drugs related to high percentages in each category are therefore found.
 
-#### Drugs with 85% or more excellent reviews.
+#### Drugs with 85% or More Excellent Reviews
 
 ```{r}
 
 Best_reviewed_drugs <- cancer_data |>
   filter(Review_level == 'Excellent_Review_%') |>
-  filter(`Review_%` > 85) |>
+  filter(`Review_%` >= 85) |>
   select(Medicine_Name, `Review_%`) |>
   distinct()
 
@@ -249,13 +250,13 @@ Best_reviewed_drugs |>
 
 It can be observed that multiple drugs have 100% excellent reviews, meaning these drugs have only gotten good reviews. Overall, there are 11 drugs with 85% or more excellent reviews.
 
-#### Drugs with 85% or more average reviews.
+#### Drugs with 85% or More Average Reviews
 
 ```{r}
 
 Average_reviewed_drugs <- cancer_data |>
   filter(Review_level == 'Average_Review_%') |>
-  filter(`Review_%` > 85) |>
+  filter(`Review_%` >= 85) |>
   select(Medicine_Name, `Review_%`) |>
   distinct()
 
@@ -265,13 +266,13 @@ Average_reviewed_drugs |>
 
 It can be observed that no drugs have 85% or more % average reviews, meaning these drugs have gotten more than a total of 15% good and/or bad reviews.
 
-#### Drugs with 85% or more poor reviews.
+#### Drugs with 85% or More Poor Reviews
 
 ```{r}
 
 Worst_reviewed_drugs <- cancer_data |>
   filter(Review_level == 'Poor_Review_%') |>
-  filter(`Review_%` > 85) |>
+  filter(`Review_%` >= 85) |>
   select(Medicine_Name, `Review_%`) |>
   distinct()
 
@@ -282,6 +283,6 @@ Worst_reviewed_drugs |>
 
 The same is true for poor reviews, that some drugs have only poor reviews. There are 7 drugs with 85% or more poor reviews.
 
--   Skriv en fed afslutning
+## Conclusion
 
-#### 
+The drug cancer set consists of wide variarity of drugs, that mainly treats cancer, but also is able to treat other diseases. The data set includes both categorical and numeric variables, enabling different kinds of visualization. The project can now proceed to a more analytic interpretation of the data, having a better understanding of the the distribution of the cancer drug test.
