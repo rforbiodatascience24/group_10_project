@@ -100,7 +100,15 @@ clean_data <- clean_data |>
   # Every word consisting of only capital letters are converted to lower case e.g. "Vitamin B" becomes "Vitamin b"
   mutate(Uses = str_replace_all(Uses, 
                                 "\\b[A-Z]+\\b", 
-                                ~str_to_lower(.)))
+                                ~str_to_lower(.))) |>
+  
+  mutate(Uses = str_replace_all(Uses, 
+                                "HPVassociated",
+                                "Hpv associated")) |>
+  
+  mutate(Uses = str_replace_all(Uses, 
+                                "NonHodgkin",
+                                "Non hodgkin"))
 ```
 
 The data is now ready to be split into applications.
