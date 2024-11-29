@@ -6,21 +6,18 @@ editor: visual
 
 ## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+Based on these findings the reason behind the excellent and poor reviews for these drugs can be found. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews.
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+-   hvor mange gange går applications igen (plot)
 
 ```{r}
-1 + 1
 ```
 
-You can add options to executable code like this
+-   antal af gange administration type går igen (plot)
 
 ```{r}
-#| echo: false
-2 * 2
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+### Bonus
+
+-   hvor mange gange kan et bestemt drug f.eks. behandle kræft (eller anden sygdom) - her kan application bruges

@@ -13,14 +13,14 @@ Loading the relevant libraries.
 ```{r}
 rm(list=ls())
 library("tidyverse")
-library("dplyr")
+#library("dplyr")
 library("readr")
 ```
 
 ### Loading long format augmented clean data
 
-```{r}
-#| message: false
+```{r, warning= FALSE}
+
 
 # Loading the clean data tsv file 
 aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
@@ -35,7 +35,7 @@ The purpose of the data is to assist healthcare professionals and patients in ma
 
 The data is introduced after both cleaning and augmentation have been performed. The aim of this section is to introduce descriptive statistics in regards to distribution of classes in the different variables.
 
-The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages.
+The raw data set investigates the composition, administration type, applications, and side effects of the different medications. Furthermore, the drugs are reviewed by the user and split into poor, average, and excellent reviews by percentages. The sum of three categories of reviews adds up to collective of 100%.
 
 Underneath an elaboraqtion of the specific can be found:
 
@@ -58,10 +58,6 @@ The number of variables is shown and a view of the data given.
 # Checking for dimensionality of dataset 
 aug_clean_data |> 
   dim_desc()
-
-# Finding number of variables
-aug_clean_data |> 
-  length()
 
 # Showing the data 
 aug_clean_data |> 
@@ -86,7 +82,8 @@ unique_cancer_rows |>
   dim_desc()
 
 # Overview of the cancer types
-View(unique_cancer_rows)
+unique_cancer_rows |>
+  View()
 
 ```
 
@@ -97,7 +94,10 @@ The Count_Side_Effects variable is investigated in order to find the average num
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
 aug_clean_data |> 
-  summarise(Mean_Side_Effect_count = mean(Count_Side_Effects), Max_Side_Effect_count = max(Count_Side_Effects), Min_Side_Effect_count = min(Count_Side_Effects))
+  summarise(Mean_Side_Effect_count = mean(Count_Side_Effects), 
+            Median_Side_Effect_count = median(Count_Side_Effects),
+            Max_Side_Effect_count = max(Count_Side_Effects), 
+            Min_Side_Effect_count = min(Count_Side_Effects))
 
 ```
 
@@ -110,7 +110,10 @@ Now, the API_Count variable is investigated to look into the maximum, minimum, a
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
 aug_clean_data |> 
-  summarise(Mean_API_count = mean(Count_API), Max_API_count = max(Count_API), Min_API_count = min(Count_API))
+  summarise(Mean_API_count = mean(Count_API), 
+            Median_API_count = median(Count_API),
+            Max_API_count = max(Count_API), 
+            Min_API_count = min(Count_API))
 
 ```
 
@@ -123,7 +126,10 @@ Lastly, it is investigated what the minimum, maximum, and average number of appl
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
 aug_clean_data |> 
-  summarise(Mean_Application_count = mean(Count_Application), Max_Application_count = max(Count_Application), Min_Application_count = min(Count_Application))
+  summarise(Mean_Application_count = mean(Count_Application), 
+            Median_Application = median(Count_Application),
+            Max_Application_count = max(Count_Application), 
+            Min_Application_count = min(Count_Application))
 
 ```
 
@@ -135,6 +141,7 @@ It is also investigated how many different applications there is and what there 
 ```{r}
 # Finding unique drug names from the Medicine_Name variable
 unique_application <- aug_clean_data |>
+  filter(!is.na(Application_type)) |>
   select(Application_type) |>
   # Getting the unique types
   distinct() 
@@ -144,7 +151,8 @@ unique_application |>
   dim_desc()
 
 # Viewing the different drug names
-View(unique_application)
+unique_application |>
+  View()
 ```
 
 There are 53 different applications of the drugs, which means that 53 different cancer types can be treated with the drugs from this data set. When looking at the output of the unique applications it can be seen that not all the 53 applications are meaningful. Some of the applications are e.g. Non, NA, cancer, H, and P. Withdrawing these applications yields 48 different cancers being treated with these drugs.
@@ -168,7 +176,8 @@ unique_drugs |>
   dim_desc()
 
 # Viewing the different drug names
-View(unique_drugs)
+unique_drugs |>
+  View()
 ```
 
 ```{r}
@@ -208,7 +217,9 @@ aug_clean_data |>
 
 These are the 10 most common drugs for cancer treatment in the data set. Further analysis of these drugs can be done to see if there can be found a reason why these drugs are the most common. Fx if they have good reviews, fewer side effects, or maybe an easy to use administration type. (nåede jeg ikke lige at komme videre med)
 
-### Investigating which drugs have most excellent reviews and most poor reviews
+### Investigating which drugs have the most excellent, average, and poor reviews.
+
+#### Drugs with 85% or more excellent reviews.
 
 ```{r}
 
@@ -217,10 +228,26 @@ Best_reviewed_drugs <- aug_clean_data |>
   select(Medicine_Name, `Excellent_Review_%`) |>
   distinct()
 
-Best_reviewed_drugs
+Best_reviewed_drugs |>
+  View()
 ```
 
 It can be observed that multiple drugs have 100% excellent reviews, meaning these drugs have only gotten good reviews. Overall, there are 11 drugs with 85% or more excellent reviews.
+
+#### Drugs with 85% or more average reviews.
+
+```{r}
+Average_reviewed_drugs <- aug_clean_data |>
+  filter(`Average_Review_%` > 85) |>
+  select(Medicine_Name, `Average_Review_%`) |>
+  distinct() 
+
+Average_reviewed_drugs 
+```
+
+It can be observed that no drugs have 85% or more % average reviews, meaning these drugs have gotten more than a total of 15% good and/or bad reviews.
+
+#### Drugs with 85% or more poor reviews.
 
 ```{r}
 Worst_reviewed_drugs <- aug_clean_data |>
@@ -232,23 +259,5 @@ Worst_reviewed_drugs
 ```
 
 The same is true for poor reviews, that some drugs have only poor reviews. There are 7 drugs with 85% or more poor reviews.
-
-Based on these findings the reason behind the excellent and poor reviews for these drugs can be found. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews.
-
--   hvor mange gange går applications igen (plot)
-
-```{r}
-
-```
-
--   antal af gange administration type går igen (plot)
-
-```{r}
-
-```
-
-### Bonus
-
--   hvor mange gange kan et bestemt drug f.eks. behandle kræft (eller anden sygdom) - her kan application bruges
 
 #### 
