@@ -36,7 +36,7 @@ T
 # Making list for subsetting cancer data based on drug prevalence
 Prevalent_10_medicine_names <- cancer_data |>
   # Counting the medications and sort them in descending order
-  group_by(Medicine_Name) |>
+  group_by(ID) |>
   
   summarise(Proportion = n() / nrow(cancer_data)) |>
   
@@ -51,7 +51,7 @@ Prevalent_10_medicine_names <- cancer_data |>
 Most_prevalent_medicines <- cancer_data |>
   
   # Return all rows from list of top 10 which matches in cancer data by "medicine name"
-  semi_join(Prevalent_10_medicine_names, by = "Medicine_Name")
+  semi_join(Prevalent_10_medicine_names, by = "ID")
 
 ```
 
@@ -60,9 +60,10 @@ Most_prevalent_medicines <- cancer_data |>
 ```{r}
 
 Most_prevalent_medicines |>
-  group_by()
-  ggplot(aes(x = Medicine_Name, y = Count_Side_Effects)) +
-  geom_bar(stat= 'identity')
+  group_by(Medicine_Name) |> 
+  distinct(Count_Side_Effects, .keep_all = TRUE) |>
+  ggplot(aes(x = Medicine_Name, y = Count_Side_Effects, fill=Administration_type)) + 
+  geom_bar(stat= 'identity') 
 
 ```
 
