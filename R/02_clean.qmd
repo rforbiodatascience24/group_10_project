@@ -30,21 +30,28 @@ data <- read_tsv(here("data/01_dat_load.tsv"))
 The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
 
 ```{r}
-#View(data)
+data |>
+  View()
+
 ```
 
-It can be observed, from viewing the data, that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy.
+It can be observed, from viewing the data, that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy. It is further checked to see if there are any missing values in the data.
 
-To make sure the data is tidy these values are separated into different variables.
+```{r}
+data %>%
+  summarise(sum(is.na(.)))
+```
+
+It is observed that there are no missing values and therefore the data is made tidy, by seperating the values into different variables.
 
 ## Data Wrangling
 
 The variable "Uses" contains the many different diseases which the drug is being used for.
 
 ```{r}
-# data |>
-#   select(Uses) |>
-#   View()
+data |>
+  select(Uses) |>
+  View()
 ```
 
 It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
