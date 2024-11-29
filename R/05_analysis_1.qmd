@@ -6,16 +6,43 @@ editor: visual
 
 ## Quarto
 
+```{r}
+library(tidyverse)
+```
+
 Based on these findings the reason behind the excellent and poor reviews for these drugs can be found. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews.
 
 -   hvor mange gange går applications igen (plot)
 
 ```{r}
+
+ggplot(aug_clean_data,
+       aes(x = Count_Side_Effects,
+           y = `Review_%`,
+           color = Review_level)) +
+  geom_point() +
+  labs(x = "Count of Side Effects", y = "Review Percentage", title = "Side Effects vs. Review Percentage by Review Level") +
+  
+  theme_minimal() +
+  facet_wrap(~ Review_level)+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+
+
+
+
+
+
+
 ```
 
 -   antal af gange administration type går igen (plot)
 
 ```{r}
+
+
+
+
 ```
 
 ### Bonus

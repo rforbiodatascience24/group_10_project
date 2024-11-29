@@ -100,8 +100,19 @@ pivot_longer_4 <- pivot_longer_3 |>
 
 ```
 
+
 ```{r}
-aug_clean_data_long <- pivot_longer_4 |>
+pivot_longer_5 <- pivot_longer_4 |>
+  pivot_longer(
+    cols = contains("Review"),
+    names_to = "Review_level",
+    values_to = "Review_%"
+  )
+```
+
+
+```{r}
+aug_clean_data_long <- pivot_longer_5 |>
   pivot_longer(
     cols = starts_with("Side_Effects_"),
     names_to = "Side_Effect_number",
