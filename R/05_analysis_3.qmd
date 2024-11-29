@@ -62,23 +62,32 @@ Most_prevalent_medicines <- cancer_data |>
 Most_prevalent_medicines |>
   group_by(Medicine_Name) |> 
   distinct(Count_Side_Effects, .keep_all = TRUE) |>
-  ggplot(aes(x = Medicine_Name, y = Count_Side_Effects, fill=Administration_type)) + 
-  geom_bar(stat= 'identity') 
+  ggplot(aes(x = Medicine_Name, 
+             y = Count_Side_Effects, 
+             fill=Administration_type)) + 
+  geom_bar(stat= 'identity') + 
+  labs(x = "Drug name",
+       y = "Number of side effects") + 
+  ggtitle("Relationship between side effects and ten most commmon cancer drugs") +
+  theme_minimal() +
+  guides(fill=guide_legend(title="Adimnistration type")) 
 
-
-# Make pretty 
+# gøre med ID og så rename akxe med mediicn navne 
 
 ```
 
 ## Relation to reviews
 
-```{r}
-
-```
-
-## Relation to administration type
+The relationship between the most common cancer drugs and the dominating review is investigated. This is done for the ID of each drug in case of drugs with the same name appearing multiple times. The investigating is done by creating a subset only containing the three variables of interest; ID, medicine name, and classification of review.
 
 ```{r}
 
+Most_prevalent_medicines |>
+  group_by(ID) |> 
+  distinct(ID, Medicine_Name, Classification_Review) |>
+  arrange(Classification_Review) |>
+  head(10)
+
 ```
 
+## 
