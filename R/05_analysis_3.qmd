@@ -1,0 +1,9 @@
+---
+title: "05_analysis_3"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Further analysis of these drugs can be done to see if there can be found a reason why these drugs are the most common. Fx if they have good reviews, fewer side effects, or maybe an easy to use administration type. (nåede jeg ikke lige at komme videre med)
