@@ -21,7 +21,6 @@ library("readr")
 
 ```{r, warning= FALSE}
 
-
 # Loading the clean data tsv file 
 aug_clean_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
