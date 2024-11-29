@@ -65,6 +65,9 @@ Most_prevalent_medicines |>
   ggplot(aes(x = Medicine_Name, y = Count_Side_Effects, fill=Administration_type)) + 
   geom_bar(stat= 'identity') 
 
+
+# Make pretty 
+
 ```
 
 ## Relation to reviews
@@ -78,3 +81,4 @@ Most_prevalent_medicines |>
 ```{r}
 
 ```
+
