@@ -104,11 +104,11 @@ clean_data <- clean_data |>
   
   mutate(Uses = str_replace_all(Uses, 
                                 "HPVassociated",
-                                "Hpv-associated")) |>
+                                "Hpv associated")) |>
   
   mutate(Uses = str_replace_all(Uses, 
                                 "NonHodgkin",
-                                "Non-hodgkin"))
+                                "Non hodgkin"))
 ```
 
 The data is now ready to be split into applications.
