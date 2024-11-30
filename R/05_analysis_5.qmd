@@ -2,13 +2,19 @@
 
 This analysis aims to investigate whether the distribution of review classification has a relation to manufacturer or API. The top six of each variable are chosen to enable a meaningful and interpretative visualization.
 
-Firstly, the environment is cleared and the augmented data set is loaded.
+Firstly, the environment is cleared and libraries and the augmented data set is loaded.
 
 ```{r, warning=FALSE}
 #| message: false
 
 # Clearing environment
 rm(list=ls())
+
+# Loading libraries
+library("tidyverse")
+library("dplyr")
+library("readr")
+library("here")
 
 # Loading the augmented data tsv file 
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
