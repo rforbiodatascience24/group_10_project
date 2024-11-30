@@ -1,0 +1,59 @@
+---
+title: "Presentation_v2"
+subtitle: Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643) and Malou Bech Jakobsen (s203515)
+format:
+  revealjs:
+    width: 1800  # Increase the width of slides (default is ~960)
+    height: 900  # Keep the height proportional
+    margin: 0.05
+---
+
+## Introduction
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+-   The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.
+
+-   Variables: Medicine name, composition, Uses, side effects, manufacturer as well as how many poor, average and excellent reviews (%)
+
+:::
+
+::: {.column width="60%"}
+
+```{r}
+rm(list=ls())
+library("tidyverse")
+library("purrr")
+library("broom")
+library("readr")
+library("here")
+library("knitr")
+
+
+data <- read_tsv(here("data/01_dat_load.tsv"))
+
+data |>
+  select(`Medicine Name`, Uses) |>
+  print()
+```
+
+:::
+
+::::
+
+## Materials and Methods
+
+
+```{r}
+here("/results/flowchart.png")
+print()
+```
+
+
+## Results
+
+## Discussion
+
+
