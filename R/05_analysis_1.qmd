@@ -55,7 +55,7 @@ cancer_data |>
 From this plot we do not see a tendency of drugs with fewer side effects having a better review classification or vice versa. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).
 
 ```{r}
-cancer_data |> 
+boxplot_administration_type <- cancer_data |> 
   mutate(Review_level = factor(Review_level,   #Deciding the order appearing
                                levels = c("Poor_Review_%", 
                                           "Average_Review_%", 
@@ -67,7 +67,7 @@ cancer_data |>
   theme_minimal() +
   labs(x = "Administration Type", 
        y = "Review Percentage", 
-       title = "Review Percentage of Administration Types by Review Level",
+       title = str_wrap("Review Percentage of Administration Types by Review Level",55),
        fill = "Review Level") +
   scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
                                "Average_Review_%" = "#619CFF",
@@ -80,4 +80,7 @@ cancer_data |>
         axis.text.x = element_text(angle = 45, 
                                    hjust = 1),
         legend.position = "bottom")
+
+ggsave(here("results/boxplot_administration_type.png"), plot = boxplot_administration_type, width = 6, height = 4)
+
 ```

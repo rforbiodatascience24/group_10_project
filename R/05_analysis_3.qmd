@@ -44,7 +44,7 @@ cancer_data_selected <- cancer_data_selected |>
                                                   "Average", 
                                                   "Excellent")))
 # Step 4: Create bar plot
-cancer_data_selected |> 
+Manufacturers_bar_plot <- cancer_data_selected |> 
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
@@ -55,11 +55,14 @@ cancer_data_selected |>
                                  "Excellent" = "#00BA38")) +
     labs(x = '',
          y = "Total Number of Products", 
-         title = "Distribution of Review Classification of Product from Top Six  Manufacturers",
+         title = str_wrap("Distribution of Review Classification of Product from Top Six  Manufacturers", 55),
          fill= "Review Classification") +
     theme_minimal() +  # Apply a minimal theme
     theme(axis.text.x=element_blank(),
           legend.position = 'bottom')  
+
+# Saving the plot
+ggsave(here("results/Manufacturers_bar_plot.png"), plot = Manufacturers_bar_plot, width = 6, height = 4)
 
 ```
 
@@ -91,7 +94,7 @@ cancer_data_selected <- cancer_data_selected |>
                                                   "Average", 
                                                   "Excellent")))
 # Step 4: Create the bar plot
-cancer_data_selected |> 
+API_bar_plot <- cancer_data_selected |> 
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
@@ -108,7 +111,8 @@ cancer_data_selected |>
     theme(axis.text.x = element_blank(),
           legend.position = 'bottom')
           
-          
+# Saving the plot          
+ggsave(here("results/API_bar_plot.png"), plot = API_bar_plot, width = 6, height = 4)
 
 ```
 
