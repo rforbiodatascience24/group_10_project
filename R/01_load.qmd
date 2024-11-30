@@ -17,10 +17,9 @@ library(readr)
 ## Loading of Raw Data from URL
 
 ```{r setup, include=FALSE}
-# Ignore warning messages
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
-raw_dir <- here("_raw/")
+raw_dir <- here("data/_raw")
 data_dir <- here("data/")
 
 if (!dir.exists(raw_dir)) {
@@ -64,7 +63,7 @@ write.csv(dataset, file_path, row.names = FALSE)
 
 ## Saving Raw Data as TSV in Data Folder
 
-Furthermore, the data is stored in the data folder, which will allow for later use in analysis and visualization.
+Furthermore, the data is stored in the data folder, which will allow for use later in analysis and visualization.
 
 ```{r}
 

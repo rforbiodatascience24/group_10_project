@@ -4,11 +4,7 @@ format: html
 editor: visual
 ---
 
-## Loading libraries and data file
-
-### Loading libraries
-
-Loading the relevant libraries.
+## Loading Libraries
 
 ```{r}
 rm(list=ls())
@@ -17,71 +13,84 @@ library("dplyr")
 library("readr")
 ```
 
-### Loading cleaned data file
+## Loading Cleaned Data File
 
 Loading the cleaned data file from the data folder as a .tsv file.
 
-```{r}
-#| message: false
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Loading the clean data tsv file 
 clean_data <- read_tsv(here('data/02_dat_clean.tsv'))
 
 ```
 
-### Subsetting data into data related to cancer
+## Subsetting the Data into Data Related to Cancer
+
+The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer, as will be further elaborated on in the describe file. Underneath in the clean data set the Application variables are used to filter and keep only columns containing the word "cancer". The cancer_data is the only data being argumented, described, and analyzed moving forward.
 
 ```{r}
-# cancer_data <- clean_data |>
-#   filter(str_detect(starts_with("Application"), regex("cancer", ignore_case = TRUE)))
-
+# Any columns starting with "Application" are filtered and elements containng the word "cancer" detected 
 cancer_data <- clean_data |>
   filter(if_any(starts_with("Application"), ~ str_detect(., regex("cancer", ignore_case = TRUE))))
 ```
 
-## Augmentation of data
+## Augmentation of the Data
 
-#### Augmenting data by adding count variables for 'Side_Effects', 'API' and 'Application'.
+#### Augmenting Data by Adding Count Variables for 'Side_Effects', 'API' and 'Application'.
 
-It is of interest how many side effects each person has experienced for the different drugs, in order to investigate whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, a new variables is made, counting the amount of side effects and API for each observation. Furthermore, the count of application is made into a new variables, as it is of interest how many application each drug carry.
+It is interesting to investigate how many side effects each person has experienced for the different drugs, in order to see whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, new variables are made, counting the amount of side effects and API for each observation. Furthermore, the counts of applications are made into a new variable in order to investigate how many applications each drug have.
 
 ```{r}
-
 aug_clean_data <- cancer_data |>
   
   # Counting for each row, as nr. of side effects might differ
   rowwise() |>
   
-  # mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side effects listed for each row 
+  # Mutating in order to make SE_count variable with sum of Column containing SE in         header as this refer to side effects listed for each row 
   mutate(Count_Side_Effects = sum(!is.na(c_across(contains("Side_Effects_")))), 
          Count_API = sum(!is.na(c_across(contains("name_API_")))),
          Count_Application = sum(!is.na(c_across(contains("Application_")))))
 
-
 ```
 
-Before we pivot longer
+#### Making variable for classifying the reviews
+
+A new variable containing a classification of the reviews is made. The drug will be given either a label as poor, average or excellent based on where it has the highest socre in percentage from the Poor_Review\_%, Average_Review\_%, and Excellent_Review\_% variables. \
+Furthermore, the drugs are given an ID number.
 
 ```{r}
 
 aug_clean_data <- aug_clean_data |> 
   rowwise() |> 
   mutate(
-  
+  # If max poor reviews, get label as poor
     Classification_Review = case_when(
-      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Poor_Review_%` ~ "Poor",
-      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Average_Review_%` ~ "Average",
-      max(`Poor_Review_%`, `Average_Review_%`, `Excellent_Review_%`) == `Excellent_Review_%` ~ "Excellent"
+      max(`Poor_Review_%`, 
+          `Average_Review_%`, 
+          `Excellent_Review_%`) == `Poor_Review_%` ~ "Poor",
+      # If max average reviews, get label as average
+      max(`Poor_Review_%`, 
+          `Average_Review_%`, 
+          `Excellent_Review_%`) == `Average_Review_%` ~ "Average",
+      # If max excellent reviews, get label as excellent
+      max(`Poor_Review_%`, 
+          `Average_Review_%`, 
+          `Excellent_Review_%`) == `Excellent_Review_%` ~ "Excellent"
     )
   )  |> 
   ungroup() |>  
+  # Adding a unique ID column in order to identify each observation
   mutate(ID = row_number()) |>
   select(ID, everything())
   
-
 ```
 
-## Transforming the data into long format
+## Transforming the Data into Long Format
+
+In order to make the data tidy and to make interesting plots using the ggplot package, the cancer data is changed into long format.
+
+Because the data set becomes very big when changed to long format, it is done in steps for each variable as can be seen below.
 
 ```{r}
 pivot_longer_1 <- aug_clean_data |>
@@ -141,19 +150,23 @@ aug_clean_data_long <- pivot_longer_5 |>
 
 ```
 
-### Extracting only unique rows in data
+### Extracting Unique Rows in the Data
+
+The data set has becomes very large when chaning to long format, but a lot of the rows do not contain any relevant information for the further descripton and analysis. Therefore, these duplicate rows are removed underneath.
+
+This is done by by making sure rows are considered duplicates if all values in the columns, excluding Applicaton_number, API_name_numbere, API_amount_number, API_unit_number, and Side_Effect_number, are the same.
 
 ```{r}
 
+# Only unique/distinct rows are kept
 unique_aug_clean_data_long <- aug_clean_data_long |>
   distinct(across(-c(Application_number, API_name_number, API_amount_number, API_unit_number, Side_Effect_number)), .keep_all = TRUE)
 
-
 ```
 
-## Saving augmented cleaned data .tsv
+## Saving Augmented Cleaned Data into TSV
 
-Saving the cleaned augmented data as a .tsv in the data folder
+The cleaned augmented data is saved into a .tsv in the data folder.
 
 ```{r}
 # Defining the directory which the file should be saved to} 
