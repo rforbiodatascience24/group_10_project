@@ -48,17 +48,18 @@ cancer_data_selected |>
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
-             show.legend = FALSE) + 
+             show.legend = TRUE) + 
     facet_wrap(~ Manufacturer) + 
     scale_fill_manual(values = c("Poor" = "#F8766D",  # Making sure color match meaning
                                  "Average" = "#619CFF",
                                  "Excellent" = "#00BA38")) +
-    labs(x = "Review Classification", 
-         y = "Count", 
-         title = "Distribution of Review Classification of Product from Top Six Manufacturers") +
+    labs(x = '',
+         y = "Total Number of Products", 
+         title = "Distribution of Review Classification of Product from Top Six  Manufacturers",
+         fill= "Review Classification") +
     theme_minimal() +  # Apply a minimal theme
-    theme(axis.text.x = element_text(angle = 45, 
-                                     hjust = 1))  # Rotate x-axis labels for readability
+    theme(axis.text.x=element_blank(),
+          legend.position = 'bottom')  
 
 ```
 
@@ -94,20 +95,25 @@ cancer_data_selected |>
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
-             show.legend = FALSE) + 
+             show.legend = TRUE) + 
     facet_wrap(~ str_wrap(API_name, width = 30)) +  # Create a facet for each API_name
     scale_fill_manual(values = c("Poor" = "#F8766D",   # Making sure color match meaning
                                  "Average" = "#619CFF",
                                  "Excellent" = "#00BA38")) +
-    labs(x = "Review Classification", 
-         y = "Count", 
-         title = "Distribution of Review Classification of Top Six Used APIs") +
+    labs(x = "", 
+         y = "Total Number of Products", 
+         title = "Distribution of Review Classification of Top Six Used APIs",
+         fill = "Review Classification") +
     theme_minimal() +  # Apply a minimal theme
-    theme(axis.text.x = element_text(angle = 45, 
-                                     hjust = 1))  # Rotate x-axis labels for readability
+    theme(axis.text.x = element_blank(),
+          legend.position = 'bottom')
+          
+          
 
 ```
 
 Once again, it seems there is a random distribution of review classification of the top six most used drugs in the cancer data set. Interestingly, the Recombinant Human Erythropoietin Alfa, which is the top 1 API, has mostly poor and least excellent reviews. Actually, 3 out of 6 APIs has the majority of reviews as poor. Only Leuprolide has excellent as the largest review classifications.
 
 All in all, neither manufacturer or API seems shows a tendency in regards to review classification distribution of products from the cancer data set. The conclusion might be different, when looking at the entire data set, while more difficult to visualize and interpret.
+
+-   connect de to plots: er der mon en indreicte correlation mellem API and manufatures?? Amalie må gerne skabe den røde tråd her.
