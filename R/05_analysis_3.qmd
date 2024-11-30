@@ -17,7 +17,9 @@ library('ggridges')
 
 ## Loading cancer data file
 
-```{r}
+```{r, warning=FALSE}
+#| message: false
+
 # Loading the cleaned and augmented file:  
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
 ```
@@ -50,12 +52,14 @@ Prevalent_10_medicine_names <- cancer_data |>
 # Making subset of 10 most prevalent drug IDs
 Most_prevalent_medicines <- cancer_data |>
   # Making subset by join using prevalence list
-  semi_join(Prevalent_10_medicine_names, by = "ID")  
+  semi_join(Prevalent_10_medicine_names, 
+            by = "ID")  
   
 
 # Viewing 10 most prevalent drug IDs
 Most_prevalent_medicines |>
-  distinct(ID, .keep_all = TRUE) |>
+  distinct(ID, 
+           .keep_all = TRUE) |>
   head(10)
 
 ```
@@ -70,20 +74,25 @@ The relationship between the unique medicine names and the number of side effect
 
 Most_prevalent_medicines |>
   # Sorting and grouping by medicine name 
-  distinct(Medicine_Name, .keep_all = TRUE) |>
+  distinct(Medicine_Name,
+           .keep_all = TRUE) |>
   group_by(Medicine_Name) |> 
   # Looking at unique numbers of side effects for each drug
-  distinct(Count_Side_Effects, .keep_all = TRUE) |>
+  distinct(Count_Side_Effects, 
+           .keep_all = TRUE) |>
   # Plotting bar plot of side effect number pr. drug
   ggplot(aes(x = Medicine_Name, 
              y = Count_Side_Effects, 
              fill=Administration_type)) + 
-  geom_bar(stat= 'identity', alpha = 0.8) + 
-  scale_fill_manual(values =c('#414487FF','#DE9ED6FF'))+
+  geom_bar(stat= 'identity', 
+           alpha = 0.8) + 
+  scale_fill_manual(values =c('#414487FF',
+                              '#DE9ED6FF'))+
   labs(x = "Drug name",
        y = "Number of side effects") + 
   ggtitle("Relationship between side effects and ten most commmon cancer drugs") +
   theme_minimal() +
+  theme(legend.position = 'bottom') +
   guides(fill=guide_legend(title="Adimnistration type")) 
 
 ```
@@ -97,7 +106,8 @@ A higher number of side effects also seem to be associated with administration o
 ```{r}
 cancer_data |>
   # Using type of administration and side effect number from cancer data
-  select(Administration_type, Count_Side_Effects) |>
+  select(Administration_type, 
+         Count_Side_Effects) |>
   # Plotting density of side effects for each administration type 
   ggplot(aes(
     x = Count_Side_Effects, 
@@ -106,9 +116,17 @@ cancer_data |>
   )) +
   # Including transparency due to overlap of density plots
   geom_density_ridges(alpha = 0.5) +
-  scale_fill_manual(values =c('#20A387FF', '#95D840FF','#A1D99B','#414487FF', '#E6550D', '#FDE725FF', '#D6616B','#DE9ED6FF' ,'#440154FF' ))  +
+  scale_fill_manual(values =c('#20A387FF',
+                              '#95D840FF',
+                              '#A1D99B',
+                              '#414487FF', 
+                              '#E6550D',
+                              '#FDE725FF',
+                              '#D6616B',
+                              '#DE9ED6FF' ,
+                              '#440154FF' ))  +
   theme_minimal() +
-  theme(legend.position = 'bottom') +
+  theme(legend.position = 'none') +
   labs(
     title = "Distribution of Side Effects by Administration Type",
     x = "Number of Side Effects",
@@ -123,7 +141,7 @@ Lastly, administration through capsules seems to be associated with a high nr. o
 
 ## Relationship between Prevalent Drugs and Reviews Level
 
-The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, classification of review, and administration type, yielding a tibble.
+The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a tibble.
 
 ```{r}
 
@@ -131,7 +149,8 @@ Most_prevalent_medicines |>
   # Using ID to dinstinguish observations
   group_by(ID) |> 
   # Selecting variables of interest
-  distinct(ID, Medicine_Name, Classification_Review, Administration_type) |>
+  distinct(ID, Medicine_Name, 
+           Classification_Review) |>
   # Arranging data in alphabetical order 
   arrange(Classification_Review) |>
   head(10)
