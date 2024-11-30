@@ -50,6 +50,9 @@ cancer_data_selected |>
     geom_bar(stat = "count", 
              show.legend = FALSE) + 
     facet_wrap(~ Manufacturer) + 
+    scale_fill_manual(values = c("Poor" = "#F8766D",  # Making sure color match meaning
+                                 "Average" = "#619CFF",
+                                 "Excellent" = "#00BA38")) +
     labs(x = "Review Classification", 
          y = "Count", 
          title = "Distribution of Review Classification of Product from Top Six Manufacturers") +
@@ -93,6 +96,9 @@ cancer_data_selected |>
     geom_bar(stat = "count", 
              show.legend = FALSE) + 
     facet_wrap(~ str_wrap(API_name, width = 30)) +  # Create a facet for each API_name
+    scale_fill_manual(values = c("Poor" = "#F8766D",   # Making sure color match meaning
+                                 "Average" = "#619CFF",
+                                 "Excellent" = "#00BA38")) +
     labs(x = "Review Classification", 
          y = "Count", 
          title = "Distribution of Review Classification of Top Six Used APIs") +
