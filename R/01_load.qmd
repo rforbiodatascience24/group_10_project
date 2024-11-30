@@ -14,9 +14,11 @@ library(httr)
 library(readr)
 ```
 
-## Loading of raw data from url
+## Loading of Raw Data from URL
 
 ```{r}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
 raw_dir <- here("_raw/")
 data_dir <- here("data/")
 
@@ -43,14 +45,13 @@ message("Extracted files: ", paste(extracted_files, collapse = ", "))
 
 csv_file <- grep("\\.csv$", extracted_files, value = TRUE)
 
-dataset <- read_csv(csv_file[1])
-
+dataset <- read_csv(csv_file[1], show_col_types = FALSE)
 
 ```
 
-## Saving raw data as csv in raw data folder
+## Saving Raw Data as CSV in Raw Data Folder
 
-A raw data is stored in order to always have a original copy of the data used for the project.
+A raw data is stored in order to always have an original copy of the data used for the project.
 
 ```{r}
 # Specify the file path with the new name
@@ -60,9 +61,9 @@ file_path <- file.path(raw_dir, "raw_data.csv")
 write.csv(dataset, file_path, row.names = FALSE)
 ```
 
-## Saving raw data as tsv in data folder
+## Saving Raw Data as TSV in Data Folder
 
-The data is furthermore stored in the data folder, which will allow for augmenting and such for later use in analysis and visualization.
+Furthermore, the data is stored in the data folder, which will allow for later use in analysis and visualization.
 
 ```{r}
 
