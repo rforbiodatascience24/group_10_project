@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Analysis of 
+## Analysis of
 
 ```{r}
 rm(list=ls())
@@ -53,35 +53,6 @@ cancer_data |>
 ```
 
 From this plot we do not see a tendency of drugs with fewer side effects having a better review classification or vice versa. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).
-
-```{r}
-cancer_data |> 
-  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
-                               levels = c("Poor_Review_%", 
-                                          "Average_Review_%", 
-                                          "Excellent_Review_%"))) |> 
-  ggplot(aes(x = Administration_type, 
-             y = `Review_%`, 
-             fill = Review_level)) +
-  geom_boxplot(alpha=0.7,
-               show.legend = FALSE) +
-  labs(x = "Administration Type", 
-       y = "Review Percentage", 
-       title = "Review Percentage by Administration Type and Review Level") +
-  theme_minimal() +
-  facet_wrap(~ Review_level,  # Create separate plots for each Review_level
-             labeller = as_labeller(c("Poor_Review_%" = "Poor Review", 
-                                    "Average_Review_%" = "Average Review", 
-                                    "Excellent_Review_%" = "Excellent Review"))) + 
-  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
-                               "Average_Review_%" = "#619CFF",
-                               "Excellent_Review_%" = "#00BA38")) +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        axis.text.x = element_text(angle = 45, 
-                                   hjust = 1))
-
-```
 
 ```{r}
 cancer_data |> 

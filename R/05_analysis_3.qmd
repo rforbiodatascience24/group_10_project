@@ -1,164 +1,113 @@
----
-title: "05_analysis_3"
-format: html
-editor: visual
----
+## Analysis of Review Classification
 
-## Loading library
+This analysis aims to investigate whether the distribution of review classification has a relation to manufacturer or API. The top six of each variable are chosen to enable a meaningful and interpretative visualization.
 
-```{r}
-rm(list=ls()) 
-library("tidyverse") 
-library("dplyr") 
-library("readr")
-library('ggplot2')
-library('ggridges')
-```
-
-## Loading cancer data file
+Firstly, the environment is cleared and libraries and the augmented data set is loaded.
 
 ```{r, warning=FALSE}
 #| message: false
 
-# Loading the cleaned and augmented file:  
-cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
+# Clearing environment
+rm(list=ls())
+
+# Loading libraries
+library("tidyverse")
+library("dplyr")
+library("readr")
+library("here")
+
+# Loading the augmented data tsv file 
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
 
-# Analysis of the 10 most prevalent medicines
+### Influence of Manufacturer
 
-A subset of the cancer data is made to investigate only the 10 most prevalent medicines, found from the descriptive statistics. These 10 medicines were found to be the only ones exceeding 2% prevalence in the data set.
-
-The analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
-
-### Subset of 10 most prevalent medicines
-
-The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names based is made, ranked from highest prevalence to lowest. This list is then used to subset the cancer data by semi joining using ID and match between list and cancer data. Semi join is used in order to join row wise in the data.
+An interesting relation to investigate is the manufacturer's influence on review classification. The top six manufacturers are those with the most products in the data set. The distribution of review classifications of the products that each manufacturer produces is shown in a bar plot.
 
 ```{r}
-
-# Making list of 10 most prevalent drug ID's
-Prevalent_10_medicine_names <- cancer_data |>
-  # Sorting by unigue ID
-  group_by(ID) |>
-  # Finding prevalence of drugs
-  summarise(Proportion = n() / nrow(cancer_data)) |>
-  ungroup() |>
-  # Arranging with descending order
-  arrange(desc(Proportion)) |>
-  # Taking 10 most prevelant
-  slice_head(n = 10) 
+# Step 1: Get the top 6 manufacturers with the most products
+top_manufacturers <- cancer_data |> 
+  group_by(Manufacturer) |>   # Group by manufacturer
+  summarise(product_count = n()) |>   # Count the number of products for each manufacturer
+  arrange(desc(product_count)) |>   # Sort by the product count in descending order
+  slice_head(n = 6)  # Select the top 6 manufacturers
 
 
-# Making subset of 10 most prevalent drug IDs
-Most_prevalent_medicines <- cancer_data |>
-  # Making subset by join using prevalence list
-  semi_join(Prevalent_10_medicine_names, 
-            by = "ID")  
-  
+# Step 2: Retaining only the rows in orignal cancer data set where manufacturer is one of the top 6 manufacturers
+cancer_data_selected <- cancer_data |> 
+  semi_join(top_manufacturers, by = "Manufacturer")
 
-# Viewing 10 most prevalent drug IDs
-Most_prevalent_medicines |>
-  distinct(ID, 
-           .keep_all = TRUE) |>
-  head(10)
+# Step 3: Reorder Classification_Review factor to ensure "Average" is the middel bar
+cancer_data_selected <- cancer_data_selected |> 
+  mutate(Classification_Review = factor(Classification_Review, 
+                                       levels = c("Poor", 
+                                                  "Average", 
+                                                  "Excellent")))
+# Step 4: Create bar plot
+cancer_data_selected |> 
+  ggplot(aes(x = Classification_Review, 
+             fill = Classification_Review)) +
+    geom_bar(stat = "count", 
+             show.legend = FALSE) + 
+    facet_wrap(~ Manufacturer) + 
+    scale_fill_manual(values = c("Poor" = "#F8766D",  # Making sure color match meaning
+                                 "Average" = "#619CFF",
+                                 "Excellent" = "#00BA38")) +
+    labs(x = "Review Classification", 
+         y = "Count", 
+         title = "Distribution of Review Classification of Product from Top Six Manufacturers") +
+    theme_minimal() +  # Apply a minimal theme
+    theme(axis.text.x = element_text(angle = 45, 
+                                     hjust = 1))  # Rotate x-axis labels for readability
 
 ```
 
-The subset shows the 10 most prevalent drugs related the cancer data. From the dimension of the tibble, 10 disitnct ID's appear
+From the bar plot it can be seen that there is no apparent correlation between being one of the top producers and having a higher number of excellent reviews. Lupin Ltd and Wockhardt Ltd has the most products with poor reviews. Oppositely, Sun Pharmaceuticals Industries Ltd has most products with excellent reviews. The distribution of the different reviews seems to be random across the top six manufacturers. The distribution of review classifications seems to be random across the top six manufacturers.
 
-## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
+### Influence of API
 
-The relationship between the unique medicine names and the number of side effects is investigated, as it is plausible, that a lower number of side effects might explain a higher usage, making the drug more common. As we only aim to investigate unique medicine names, we make sure to distinguish by this in the pipeline of plotting. As the medicines will carry the same API, active pharmaceutical ingredients, the number of side effects will not differ, making the subset valid. The administration type is furthermore highlighted for each drug, as this is also a plausible variable affecting popularity and consumption.
+In a similar manner the top six used APIs were investigated. Perhaps there is a correlation between being widely used and having good reviews. The bar plot below shows the distribution of reviews for products that includes the top six APIs.
 
 ```{r}
+# Step 1: Get the top 6 most used APIs
+top_API <- cancer_data |> 
+  filter(!is.na(API_name)) |>   # Exclude rows where API_name is NA
+  group_by(API_name) |>   # Group by API_name
+  summarise(API_count = n()) |>   # Count the number of products for each API
+  arrange(desc(API_count)) |>   # Sort by API count in descending order
+  slice_head(n = 6)  # Select the top 6 APIs
 
-Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
-  # Sorting and grouping by medicine name 
-  distinct(Medicine_Name,
-           .keep_all = TRUE) |>
-  group_by(Medicine_Name) |> 
-  # Looking at unique numbers of side effects for each drug
-  distinct(Count_Side_Effects, 
-           .keep_all = TRUE) |>
-  # Plotting bar plot of side effect number pr. drug
-  ggplot(aes(x = Medicine_Name, 
-             y = Count_Side_Effects, 
-             fill=Administration_type)) + 
-  geom_bar(stat= 'identity', 
-           alpha = 0.8) + 
-  scale_fill_manual(values =c('#414487FF',
-                              '#DE9ED6FF'))+
-  labs(x = "Drug name",
-       y = "Number of side effects") + 
-  ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
-  theme_minimal() +
-  theme(legend.position = 'bottom') +
-  guides(fill=guide_legend(title="Adimnistration type")) 
+# Step 2: Retaining only the rows in orignal cancer data set where API is one of the top 6 used APIs and filtering out any missing API names
+cancer_data_selected <- cancer_data |> 
+  semi_join(top_API, by = "API_name") |> 
+  filter(!is.na(API_name))  # Exclude NA API names
 
-ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
 
-```
-
-The visualization only yields 8 different types of drug names, which is explained by one of the drugs, Anfoe, appearing three times out of the ten most prevalent, simply in different doses. Hence only 8 unique medicines exceed a prevalence of 2%. The distribution of side effects seems random, if not dominated by rater high number of side effects. The number of side effects does therefore not seem to be the cause of the popularity of the prevalent drugs.
-
-Furthermore, it appears, from the visualization, that administration type 'Injection' is related to \~75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
-
-A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend.
-
-```{r}
-Side_Effects_Administration_type <- cancer_data |>
-  # Using type of administration and side effect number from cancer data
-  select(Administration_type, 
-         Count_Side_Effects) |>
-  # Plotting density of side effects for each administration type 
-  ggplot(aes(
-    x = Count_Side_Effects, 
-    y = as.factor(Administration_type),  
-    fill = as.factor(Administration_type)
-  )) +
-  # Including transparency due to overlap of density plots
-  geom_density_ridges(alpha = 0.5) +
-  scale_fill_manual(values =c('#20A387FF',
-                              '#95D840FF',
-                              '#A1D99B',
-                              '#414487FF', 
-                              '#E6550D',
-                              '#FDE725FF',
-                              '#D6616B',
-                              '#DE9ED6FF' ,
-                              '#440154FF' ))  +
-  theme_minimal() +
-  theme(legend.position = 'none') +
-  labs(
-    title = "Distribution of Side Effects by Administration Type",
-    x = "Number of Side Effects",
-    y = "Administration Type",
-    fill = "Administration Type"
-  )
-
-ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
-```
-
-The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence subset.
-
-Lastly, administration through capsules seems to be associated with a high nr. of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
-
-## Relationship between Prevalent Drugs and Reviews Level
-
-The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a tibble.
-
-```{r}
-
-Most_prevalent_medicines |>
-  # Using ID to dinstinguish observations
-  group_by(ID) |> 
-  # Selecting variables of interest
-  distinct(ID, Medicine_Name, 
-           Classification_Review) |>
-  # Arranging data in alphabetical order 
-  arrange(Classification_Review) |>
-  head(10)
+# Step 3: Reorder Classification_Review factor to ensure "Average" is the middel bar
+cancer_data_selected <- cancer_data_selected |> 
+  mutate(Classification_Review = factor(Classification_Review, 
+                                       levels = c("Poor", 
+                                                  "Average", 
+                                                  "Excellent")))
+# Step 4: Create the bar plot
+cancer_data_selected |> 
+  ggplot(aes(x = Classification_Review, 
+             fill = Classification_Review)) +
+    geom_bar(stat = "count", 
+             show.legend = FALSE) + 
+    facet_wrap(~ str_wrap(API_name, width = 30)) +  # Create a facet for each API_name
+    scale_fill_manual(values = c("Poor" = "#F8766D",   # Making sure color match meaning
+                                 "Average" = "#619CFF",
+                                 "Excellent" = "#00BA38")) +
+    labs(x = "Review Classification", 
+         y = "Count", 
+         title = "Distribution of Review Classification of Top Six Used APIs") +
+    theme_minimal() +  # Apply a minimal theme
+    theme(axis.text.x = element_text(angle = 45, 
+                                     hjust = 1))  # Rotate x-axis labels for readability
 
 ```
 
-The tibble shows 10 unique ID's, also found in the descriptive analysis, where we see the drug Anfoe appearing three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same density, respectively 4 and 5 times, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
+Once again, it seems there is a random distribution of review classification of the top six most used drugs in the cancer data set. Interestingly, the Recombinant Human Erythropoietin Alfa, which is the top 1 API, has mostly poor and least excellent reviews. Actually, 3 out of 6 APIs has the majority of reviews as poor. Only Leuprolide has excellent as the largest review classifications.
+
+All in all, neither manufacturer or API seems shows a tendency in regards to review classification distribution of products from the cancer data set. The conclusion might be different, when looking at the entire data set, while more difficult to visualize and interpret.

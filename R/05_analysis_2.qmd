@@ -1,111 +1,164 @@
 ---
-title: "05_analysis_2"
+title: "05_analysis_3"
 format: html
 editor: visual
 ---
 
-## 
+## Loading library
 
 ```{r}
-rm(list=ls())
-library("tidyverse")
+rm(list=ls()) 
+library("tidyverse") 
+library("dplyr") 
 library("readr")
-library("ggridges")
+library('ggplot2')
+library('ggridges')
 ```
 
-```{r}
-# Loading the clean data tsv file 
-analysis_data <- read_tsv(here('data/03_dat_aug.tsv'))
+## Loading cancer data file
 
+```{r, warning=FALSE}
+#| message: false
+
+# Loading the cleaned and augmented file:  
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
 ```
 
-```{r}
-analysis_data |>
-  select(Administration_type, Review_level, `Review_%`, Count_Side_Effects, Count_Application) |>
-  filter(Review_level == "Excellent_Review_%") |>
-  ggplot(aes(
-    x = Count_Side_Effects, 
-    y = `Review_%`,  # Use column name directly without quotes
-    fill = as.factor(Administration_type)
-  )) +  
-  geom_point(shape = 21, size = 4) +
-  theme_minimal()+
-  labs(
-    title = "Number of Side Effects vs. Excellent Review %",
-    x = "Number of Side Effects",
-    y = "Excellent Review Percentage",
-    fill = "Administration Type"
-  )
-```
+# Analysis of the 10 most prevalent medicines
 
-```{r}
-analysis_data |>
-  select(Administration_type, API_amount, Count_Side_Effects, Count_Application, API_unit) |>
-  filter(Administration_type == "Injection" & API_unit == "IU") |>
-  nrow()
-```
+A subset of the cancer data is made to investigate only the 10 most prevalent medicines, found from the descriptive statistics. These 10 medicines were found to be the only ones exceeding 2% prevalence in the data set.
+
+The analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
+
+### Subset of 10 most prevalent medicines
+
+The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names based is made, ranked from highest prevalence to lowest. This list is then used to subset the cancer data by semi joining using ID and match between list and cancer data. Semi join is used in order to join row wise in the data.
 
 ```{r}
 
-analysis_data |>
-  select(Administration_type, API_amount, Count_Side_Effects, Count_Application, API_unit) |>
-  filter(Administration_type == "Injection" & API_unit == "IU") |>
-  ggplot(aes(
-    x = API_amount, 
-    y = Count_Side_Effects
-  )) +
-  geom_point(alpha = 0.7, size = 3) +  
-  labs(
-    title = "API Amount vs. Side Effects",
-    x = "API Amount",
-    y = "Number of Side Effects",
-    color = "Count of Applications"
-  ) +
-  theme_minimal()
+# Making list of 10 most prevalent drug ID's
+Prevalent_10_medicine_names <- cancer_data |>
+  # Sorting by unigue ID
+  group_by(ID) |>
+  # Finding prevalence of drugs
+  summarise(Proportion = n() / nrow(cancer_data)) |>
+  ungroup() |>
+  # Arranging with descending order
+  arrange(desc(Proportion)) |>
+  # Taking 10 most prevelant
+  slice_head(n = 10) 
+
+
+# Making subset of 10 most prevalent drug IDs
+Most_prevalent_medicines <- cancer_data |>
+  # Making subset by join using prevalence list
+  semi_join(Prevalent_10_medicine_names, 
+            by = "ID")  
+  
+
+# Viewing 10 most prevalent drug IDs
+Most_prevalent_medicines |>
+  distinct(ID, 
+           .keep_all = TRUE) |>
+  head(10)
+
 ```
 
+The subset shows the 10 most prevalent drugs related the cancer data. From the dimension of the tibble, 10 disitnct ID's appear
+
+## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
+
+The relationship between the unique medicine names and the number of side effects is investigated, as it is plausible, that a lower number of side effects might explain a higher usage, making the drug more common. As we only aim to investigate unique medicine names, we make sure to distinguish by this in the pipeline of plotting. As the medicines will carry the same API, active pharmaceutical ingredients, the number of side effects will not differ, making the subset valid. The administration type is furthermore highlighted for each drug, as this is also a plausible variable affecting popularity and consumption.
+
 ```{r}
-analysis_data |>
-  select(Administration_type, Count_Side_Effects) |>
+
+Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
+  # Sorting and grouping by medicine name 
+  distinct(Medicine_Name,
+           .keep_all = TRUE) |>
+  group_by(Medicine_Name) |> 
+  # Looking at unique numbers of side effects for each drug
+  distinct(Count_Side_Effects, 
+           .keep_all = TRUE) |>
+  # Plotting bar plot of side effect number pr. drug
+  ggplot(aes(x = Medicine_Name, 
+             y = Count_Side_Effects, 
+             fill=Administration_type)) + 
+  geom_bar(stat= 'identity', 
+           alpha = 0.8) + 
+  scale_fill_manual(values =c('#414487FF',
+                              '#DE9ED6FF'))+
+  labs(x = "Drug name",
+       y = "Number of side effects") + 
+  ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
+  theme_minimal() +
+  theme(legend.position = 'bottom') +
+  guides(fill=guide_legend(title="Adimnistration type")) 
+
+ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
+
+```
+
+The visualization only yields 8 different types of drug names, which is explained by one of the drugs, Anfoe, appearing three times out of the ten most prevalent, simply in different doses. Hence only 8 unique medicines exceed a prevalence of 2%. The distribution of side effects seems random, if not dominated by rater high number of side effects. The number of side effects does therefore not seem to be the cause of the popularity of the prevalent drugs.
+
+Furthermore, it appears, from the visualization, that administration type 'Injection' is related to \~75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
+
+A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend.
+
+```{r}
+Side_Effects_Administration_type <- cancer_data |>
+  # Using type of administration and side effect number from cancer data
+  select(Administration_type, 
+         Count_Side_Effects) |>
+  # Plotting density of side effects for each administration type 
   ggplot(aes(
     x = Count_Side_Effects, 
     y = as.factor(Administration_type),  
     fill = as.factor(Administration_type)
   )) +
+  # Including transparency due to overlap of density plots
   geom_density_ridges(alpha = 0.5) +
-  scale_fill_viridis_d() +
+  scale_fill_manual(values =c('#20A387FF',
+                              '#95D840FF',
+                              '#A1D99B',
+                              '#414487FF', 
+                              '#E6550D',
+                              '#FDE725FF',
+                              '#D6616B',
+                              '#DE9ED6FF' ,
+                              '#440154FF' ))  +
   theme_minimal() +
-  theme(legend.position = 'bottom') +
+  theme(legend.position = 'none') +
   labs(
     title = "Distribution of Side Effects by Administration Type",
     x = "Number of Side Effects",
     y = "Administration Type",
     fill = "Administration Type"
   )
+
+ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
 ```
 
-```{r}
-analysis_data |>
-  select(Application_type, ID, Count_Side_Effects) |>
-  filter(str_detect(Application_type, regex("cancer", ignore_case = TRUE))) |>
-  distinct() |>
-  slice_max(n, n = 10) 
-```
+The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence subset.
+
+Lastly, administration through capsules seems to be associated with a high nr. of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
+
+## Relationship between Prevalent Drugs and Reviews Level
+
+The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a tibble.
 
 ```{r}
-analysis_data |>
-  select(Application_type, ID) |>
-  filter(str_detect(Application_type, regex("cancer", ignore_case = TRUE))) |>
-  distinct() 
-  
+
+Most_prevalent_medicines |>
+  # Using ID to dinstinguish observations
+  group_by(ID) |> 
+  # Selecting variables of interest
+  distinct(ID, Medicine_Name, 
+           Classification_Review) |>
+  # Arranging data in alphabetical order 
+  arrange(Classification_Review) |>
+  head(10)
+
 ```
 
-```{r}
-analysis_data |>
-  select(Application_type, Administration_type) |>
-  filter(str_detect(Application_type, regex("cancer", ignore_case = TRUE))) |>
-  count(Application_type, sort = TRUE) |>
-  distinct() |>
-  group_by()
- 
-```
+The tibble shows 10 unique ID's, also found in the descriptive analysis, where we see the drug Anfoe appearing three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same density, respectively 4 and 5 times, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
