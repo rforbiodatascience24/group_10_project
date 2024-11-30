@@ -30,7 +30,7 @@ The analysis aims to investigate potential reasons explaining why these exact me
 
 ### Subset of 10 most prevalent medicines
 
-The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names based is made, ranked from highest prevalence to lowest. This list is then used to subset the cancer data by semi joining using ID and match between list and cancer data.
+The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names based is made, ranked from highest prevalence to lowest. This list is then used to subset the cancer data by semi joining using ID and match between list and cancer data. Semi join is used in order to join row wise in the data.
 
 ```{r}
 
