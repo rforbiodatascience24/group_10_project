@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="presentation_files/libs/clipboard/clipboard.min.js"></script>
-<script src="presentation_files/libs/quarto-html/tabby.min.js"></script>
-<script src="presentation_files/libs/quarto-html/popper.min.js"></script>
-<script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="Presentation_v2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Presentation_v2_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Presentation_v2_files/libs/quarto-html/popper.min.js"></script>
+<script src="Presentation_v2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Presentation_v2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Presentation_v2_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Presentation_v2_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="Presentation_v2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
-  <title>Project 10 presentation</title>
+  <title>Presentation_v2</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="Presentation_v2_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Presentation_v2_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -29,11 +29,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="Presentation_v2_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="Presentation_v2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Presentation_v2_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Presentation_v2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Presentation_v2_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -325,57 +325,76 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Project 10 presentation</h1>
+  <h1 class="title">Presentation_v2</h1>
   <p class="subtitle">Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643) and Malou Bech Jakobsen (s203515)</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="slide-1" class="slide level2">
-<h2>Slide 1</h2>
-<p>Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <a href="https://quarto.org/docs/presentations/" class="uri">https://quarto.org/docs/presentations/</a>.</p>
-</section>
-<section id="slide-2" class="slide level2">
-<h2>Slide 2</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes:</p>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
 <ul>
-<li>Content authored with markdown</li>
-<li>Output from executable code</li>
+<li><p>The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer’s disease, and bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.</p></li>
+<li><p>Variables: Medicine name, composition, Uses, side effects, manufacturer as well as how many poor, average and excellent reviews (%)</p></li>
 </ul>
-</section>
-<section id="slide-3" class="slide level2">
-<h2>Slide 3</h2>
-<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</div><div class="column" style="width:60%;">
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code># A tibble: 11,825 × 2
+   `Medicine Name`          Uses                                                
+   &lt;chr&gt;                    &lt;chr&gt;                                               
+ 1 Avastin 400mg Injection  Cancer of colon and rectum Non-small cell lung canc…
+ 2 Augmentin 625 Duo Tablet Treatment of Bacterial infections                   
+ 3 Azithral 500 Tablet      Treatment of Bacterial infections                   
+ 4 Ascoril LS Syrup         Treatment of Cough with mucus                       
+ 5 Aciloc 150 Tablet        Treatment of Gastroesophageal reflux disease (Acid …
+ 6 Allegra 120mg Tablet     Treatment of Sneezing and runny nose due to allergi…
+ 7 Avil 25 Tablet           Treatment of Allergic conditionsTreatment of Respir…
+ 8 Aricep 5 Tablet          Alzheimer's disease                                 
+ 9 Amoxyclav 625 Tablet     Treatment of Bacterial infections                   
+10 Atarax 25mg Tablet       Treatment of AnxietyTreatment of Skin conditions wi…
+# ℹ 11,815 more rows</code></pre>
+</div>
+</div>
 </div>
 </div>
 </section>
-<section id="slide-4" class="slide level2">
-<h2>Slide 4</h2>
+<section id="materials-and-methods" class="slide level2">
+<h2>Materials and Methods</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="cleaning">Cleaning</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="../results/flowdiagram.png" width="702"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<h3 id="augmentation">Augmentation</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="../results/flow_aug.png" width="708"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="slide-5" class="slide level2">
-<h2>Slide 5</h2>
+<section id="results" class="slide level2">
+<h2>Results</h2>
 </section>
-<section id="slide-6" class="slide level2">
-<h2>Slide 6</h2>
-</section>
-<section id="slide-7" class="slide level2">
-<h2>Slide 7</h2>
-</section>
-<section id="slide-8" class="slide level2">
-<h2>Slide 8</h2>
-</section>
-<section id="slide-9" class="slide level2">
-<h2>Slide 9</h2>
-</section>
-<section id="slide-10" class="slide level2">
-<h2>Slide 10</h2>
-</section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="discussion" class="slide level2">
+<h2>Discussion</h2>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
@@ -386,19 +405,19 @@
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="presentation_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="presentation_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Presentation_v2_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -558,12 +577,12 @@
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1800,
 
-        height: 700,
+        height: 900,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.1,
+        margin: 5.0e-2,
 
         math: {
           mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',

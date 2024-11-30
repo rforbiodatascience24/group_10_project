@@ -72,7 +72,7 @@ The relationship between the unique medicine names and the number of side effect
 
 ```{r}
 
-Most_prevalent_medicines |>
+Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
   # Sorting and grouping by medicine name 
   distinct(Medicine_Name,
            .keep_all = TRUE) |>
@@ -90,10 +90,12 @@ Most_prevalent_medicines |>
                               '#DE9ED6FF'))+
   labs(x = "Drug name",
        y = "Number of side effects") + 
-  ggtitle("Relationship between side effects and ten most commmon cancer drugs") +
+  ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
   theme_minimal() +
   theme(legend.position = 'bottom') +
   guides(fill=guide_legend(title="Adimnistration type")) 
+
+ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
 
 ```
 
@@ -104,7 +106,7 @@ Furthermore, it appears, from the visualization, that administration type 'Injec
 A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend.
 
 ```{r}
-cancer_data |>
+Side_Effects_Administration_type <- cancer_data |>
   # Using type of administration and side effect number from cancer data
   select(Administration_type, 
          Count_Side_Effects) |>
@@ -133,6 +135,8 @@ cancer_data |>
     y = "Administration Type",
     fill = "Administration Type"
   )
+
+ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
 ```
 
 The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence subset.
