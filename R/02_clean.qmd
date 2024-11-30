@@ -19,34 +19,37 @@ library("here")
 
 ## Loading Data
 
-Loading the tsv file from the data folder.
+Loading the TSV file from the data folder.
 
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
 data <- read_tsv(here("data/01_dat_load.tsv"))
 ```
 
-## Inspect Data
+## Inspection of Data
 
 The three rules for making a data set tidy must be satisfied. Each variable must have its own column, each observation have its own row, and each value have its own cell.
 
 ```{r}
 data |>
   View()
-
 ```
 
-It can be observed, from viewing the data, that multiple of the variables contain more than one value. Therefore, each value does not have its own cell which means the data is not tidy. It is further checked to see if there are any missing values in the data.
+It can be observed, from viewing the data, that multiple of the variables contain more than one value/observation. Therefore, each value does not have its own cell which means the data is not tidy. It is also checked whether there are any missing values in the data set.
 
 ```{r}
-data %>%
-  summarise(sum(is.na(.)))
+data |>
+  summarise(total_na = sum(is.na(data)))
 ```
 
-It is observed that there are no missing values and therefore the data is made tidy, by seperating the values into different variables.
+It can be observed that there are no missing values and therefore the data is made tidy by separating the values into different variables.
 
 ## Data Wrangling
 
-The variable "Uses" contains the many different diseases which the drug is being used for.
+### Making the Application Variable
+
+The variable "Uses" contains the many different diseases which the drugs are being used to treat.
 
 ```{r}
 data |>
@@ -54,7 +57,7 @@ data |>
   View()
 ```
 
-It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore this variable is split into different columns of applications, in order for each column to only contain one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
+It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore, this variable is split into different columns of applications, in order for each column to contain only one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
 
 ```{r}
 # Removing "Treatment of", "Prevention of", "Treatment and prevention of" in each row and anything in parenthensis to isolate types of usage.
@@ -82,7 +85,7 @@ clean_data |>
   print()
 ```
 
-As can be seen from the "Uses" of only unique observations, the data is not yet tidy. We would like to separate the usage types based on splitting at every encounter with capital letters. However, examples of abbreviations such as "HIV" is present in the data set and does not result in correct splitting. Therefore, the data is cleaned further by removing periods, backslash, and hyphens, as they do not convey any more information.
+As can be seen from the "Uses" of only unique observations, the data is not yet tidy. The usage types are separated based on splitting at every encounter with capital letters. However, examples of abbreviations such as "HIV" is present in the data set and does not result in correct splitting. Therefore, the data is cleaned further by removing periods, backslash, and hyphens, as they do not convey any additional information.
 
 ```{r}
 clean_data <- clean_data |> 
@@ -145,54 +148,31 @@ clean_data <- clean_data |>
 
 ```
 
-To ensure the right amount of application variables are made in the code above, we check if there is anything in the specific column other than NAs.
-
-It isn't until application number 10 that there are only NAs. Therefore 9 application columns are sufficient.
-
-It is interesting to investigate how many unique usages there are for the drugs. This is done in the code below where all application variables are put into one variable called "Observations". All duplicate observations are removed by using the "distinct" command, and all NAs are excluded using "filter".
-
-(this code should probably be moved to augment og describe doc)
+To ensure the right amount of application variables are made in the code above it is checked whether there is anything in the column other than NAs.
 
 ```{r}
-
-observations_count <- clean_data |>
-  select(str_c("Application_",
-               seq(1,8))) |>
-  pivot_longer(cols = everything(), 
-               values_to = "Observations") |> 
-  filter(!is.na(Observations)) |> 
-  print()
+clean_data |>
+  summarize(sum(!is.na(`Application_8`)))
 ```
 
-Here we see that there are a total of 18,672 observations if the observations are not collected into unique types of usage. This is done in the following code by the use of distinct:
+It isn't until application number 9 that there are only NAs. Therefore 8 application columns are sufficient.
+
+### Making the API Variables
+
+Likewise, the variable Medicine Name contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
 
 ```{r}
-
-# Print the unique observations
-
-unique_observations <- observations_count |> 
-  distinct(Observations) |> 
-  filter(!is.na(Observations))
-
-print(unique_observations)
-  
-```
-
-There are a total of 628 unique usages for the drugs.\
-
-Furthermore, the variable "Medicine Name" also contains multiple values in each cell. It carries information about both the name of the drug, the amount of drug administrated, and the administration route. This information should be split into separate columns.
-
-```{r}
-
 # Printing the variabe "Medicine Name"
 clean_data |>
   select('Medicine Name') 
 
 ```
 
-Because there are different routes of administration the units for the dose are also different. For instance tablets are given in mg, a cream or a gel in percentages, Syrups in ml, a Penfill is given in IU (biological activity) etc.
+Because there are different routes of administration the units for the dose are also different. For instance tablets are given in mg, a cream or a gel in percentages, syrups in ml, a Penfill in IU (biological activity) etc.
 
-Information about the dose is also available in the variable "Composition", and in this variable it is more detailed. In the "Medicine Name" variable it isn't always explained which unit, the number is given in. Because information about the dose can be found in both variables, but the unit is unsure in "Medicine Name", information about the dose is just removed and discarded from this variable.
+Information about the dose is also available in the variable "Composition", and in this variable it is more detailed. In the "Medicine Name" variable it isn't always explained which unit, the amount is given in. Because information about the dose can be found in both variables, but the unit is unsure in "Medicine Name", the Composition variable is used to split based on name, amount, and unit.
+
+In the Composition variable it can be seen that there are multiple active pharmaceutical ingredients (APIs) that the medication is made of which are separated by pluses. This fact is utilized in order to split the Composition variable into columns of APIs.
 
 ```{r}
 clean_data <- clean_data |>
@@ -204,11 +184,12 @@ clean_data <- clean_data |>
   unnest_wider(API, names_sep = "_")
 
 # Delete the row "Composition" that has now been unnested to multiple variables
-
 clean_data <- clean_data |>
   select(-Composition)
 
 ```
+
+The data has now been split into different APIs. However, there is still information about both the name, the amount, and the units of the amount of drug for each API, and this should be split as well.
 
 ```{r}
 clean_data <- clean_data |> 
@@ -235,9 +216,11 @@ clean_data <- clean_data |>
 clean_data <- clean_data |>
   select(-starts_with("API_"))
 
-
-
 ```
+
+Now, variables have been made for both the API name, amount, and unit in the clean data.
+
+### Making Administration_type Variable
 
 In the Medicine Name variable information about the type of administration for the specific drug is given. This information should be separated into its own variable called Administration_type. There is no apparent pattern in the Medicine Name variable in terms of application type and how to distinguish this from the other information in Medicine Name. Therefore, a more manual approach is taken where the raw data is analyzed for different administration types, where the name, of each type found, is added to a vector.\
 A search is done for the words in the vector and if a word appears in Medicine Name it is added to the new variable Administration_type.
@@ -295,7 +278,8 @@ clean_data |>
 
 ```
 
-To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. In the end there were 336 observations left which were NAs, these different administration types were changed to "Other".
+To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. \
+In the end there were 336 observations left which were NAs, and these administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into an categories/observations called "Other".
 
 ```{r}
 
@@ -333,7 +317,12 @@ clean_data |>
 
 ```
 
+### Tidying the Medicine Name Variable
+
+The Medicine Name variable currently contains information about both name, amount, unit, and administration type of the drugs, and these columns have already been cleaned. Therefore, only the name of the medication needs to stay in this column. This is done by extracting the first word of the column up to a space or a number.
+
 ```{r}
+# Extracts the first word of the variable by stopping when a number or a space is encountered
 clean_data <- clean_data |>
   mutate(
     `Medicine Name` = str_extract(`Medicine Name`, "^[^0-9 ]+"
@@ -342,11 +331,9 @@ clean_data <- clean_data |>
 
 ```
 
-The last 336 administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into others.
+### Splitting side effects into separate columns
 
-### Splitting side effects into columns for each, by captial letter
-
-All the side effects from the various medicines are collected in a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters and words that only consist of capital letters are changed to lower case, so "Abnormal ACG" becomes "Abnormal acg"
+All the side effects from the various medications are collected into a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters and words that only consist of capital letters are changed to lower case, so "Abnormal ACG" becomes "Abnormal acg"
 
 ```{r}
 clean_data <- clean_data |> 
@@ -386,7 +373,7 @@ clean_data <- clean_data |>
   select(-`Side_effects`)
 ```
 
-To ensure that the side effects can be factorized and compared are trailing spaces removed
+To ensure that the side effects can be factorized and compared trailing spaces are removed.
 
 ```{r}
 # Removes whitespaces from the end of the data string.
@@ -395,14 +382,19 @@ clean_data <- clean_data |>
                 ~ str_trim(.x, side = "right")))
 ```
 
-```{r}
-# Removing columns we do not need anymore.
+### Removing URL variable
 
+The variable Image URL contains an URL leading to an image of the medication and the packaging of it. This variable is not needed because it is not relavant to make any analysis or plots of this data. Therefore, it is removed underneath.
+
+```{r}
+# Removing Image URL column
 clean_data <- clean_data |>
   select(-`Image URL`)
 ```
 
-### Changing names of variables to same style
+### Changing Names of Variables to the Same Style
+
+In the former parts the variables have been split into separate variables, all with new names in a style using "\_" instead of spaces. There are currently four columns in the data set not in this style and this is changed to ensure uniformity.
 
 ```{r}
 clean_data <- clean_data |> 
@@ -416,7 +408,9 @@ clean_data <- clean_data |>
   )
 ```
 
-## Changing to tsv file
+### Changing to TSV File
+
+Lastly, the data is stored as a TSV file in the data folder for later use.
 
 ```{r}
 dir_save <- here("data")
