@@ -3,30 +3,53 @@
 ```{r, warning=FALSE}
 #| message: false
 
-# Loading the clean data tsv file 
+# Clearing environment
+rm(list=ls())
+
+# Loading the augmented data tsv file 
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 ```
 
+Another variable to investigate is the manufacturer's influence on review level. The data is subset into the top six manufacturers with the most products. The distribution of review levels of the products that each manufacturer produces is then shown in a bar plot.
+
 ```{r}
 # Step 1: Get the top 6 manufacturers with the most products
-top_manufacturers <- cancer_data %>%
-  group_by(Manufacturer) %>%  # Group by manufacturer
-  summarise(product_count = n()) %>%  # Count the number of products for each manufacturer
-  arrange(desc(product_count)) %>%  # Sort by the product count in descending order
+top_manufacturers <- cancer_data |> 
+  group_by(Manufacturer) |>   # Group by manufacturer
+  summarise(product_count = n()) |>   # Count the number of products for each manufacturer
+  arrange(desc(product_count)) |>   # Sort by the product count in descending order
   slice_head(n = 6)  # Select the top 6 manufacturers
 
-# Step 2: Filter the original dataset to include only the top 6 manufacturers
-cancer_data_selected <- cancer_data %>%
-  filter(Manufacturer %in% top_manufacturers$Manufacturer)
-# Create the plot
-ggplot(cancer_data_selected, aes(x = Classification_Review, fill = Classification_Review)) +
-  geom_bar(stat = "count", show.legend = FALSE) + 
-  facet_wrap(~ Manufacturer) + 
-  labs(x = "Classification Review", y = "Count", title = "Counts of Classification Reviews by Manufacturer") +
-  theme_minimal() +  # Apply a minimal theme
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+# Step 2: Retaining only the rows in orignal cancer data set where manufacturer is one of the top 6 manufacturers
+cancer_data_selected <- cancer_data |> 
+  semi_join(top_manufacturers, by = "Manufacturer")
+
+
+# Step 3: Create bar plot
+cancer_data_selected |>   # Making Classification_Review into factor
+  mutate(Classification_Review = factor(Classification_Review, 
+                                        levels = c("Poor", 
+                                                   "Average",
+                                                   "Excellent"))) |> 
+  ggplot(aes(x = Classification_Review, 
+             fill = Classification_Review)) +
+    geom_bar(stat = "count", 
+             show.legend = FALSE) + 
+    facet_wrap(~ Manufacturer) + 
+    scale_fill_manual(values = c("Poor" = "#F8766D",
+                                 "Average" = "#619CFF",
+                                 "Excellent" = "#00BA38")) +
+    labs(x = "Review Classification", 
+         y = "Count", 
+         title = "Distribution of Review Classification of Product from Top Six Manufacturers") +
+    theme_minimal() +  # Apply a minimal theme
+    theme(axis.text.x = element_text(angle = 45, 
+                                     hjust = 1))  # Rotate x-axis labels for readability
 
 ```
+
+From the bar plot it can be seen that there is no apparent correlation between being one of the top producers and having a higher number of excellent reviews.
 
 ```{r}
 library(dplyr)
