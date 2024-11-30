@@ -43,7 +43,7 @@ data |>
 ::: {.column width="50%"}
 ### Cleaning
 
-```{r, fig.width=10, fig.height=6}
+```{r, }
 image_path <- here("results", "flowdiagram.png")
 
 include_graphics(image_path)
@@ -53,7 +53,7 @@ include_graphics(image_path)
 ::: {.column width="50%"}
 ### Augmentation
 
-```{r, fig.width=10, fig.height=6}
+```{r}
 image_path <- here("results", "flow_aug.png")
 
 include_graphics(image_path)
@@ -62,5 +62,23 @@ include_graphics(image_path)
 :::
 
 ## Results
+
+::: columns
+::: {.column width="50%"}
+```{r}
+image_path <- here("results", "Most_prevalent_medicines_plot.png")
+
+include_graphics(image_path)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+image_path <- here("results", "Side_Effects_Administration_type.png")
+
+include_graphics(image_path)
+```
+:::
+:::
 
 ## Discussion
