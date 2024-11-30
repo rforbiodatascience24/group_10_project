@@ -4,9 +4,10 @@ format: html
 editor: visual
 ---
 
-## Analysis of 
+## Analysis of
 
 ```{r}
+rm(list=ls())
 library(tidyverse)
 ```
 
@@ -23,32 +24,35 @@ cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 -   hvor mange gange går applications igen (plot)
 
 ```{r}
+
 cancer_data |> 
-ggplot(aes(x = Count_Side_Effects,
-           y = `Review_%`,
-           color = Review_level)) +
-  geom_point() +
+  mutate(Review_level = factor(Review_level, 
+                               levels = c("Poor_Review_%", 
+                                          "Average_Review_%", 
+                                          "Excellent_Review_%"))) |> 
+  ggplot(aes(x = Count_Side_Effects,
+             y = `Review_%`,
+             fill = Review_level)) +
+  geom_point(shape = 21, size = 3, color = "black", alpha = 0.5) + 
   labs(x = "Count of Side Effects", 
        y = "Review Percentage", 
        title = "Side Effects vs Review Percentage by the Review Level") +
   theme_minimal() +
   facet_wrap(~ Review_level,
-             labeller = as_labeller(c("Average_Review_%" = "Average Review", 
-                                      "Excellent_Review_%" = "Excellent Review", 
-                                      "Poor_Review_%" = "Poor Review")))+
-  scale_color_manual(values = c("Poor_Review_%" = "red", 
-                                "Average_Review_%" = "blue", 
-                                "Excellent_Review_%" = "green")) +
+             labeller = as_labeller(c("Poor_Review_%" = "Poor Review", 
+                                      "Average_Review_%" = "Average Review", 
+                                      "Excellent_Review_%" = "Excellent Review"))) +     
+  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D", 
+                                "Average_Review_%" = "#619CFF", 
+                                "Excellent_Review_%" = "#00BA38")) +
   theme(panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        legend.position="none") # Removing legend
+        legend.position = "none") 
 
 
+```
 
-
-
-
-
+```         
 ```
 
 From this plot we do not see a tendency of drugs with fewer side effects having a better review level. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).

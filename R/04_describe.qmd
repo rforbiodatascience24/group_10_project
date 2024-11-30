@@ -13,8 +13,8 @@ Loading the relevant libraries.
 ```{r}
 rm(list=ls())
 library("tidyverse")
-#library("dplyr")
 library("readr")
+source("99_proj_func.R")
 ```
 
 ### Loading Long Format, Augmented, Clean Data
@@ -104,11 +104,7 @@ The Count_Side_Effects variable is investigated to find the average number and m
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-cancer_data |> 
-  summarise(Mean_Side_Effect_count = mean(Count_Side_Effects), 
-            Median_Side_Effect_count = median(Count_Side_Effects),
-            Max_Side_Effect_count = max(Count_Side_Effects), 
-            Min_Side_Effect_count = min(Count_Side_Effects))
+SummaryStatistics(cancer_data, Count_Side_Effects)
 
 ```
 
@@ -120,11 +116,7 @@ Now, the API_Count variable is investigated to look into the maximum, minimum, m
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-cancer_data |> 
-  summarise(Mean_API_count = mean(Count_API), 
-            Median_API_count = median(Count_API),
-            Max_API_count = max(Count_API), 
-            Min_API_count = min(Count_API))
+SummaryStatistics(cancer_data, Count_API)
 
 ```
 
@@ -136,11 +128,7 @@ Lastly, the minimum, maximum, median, and average number of applications are fou
 
 ```{r}
 # Summarizing the mean, maximum, and minimum for the Count_Side_Effects variable
-cancer_data |> 
-  summarise(Mean_Application_count = mean(Count_Application), 
-            Median_Application = median(Count_Application),
-            Max_Application_count = max(Count_Application), 
-            Min_Application_count = min(Count_Application))
+SummaryStatistics(cancer_data, Count_Application)
 
 ```
 
