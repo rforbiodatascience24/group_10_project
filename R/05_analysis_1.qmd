@@ -4,46 +4,46 @@ format: html
 editor: visual
 ---
 
-## Analysis of
+## Analysis of 
 
 ```{r}
 rm(list=ls())
 library(tidyverse)
 ```
 
-This analysis aims to investigate the reasons behind the excellent and poor reviews for the cancer drugs. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews. The three review categories has been shown in a scatter plot comparing number of side effects (x-axis) and the review percentage (y-axis).
+This analysis aims to investigate the reasons behind the excellent and poor reviews for the cancer drugs. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews. Firstly, the cancer data is loaded.
 
 ```{r, warning=FALSE}
 #| message: false
 
-# Loading the clean data tsv file 
+# Loading the augmented data tsv file 
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 ```
 
--   hvor mange gange går applications igen (plot)
+The three review levels are shown in three scatter plots comparing number of side effects (x-axis) and the review percentages (y-axis).
 
 ```{r}
 
 cancer_data |> 
-  mutate(Review_level = factor(Review_level, 
+  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
                                levels = c("Poor_Review_%", 
                                           "Average_Review_%", 
                                           "Excellent_Review_%"))) |> 
   ggplot(aes(x = Count_Side_Effects,
              y = `Review_%`,
              fill = Review_level)) +
-  geom_point(shape = 21, size = 3, color = "black", alpha = 0.5) + 
+  geom_point(shape = 21, size = 3, color = "black") + 
   labs(x = "Count of Side Effects", 
        y = "Review Percentage", 
-       title = "Side Effects vs Review Percentage by the Review Level") +
+       title = "Number of Side Effects vs Review Percentage by Review Level") +
   theme_minimal() +
   facet_wrap(~ Review_level,
              labeller = as_labeller(c("Poor_Review_%" = "Poor Review", 
                                       "Average_Review_%" = "Average Review", 
                                       "Excellent_Review_%" = "Excellent Review"))) +     
-  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D", 
-                                "Average_Review_%" = "#619CFF", 
+  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
+                                "Average_Review_%" = "#619CFF",
                                 "Excellent_Review_%" = "#00BA38")) +
   theme(panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -52,67 +52,61 @@ cancer_data |>
 
 ```
 
-```         
-```
-
-From this plot we do not see a tendency of drugs with fewer side effects having a better review level. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).
+From this plot we do not see a tendency of drugs with fewer side effects having a better review classification or vice versa. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).
 
 ```{r}
-
-ggplot(cancer_data,
-       aes(x = Administration_type,
-           y = `Review_%`,
-           color = Administration_type)) +
-  geom_point() +
-  labs(x = "Count of Side Effects", y = "Review Percentage", title = "Side Effects vs Review Percentage by the Review Level") +
-  
+cancer_data |> 
+  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
+                               levels = c("Poor_Review_%", 
+                                          "Average_Review_%", 
+                                          "Excellent_Review_%"))) |> 
+  ggplot(aes(x = Administration_type, 
+             y = `Review_%`, 
+             fill = Review_level)) +
+  geom_boxplot(alpha=0.7,
+               show.legend = FALSE) +
+  labs(x = "Administration Type", 
+       y = "Review Percentage", 
+       title = "Review Percentage by Administration Type and Review Level") +
   theme_minimal() +
-  facet_wrap(~ Review_level)+
-  theme(panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
-        panel.grid.minor.x = element_blank(),  # Remove minor vertical grid lines
-        axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-```
-
-theme(panel.grid.major.x = element_blank(),
-
-panel.grid.minor.x = element_blank(),
-
-axis.text.x = element_text(angle = 45, hjust = 1)) \# Rotate x-axis labels 45
-
-```{r}
-ggplot(cancer_data, aes(x = Administration_type, y = `Review_%`, fill = Review_level)) +
-  geom_boxplot(alpha=0.7) +  # Create a violin plot for each Review_level
-  labs(x = "Administration Type", y = "Review Percentage", title = "Review Percentage by Administration Type and Review Level") +
-  theme_minimal() +  # Apply a minimal theme
-  facet_wrap(~ Review_level) +  # Create separate plots for each Review_level
-  theme(panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
-        panel.grid.minor.x = element_blank(),  # Remove minor vertical grid lines
-        axis.text.x = element_text(angle = 45, hjust = 1))
+  facet_wrap(~ Review_level,  # Create separate plots for each Review_level
+             labeller = as_labeller(c("Poor_Review_%" = "Poor Review", 
+                                    "Average_Review_%" = "Average Review", 
+                                    "Excellent_Review_%" = "Excellent Review"))) + 
+  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
+                               "Average_Review_%" = "#619CFF",
+                               "Excellent_Review_%" = "#00BA38")) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x = element_text(angle = 45, 
+                                   hjust = 1))
 
 ```
 
 ```{r}
-# Step 1: Filter out levels with fewer than 10 observations
-cancer_data_filtered <- cancer_data %>%
-  group_by(Review_level) %>%
-  filter(n() > 1000) %>%  # Keep only groups with more than 10 observations
-  ungroup()  # Ungroup to avoid any group-specific operations in the plot
-
-# Step 2: Create the plot
-ggplot(cancer_data_filtered, aes(x = Administration_type, y = `Review_%`, fill = Review_level)) +
-  geom_boxplot(alpha = 0.6) +  # Create a boxplot for each Review_level
-  labs(x = "Administration Type", y = "Review Percentage", title = "Review Percentage by Administration Type and Review Level") +
-  theme_minimal() +  # Apply a minimal theme
-  facet_wrap(~ Review_level) +  # Create separate plots for each Review_level
-  theme(
-    panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
-    panel.grid.minor.x = element_blank(),  # Remove minor vertical grid lines
-    axis.text.x = element_text(angle = 45, hjust = 1)  # Rotate x-axis labels for readability
-  )
+cancer_data |> 
+  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
+                               levels = c("Poor_Review_%", 
+                                          "Average_Review_%", 
+                                          "Excellent_Review_%"))) |>
+  ggplot(aes(x = Administration_type, 
+             y = `Review_%`, 
+             fill = Review_level)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(x = "Administration Type", 
+       y = "Review Percentage", 
+       title = "Review Percentage of Administration Types by Review Level",
+       fill = "Review Level") +
+  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
+                               "Average_Review_%" = "#619CFF",
+                               "Excellent_Review_%" = "#00BA38"),
+                    labels = c("Poor", 
+                               "Average", 
+                               "Excellent")) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text.x = element_text(angle = 45, 
+                                   hjust = 1),
+        legend.position = "bottom")
 ```
-
-### Bonus
-
--   hvor mange gange kan et bestemt drug f.eks. behandle kræft (eller anden sygdom) - her kan application bruges
