@@ -10,18 +10,14 @@ format:
 
 ## Introduction
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
-
 -   The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.
 
 -   Variables: Medicine name, composition, Uses, side effects, manufacturer as well as how many poor, average and excellent reviews (%)
-
 :::
 
 ::: {.column width="60%"}
-
 ```{r}
 rm(list=ls())
 library("tidyverse")
@@ -38,22 +34,33 @@ data |>
   select(`Medicine Name`, Uses) |>
   print()
 ```
-
 :::
-
-::::
+:::
 
 ## Materials and Methods
 
+::: columns
+::: {.column width="50%"}
+### Cleaning
 
-```{r}
-here("/results/flowchart.png")
-print()
+```{r, fig.width=10, fig.height=6}
+image_path <- here("results", "flowdiagram.png")
+
+include_graphics(image_path)
 ```
+:::
 
+::: {.column width="50%"}
+### Augmentation
+
+```{r, fig.width=10, fig.height=6}
+image_path <- here("results", "flow_aug.png")
+
+include_graphics(image_path)
+```
+:::
+:::
 
 ## Results
 
 ## Discussion
-
-
