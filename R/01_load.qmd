@@ -19,7 +19,7 @@ library(readr)
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
-raw_dir <- here("_raw/")
+raw_dir <- here("data/_raw")
 data_dir <- here("data/")
 
 if (!dir.exists(raw_dir)) {
