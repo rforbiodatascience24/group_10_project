@@ -16,8 +16,9 @@ library(readr)
 
 ## Loading of Raw Data from URL
 
-```{r}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```{r setup, include=FALSE}
+# Ignore warning messages
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 raw_dir <- here("_raw/")
 data_dir <- here("data/")
