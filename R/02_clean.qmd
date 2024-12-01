@@ -35,7 +35,7 @@ The three rules for making a data set tidy must be satisfied. Each variable must
 
 ```{r}
 data |>
-  View()
+  head()
 ```
 
 It can be observed, from viewing the data, that multiple of the variables contain more than one value/observation. Therefore, each value does not have its own cell which means the data is not tidy. It is also checked whether there are any missing values in the data set.
@@ -56,7 +56,7 @@ The variable "Uses" contains the many different diseases which the drugs are bei
 ```{r}
 data |>
   select(Uses) |>
-  View()
+  head()
 ```
 
 It can be seen that one observation can contain multiple different ways the drug is utilized. Therefore, this variable is split into different columns of applications, in order for each column to contain only one type of usage. First is "Treatment of", "Prevention of", "Treatment and prevention of" and anything in parenthesis removed.
