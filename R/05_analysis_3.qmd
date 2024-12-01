@@ -27,7 +27,9 @@ An interesting relation to investigate is the manufacturer's influence on review
 ```{r}
 # Step 1: Get the top 6 manufacturers with the most products
 top_manufacturers <- cancer_data |> 
-  group_by(Manufacturer) |>   # Group by manufacturer
+  distinct(ID,   # Only have one row for each product
+           .keep_all = TRUE) |> 
+  group_by(Manufacturer) |>
   summarise(product_count = n()) |>   # Count the number of products for each manufacturer
   arrange(desc(product_count)) |>   # Sort by the product count in descending order
   slice_head(n = 6)  # Select the top 6 manufacturers
@@ -35,6 +37,8 @@ top_manufacturers <- cancer_data |>
 
 # Step 2: Retaining only the rows in orignal cancer data set where manufacturer is one of the top 6 manufacturers
 cancer_data_selected <- cancer_data |> 
+  distinct(ID,
+           .keep_all = TRUE) |> 
   semi_join(top_manufacturers, by = "Manufacturer")
 
 # Step 3: Reorder Classification_Review factor to ensure "Average" is the middel bar
@@ -76,6 +80,8 @@ In a similar manner the top six used APIs were investigated. Perhaps there is a 
 # Step 1: Get the top 6 most used APIs
 top_API <- cancer_data |> 
   filter(!is.na(API_name)) |>   # Exclude rows where API_name is NA
+  distinct(ID,   # Only have one row for each product
+           .keep_all = TRUE) |> 
   group_by(API_name) |>   # Group by API_name
   summarise(API_count = n()) |>   # Count the number of products for each API
   arrange(desc(API_count)) |>   # Sort by API count in descending order
@@ -83,6 +89,8 @@ top_API <- cancer_data |>
 
 # Step 2: Retaining only the rows in orignal cancer data set where API is one of the top 6 used APIs and filtering out any missing API names
 cancer_data_selected <- cancer_data |> 
+  distinct(ID,   # Only have one row for each product
+           .keep_all = TRUE) |> 
   semi_join(top_API, by = "API_name") |> 
   filter(!is.na(API_name))  # Exclude NA API names
 
@@ -94,7 +102,8 @@ cancer_data_selected <- cancer_data_selected |>
                                                   "Average", 
                                                   "Excellent")))
 # Step 4: Create the bar plot
-API_bar_plot <- cancer_data_selected |> 
+#API_bar_plot <- 
+  cancer_data_selected |> 
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
