@@ -4,14 +4,14 @@ format: html
 editor: visual
 ---
 
-## Analysis of
+## Analysis of Review Levels
 
 ```{r}
 rm(list=ls())
 library(tidyverse)
 ```
 
-This analysis aims to investigate the reasons behind the excellent and poor reviews for the cancer drugs. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews. Firstly, the cancer data is loaded.
+This analysis aims to investigate the probable causes behind the excellent, average, and poor reviews for the cancer drugs. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews. Firstly, the cancer data is loaded.
 
 ```{r, warning=FALSE}
 #| message: false
@@ -25,15 +25,15 @@ The three review levels are shown in three scatter plots comparing number of sid
 
 ```{r}
 
-cancer_data |> 
+Scatter_Side_Effects_Review <- cancer_data |> 
     distinct(ID,
              Review_level,
            .keep_all = TRUE) |> 
   mutate(Review_level = factor(Review_level,   #Deciding the order appearing
                                levels = c("Poor_Review_%", 
                                           "Average_Review_%", 
-                                          "Excellent_Review_%"))) |> 
-  Scatter_Side_Effects_Review <- ggplot(aes(x = Count_Side_Effects,
+                                          "Excellent_Review_%")))
+  ggplot(The_cancer_data,aes(x = Count_Side_Effects,
              y = `Review_%`,
              fill = Review_level)) +
   geom_point(shape = 21, size = 3, color = "black") + 
@@ -50,9 +50,11 @@ cancer_data |>
                                 "Excellent_Review_%" = "#00BA38")) +
   theme(panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        legend.position = "none") 
-ggsave(here("results/Scatter_Side_Effects_Review_all.png"), plot = Scatter_Side_Effects_Review, width = 6, height = 4)
-
+        legend.position = "none")
+  
+#ggsave(here("results/Scatter_Side_Effects_Review_all.png"), plot = Scatter_Side_Effects_Review, width = 6, height = 4)
+  
+print(Scatter_Side_Effects_Review)
 
 ```
 
@@ -60,95 +62,143 @@ From this plot we do not see a tendency of drugs with fewer side effects having 
 
 ```{r}
 
-library(ggplot2)
-library(dplyr)
-
 # Filter the data to remove duplicate IDs for each Administration_type
-plot_data_poor <- cancer_data %>%
-  filter(Review_level == "Poor_Review_%") %>%
-  distinct(ID, Administration_type, .keep_all = TRUE)  # Keep only the first occurrence of each ID-Administration pair
+Poor_review_distinct_data <- cancer_data |> 
+  filter(Review_level == "Poor_Review_%") |> 
+  distinct(ID, Administration_type, .keep_all = TRUE) 
 
 # Count the number of unique observations per Administration_type
-count_data <- plot_data_poor %>%
-  group_by(Administration_type) %>%
-  summarise(count = n_distinct(ID)) %>%
-  ungroup()
-
-# Merge the count data with the plot data
-plot_data_poor <- left_join(plot_data_poor, count_data, by = "Administration_type")
-
-# Create a new variable to fill the boxplot based on the count being greater than 3
-plot_data_poor <- plot_data_poor %>%
-  mutate(fill_value = ifelse(count > 3, "More than 3 obs", "Less than 3 obs"))
-
-# Create the plot for Poor Review
-p_poor <- ggplot(plot_data_poor, aes(x = Administration_type, y = `Review_%`, fill = fill_value)) +
-  geom_boxplot(alpha = 0.7) +
-  labs(x = "Administration Type", y = "Review Percentage", title = "Poor Review") +
-  scale_fill_manual(values = c("More than 3 obs" =  "#F8766D", "Less than 3 obs" = "lightgrey"), 
-                    name = "Count Category") +  # Add legend title
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
-  # Add the count of observations to the x-axis labels
-  scale_x_discrete(labels = function(x) {
-    counts <- count_data$count[count_data$Administration_type %in% x]
-    paste(x, " (n=", counts, ")", sep = "")
-  })
-
-# Print the plot
-print(p_poor)
-
-
-
-```
-
-```{r}
-p_avg <- ggplot(subset(cancer_data, Review_level == "Average_Review_%"), 
-                aes(x = Administration_type, y = `Review_%`, fill = Review_level)) +
-  geom_boxplot(alpha = 0.7) +
-  labs(x = "Administration Type", y = "Review Percentage", title = "Average Review") +
-  scale_fill_manual(values = c("Average_Review_%" = "#619CFF")) +
-  theme_minimal() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-print(p_avg)
-```
-
-```{r}
-
-# Filter the data to remove duplicate IDs for each Administration_type
-plot_data_excellent <- cancer_data %>%
-  filter(Review_level == "Excellent_Review_%") %>%
-  distinct(ID, Administration_type, .keep_all = TRUE)  # Keep only the first occurrence of each ID-Administration pair
-
-# Count the number of unique observations per Administration_type
-count_data <- plot_data_excellent |> 
+count_data <- Poor_review_distinct_data |> 
   group_by(Administration_type) |> 
   summarise(count = n_distinct(ID)) |> 
   ungroup()
 
 # Merge the count data with the plot data
-plot_data_excellent <- left_join(plot_data_excellent, count_data, by = "Administration_type")
+Poor_review_distinct_data <- left_join(Poor_review_distinct_data, count_data, by = "Administration_type")
 
 # Create a new variable to fill the boxplot based on the count being greater than 3
-plot_data_excellent <-plot_data_excellent %>%
-  mutate(fill_value = ifelse(count > 3, "More than 3 obs", "Less than 3 obs"))
+Poor_review_distinct_data <-Poor_review_distinct_data |> 
+  mutate(fill_value = ifelse(count > 3, "More than 3 obs", "3 or less obs"))
 
 # Create the plot for Poor Review
-p_excellent <- ggplot(plot_data_excellent, aes(x = Administration_type, y = `Review_%`, fill = fill_value)) +
+Poor_review_boxplot <- ggplot(Poor_review_distinct_data,
+                                   aes(x = Administration_type,
+                                       y = `Review_%`,
+                                       fill = fill_value)) +
   geom_boxplot(alpha = 0.7) +
-  labs(x = "Administration Type", y = "Review Percentage", title = "Excellent Review") +
-  scale_fill_manual(values = c("More than 3 obs" =  "#F8766D", "Less than 3 obs" = "lightgrey"), 
-                    name = "Count Category") +  # Add legend title
+  labs(x = "Administration Type",
+       y = "Review Percentage",
+       title = "Poor Review Percentage for Administration Types", 
+       fill = "Count category") +
+  scale_fill_manual(values = c("More than 3 obs" =  "#F8766D",
+                               "3 or less obs" = "lightgrey")) +
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
-  # Add the count of observations to the x-axis labels
-  scale_x_discrete(labels = function(x) {
-    counts <- count_data$count[count_data$Administration_type %in% x]
-    paste(x, " (n=", counts, ")", sep = "")
-  })
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1))   
+  # scale_x_discrete(labels = function(x) {
+  #   counts <- count_data$count[count_data$Administration_type %in% x]
+  #   paste(x, " (n=", counts, ")", sep = "")
 
-ggsave(here("results/boxplot_Excellent_Administration_type.png"), plot = p_excellent, width = 6, height = 4)
+  #})
+
+
 # Print the plot
-print(p_excellent)
+print(Poor_review_boxplot)
+
+
+
+```
+
+```{r}
+# Filter the data to remove duplicate IDs for each Administration_type
+Average_review_distinct_data <- cancer_data |> 
+  filter(Review_level == "Average_Review_%") |> 
+  distinct(ID, Administration_type, .keep_all = TRUE) 
+
+# Count the number of unique observations per Administration_type
+count_data <- Average_review_distinct_data |> 
+  group_by(Administration_type) |> 
+  summarise(count = n_distinct(ID)) |> 
+  ungroup()
+
+# Merge the count data with the plot data
+Average_review_distinct_data <- left_join(Average_review_distinct_data, count_data, by = "Administration_type")
+
+# Create a new variable to fill the boxplot based on the count being greater than 3
+Average_review_distinct_data <-Average_review_distinct_data |> 
+  mutate(fill_value = ifelse(count > 3, "More than 3 obs", "3 or less obs"))
+
+# Create the plot for Poor Review
+Average_review_boxplot <- ggplot(Average_review_distinct_data ,
+                                   aes(x = Administration_type,
+                                       y = `Review_%`,
+                                       fill = fill_value)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(x = "Administration Type",
+       y = "Review Percentage",
+       title = "Average Review Percentage for Administration Types", 
+       fill = "Count category") +
+  scale_fill_manual(values = c("More than 3 obs" = "#619CFF",
+                               "3 or less obs" = "lightgrey")) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1))   
+  # scale_x_discrete(labels = function(x) {
+  #   counts <- count_data$count[count_data$Administration_type %in% x]
+  #   paste(x, " (n=", counts, ")", sep = "")
+
+  #})
+
+
+# Print the plot
+print(Average_review_boxplot)
+
+```
+
+```{r}
+
+# Filter the data to remove duplicate IDs for each Administration_type
+excellent_review_distinct_data <- cancer_data |> 
+  filter(Review_level == "Excellent_Review_%") |> 
+  distinct(ID, Administration_type, .keep_all = TRUE) 
+
+# Count the number of unique observations per Administration_type
+count_data <- excellent_review_distinct_data |> 
+  group_by(Administration_type) |> 
+  summarise(count = n_distinct(ID)) |> 
+  ungroup()
+
+# Merge the count data with the plot data
+excellent_review_distinct_data <- left_join(excellent_review_distinct_data, count_data, by = "Administration_type")
+
+# Create a new variable to fill the boxplot based on the count being greater than 3
+excellent_review_distinct_data <-excellent_review_distinct_data |> 
+  mutate(fill_value = ifelse(count > 3, "More than 3 obs", "3 or less obs"))
+
+# Create the plot for Poor Review
+excellent_review_boxplot <- ggplot(excellent_review_distinct_data,
+                                   aes(x = Administration_type,
+                                       y = `Review_%`,
+                                       fill = fill_value)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(x = "Administration Type",
+       y = "Review Percentage",
+       title = "Excellent Review Percentage for Administration Types", 
+       fill = "Count category") +
+  scale_fill_manual(values = c("More than 3 obs" =  "#00BA38",
+                               "3 or less obs" = "lightgrey")) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1))   
+  # scale_x_discrete(labels = function(x) {
+  #   counts <- count_data$count[count_data$Administration_type %in% x]
+  #   paste(x, " (n=", counts, ")", sep = "")
+
+  #})
+
+ggsave(here("results/boxplot_Excellent_Administration_type.png"), plot = excellent_review_boxplot, width = 6, height = 4)
+# Print the plot
+print(excellent_review_boxplot)
 
 ```
 
