@@ -64,7 +64,7 @@ Most_prevalent_medicines |>
 
 ```
 
-The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the dataframe, 10 disitnct ID's appear
+The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the data frame, 10 disitinct ID's appear
 
 ## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
 
@@ -145,7 +145,7 @@ Lastly, administration through capsules seems to be associated with a high numbe
 
 ## Relationship between Prevalent Drugs and Reviews Level
 
-The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a dataframe.
+The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a data frame.
 
 ```{r}
 
@@ -161,4 +161,4 @@ Most_prevalent_medicines |>
 
 ```
 
-The dataframe shows 10 unique ID's, which can also found in the descriptive analysis. The drug Anfoe appears three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same frequency, 4 and 5 times respectively, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
+The data frame shows 10 unique ID's, which can also found in the descriptive analysis. The drug Anfoe appears three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same frequency, 4 and 5 times respectively, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
