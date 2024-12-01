@@ -1,6 +1,8 @@
 ---
-title: "05_analysis_3"
-format: html
+title: "05_analysis_2"
+format: 
+  html:
+    embed-resources: true
 editor: visual
 ---
 
@@ -11,6 +13,7 @@ rm(list=ls())
 library("tidyverse") 
 library("dplyr") 
 library("readr")
+library('here')
 library('ggplot2')
 library('ggridges')
 ```
