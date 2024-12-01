@@ -26,13 +26,13 @@ cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 # Analysis of the 10 most prevalent medicines
 
-A subset of the cancer data is made to investigate only the 10 most prevalent medicines, found from the descriptive statistics. These 10 medicines were found to be the only ones exceeding 2% prevalence in the data set.
+A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancerdata set.
 
-The analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
+This analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
 
 ### Subset of 10 most prevalent medicines
 
-The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names based is made, ranked from highest prevalence to lowest. This list is then used to subset the cancer data by semi joining using ID and match between list and cancer data. Semi join is used in order to join row wise in the data.
+The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names is created, ranked from highest prevalence to lowest. This list is used to subset the cancer data by semi joining the ranked list and the cancer data using ID. Semi join is used in order to join row wise in the data.
 
 ```{r}
 
@@ -64,11 +64,11 @@ Most_prevalent_medicines |>
 
 ```
 
-The subset shows the 10 most prevalent drugs related the cancer data. From the dimension of the tibble, 10 disitnct ID's appear
+The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the dataframe, 10 disitnct ID's appear
 
 ## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
 
-The relationship between the unique medicine names and the number of side effects is investigated, as it is plausible, that a lower number of side effects might explain a higher usage, making the drug more common. As we only aim to investigate unique medicine names, we make sure to distinguish by this in the pipeline of plotting. As the medicines will carry the same API, active pharmaceutical ingredients, the number of side effects will not differ, making the subset valid. The administration type is furthermore highlighted for each drug, as this is also a plausible variable affecting popularity and consumption.
+The relationship between the most prevalent medicine names and the number of side effects is investigated, as it is plausible, that a lower number of side effects might explain a higher usage, making the drug more common. As we only aim to investigate unique medicine names, we make sure to distinguish by this in the pipeline of plotting. As the medicines will carry the same API, active pharmaceutical ingredients, the number of side effects will not differ, making the subset valid. The administration type is furthermore highlighted for each drug, as this is also a plausible variable affecting popularity and consumption.
 
 ```{r}
 
@@ -99,9 +99,9 @@ ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_
 
 ```
 
-The visualization only yields 8 different types of drug names, which is explained by one of the drugs, Anfoe, appearing three times out of the ten most prevalent, simply in different doses. Hence only 8 unique medicines exceed a prevalence of 2%. The distribution of side effects seems random, if not dominated by rater high number of side effects. The number of side effects does therefore not seem to be the cause of the popularity of the prevalent drugs.
+The visualization only yields 8 different types of drug names, which is explained by one of the drugs, Anfoe, appearing three times out of the ten most prevalent, simply in different doses. Hence only 8 unique medicines exceed a prevalence of 2%. The distribution of side effects seems random, if not dominated by a rather high number of side effects. The number of side effects does therefore not seem to be the cause of the popularity of the prevalent drugs.
 
-Furthermore, it appears, from the visualization, that administration type 'Injection' is related to \~75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
+Furthermore, it appears, from the visualization, that administration type 'Injection' is related to 75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
 
 A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend.
 
@@ -139,13 +139,13 @@ Side_Effects_Administration_type <- cancer_data |>
 ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
 ```
 
-The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence subset.
+The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
 
-Lastly, administration through capsules seems to be associated with a high nr. of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
+Lastly, administration through capsules seems to be associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
 ## Relationship between Prevalent Drugs and Reviews Level
 
-The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a tibble.
+The relationship between the most common cancer drugs and review level is investigated for each unique ID. We look at each ID since we are interested in the prevalence of each review level. The investigation is performed by creating a subset only containing information on ID, medicine name, and classification of review yielding a dataframe.
 
 ```{r}
 
@@ -161,4 +161,4 @@ Most_prevalent_medicines |>
 
 ```
 
-The tibble shows 10 unique ID's, also found in the descriptive analysis, where we see the drug Anfoe appearing three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same density, respectively 4 and 5 times, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
+The dataframe shows 10 unique ID's, which can also found in the descriptive analysis. The drug Anfoe appears three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same frequency, 4 and 5 times respectively, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
