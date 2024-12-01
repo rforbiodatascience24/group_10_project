@@ -6,37 +6,43 @@ editor: visual
 
 ## Analysis of Review Levels
 
-```{r}
-rm(list=ls())
-library(tidyverse)
-```
+This analysis aims to investigate the probable causes behind the excellent, average, and poor review levels for the cancer drugs.
 
-This analysis aims to investigate the probable causes behind the excellent, average, and poor reviews for the cancer drugs. This can be done by looking into the number and type of side effects, as it is probable that this will have an influence on the reviews. Firstly, the cancer data is loaded.
+### Influence of Number of Side Effects 
+
+It would be plausible to think that drugs with many side effects would be assiociated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage. Firstly, the environment is cleaned, and libraries and the cancer data is loaded.
 
 ```{r, warning=FALSE}
 #| message: false
+# Cleaning environment
+rm(list=ls())
+
+# Loading libraries
+library(tidyverse)
 
 # Loading the augmented data tsv file 
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 ```
 
-The three review levels are shown in three scatter plots comparing number of side effects (x-axis) and the review percentages (y-axis).
+The review levels are shown in three scatter plots comparing number of side effects (x-axis) and the review percentages (y-axis).
 
 ```{r}
 
 Scatter_Side_Effects_Review <- cancer_data |> 
     distinct(ID,
              Review_level,
-           .keep_all = TRUE) |> 
-  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
+             .keep_all = TRUE) |> 
+  mutate(Review_level = factor(Review_level,
                                levels = c("Poor_Review_%", 
                                           "Average_Review_%", 
-                                          "Excellent_Review_%")))
-  ggplot(The_cancer_data,aes(x = Count_Side_Effects,
+                                          "Excellent_Review_%"))) |> 
+  ggplot(aes(x = Count_Side_Effects,
              y = `Review_%`,
              fill = Review_level)) +
-  geom_point(shape = 21, size = 3, color = "black") + 
+  geom_point(shape = 21, 
+             size = 3, 
+             color = "black") + 
   labs(x = "Count of Side Effects", 
        y = "Review Percentage", 
        title = "Number of Side Effects vs Review Percentage by Review Level") +
@@ -52,13 +58,21 @@ Scatter_Side_Effects_Review <- cancer_data |>
         panel.grid.minor.x = element_blank(),
         legend.position = "none")
   
-#ggsave(here("results/Scatter_Side_Effects_Review_all.png"), plot = Scatter_Side_Effects_Review, width = 6, height = 4)
+ggsave(here("results/Scatter_Side_Effects_Review_all.png"), plot = Scatter_Side_Effects_Review, width = 6, height = 4)
   
 print(Scatter_Side_Effects_Review)
 
 ```
 
-From this plot we do not see a tendency of drugs with fewer side effects having a better review classification or vice versa. However, the correlation could perhaps be found by looking at the distribution of (lidt i tvivl om overgangen her..., vi sagde noget smart i går).
+From this plot no tendency is seen of drugs with fewer side effects having a better review classification or vice versa. The correlation seems completelt random.
+
+As no correlation is found for number of side effects, perhaps another variable is influencing the review percentages.
+
+### Influence of Administration Type
+
+Another variable that might influence the drug review levels, could be the type of administration. Therefore, the distribution of each review level of administration type is investigated. If administration type is essential for review level percentages, the distribution would be different for each administration type with a lower variance. All review levels are shown in individual box plots. As some administration types include to few observations (\<= 3 obs), these are visualized in grey. A distribution based on three or less observations is too few to conclude an actual distribution.
+
+#### Poor Review Distribution
 
 ```{r}
 
@@ -109,6 +123,8 @@ print(Poor_review_boxplot)
 
 ```
 
+#### Average Review Distribution
+
 ```{r}
 # Filter the data to remove duplicate IDs for each Administration_type
 Average_review_distinct_data <- cancer_data |> 
@@ -154,6 +170,8 @@ Average_review_boxplot <- ggplot(Average_review_distinct_data ,
 print(Average_review_boxplot)
 
 ```
+
+#### Excellent Review Distribution
 
 ```{r}
 
@@ -202,34 +220,4 @@ print(excellent_review_boxplot)
 
 ```
 
-```{r}
-boxplot_administration_type <- cancer_data |> 
-  mutate(Review_level = factor(Review_level,   #Deciding the order appearing
-                               levels = c("Poor_Review_%", 
-                                          "Average_Review_%", 
-                                          "Excellent_Review_%"))) |>
-  ggplot(aes(x = Administration_type, 
-             y = `Review_%`, 
-             fill = Review_level)) +
-  geom_boxplot(alpha = 0.7) +
-  theme_minimal() +
-  labs(x = "Administration Type", 
-       y = "Review Percentage", 
-       title = str_wrap("Review Percentage of Administration Types by Review Level",55),
-       fill = "Review Level") +
-  scale_fill_manual(values = c("Poor_Review_%" = "#F8766D",
-                               "Average_Review_%" = "#619CFF",
-                               "Excellent_Review_%" = "#00BA38"),
-                    labels = c("Poor", 
-                               "Average", 
-                               "Excellent")) +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        axis.text.x = element_text(angle = 45, 
-                                   hjust = 1),
-        legend.position = "bottom")
-
-#ggsave(here("results/boxplot_administration_type.png"), plot = boxplot_administration_type, width = 6, height = 4)
-
-print(boxplot_administration_type)
-```
+From all three plots all the administration distributions are overlapping, not indicating a review level being dependent on administration type.
