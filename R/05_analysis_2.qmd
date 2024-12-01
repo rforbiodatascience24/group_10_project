@@ -26,7 +26,7 @@ cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 # Analysis of the 10 most prevalent medicines
 
-A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancerdata set.
+A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancer dataset.
 
 This analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
 
@@ -93,9 +93,13 @@ Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
   ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
   theme_minimal() +
   theme(legend.position = 'bottom') +
-  guides(fill=guide_legend(title="Adimnistration type")) 
+  guides(fill=guide_legend(title="Adimnistration type")) +
+  theme(panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
+        panel.grid.minor.x = element_blank()) 
 
 ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
+
+print(Most_prevalent_medicines_plot)
 
 ```
 
@@ -142,6 +146,8 @@ Side_Effects_Administration_type <- cancer_data |>
 
 
 ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
+
+print(Side_Effects_Administration_type)
 ```
 
 The density plot shows a general trend between Injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects aorund \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
