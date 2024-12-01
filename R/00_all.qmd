@@ -8,11 +8,27 @@ editor: visual
 
 ```{r}
 rm(list=ls())
-source("01_load.qmd")
-source("02_cleam.qmd")
-source("03_augment.qmd")
-source("04_describe.qmd")
-source("05_analysis_1.qmd")
-source("05_analysis_2.qmd")
-source("05_analysis_3.qmd")
+library(quarto)
+#source("01_load.qmd")
+#source("02_cleam.qmd")
+#source("03_augment.qmd")
+#source("04_describe.qmd")
+#source("05_analysis_1.qmd")
+#source("05_analysis_2.qmd")
+#source("05_analysis_3.qmd")
+```
+
+```{r}
+# Define the input file and dynamic output directory
+input_file <- here("R/01_load.qmd")
+output_dir <- here("results")
+
+# Ensure the output directory exists
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Render the Quarto document
+quarto_render(
+  input = input_file,
+  execute_params = list(output_dir = output_dir)
+)
 ```

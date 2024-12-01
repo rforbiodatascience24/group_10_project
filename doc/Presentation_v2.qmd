@@ -67,11 +67,11 @@ include_graphics(image_path)
 
 ::: columns
 ::: {.column width="50%"}
-### Title 
+### Title
 
 ```{r}
 
-image_path <- here("results", "results/Scatter_Side_Effects_Review_all.png")
+image_path <- here("results", "Scatter_Side_Effects_Review_all.png")
  
 include_graphics(image_path)
 
@@ -79,7 +79,7 @@ include_graphics(image_path)
 :::
 
 ::: {.column width="50%"}
-### Title 
+### Title
 
 ```{r}
 image_path <- here("results", "boxplot_Excellent_Administration_type.png")
