@@ -1,4 +1,10 @@
-Mangler vi en header her?
+---
+title: "05_analysis_3"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+---
 
 ## Analysis of Review Classification
 

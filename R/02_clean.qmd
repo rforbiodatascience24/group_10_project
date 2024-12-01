@@ -1,6 +1,8 @@
 ---
-title: "02_clean_v2"
-format: html
+title: "02_clean"
+format: 
+  html:
+    embed-resources: true
 editor: visual
 ---
 
@@ -278,7 +280,7 @@ clean_data |>
 
 ```
 
-To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector. \
+To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector.\
 In the end there were 336 observations left which were NAs, and these administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into an categories/observations called "Other".
 
 ```{r}

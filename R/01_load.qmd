@@ -1,6 +1,8 @@
 ---
 title: "01_load"
-format: html
+format: 
+  html:
+    embed-resources: true
 editor: visual
 ---
 
@@ -16,7 +18,7 @@ library(readr)
 
 ## Loading of Raw Data from URL
 
-```{r setup, include=FALSE}
+```{r}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 raw_dir <- here("data/_raw")
@@ -71,5 +73,24 @@ save_path <- file.path(data_dir, "01_dat_load.tsv")
 
 # Save the dataframe as a TSV file
 write_tsv(dataset, save_path)
+
+```
+
+### Rendering to results folder
+
+Det er noget alla det her vi skal gøre, gemmer dog pt. under R
+
+```{r}
+
+# Define the output directory using tempdir()
+output_directory <- file.path(tempdir(), "group_10_project/results")
+
+# Render the RMarkdown file to the specified output directory
+rmarkdown::render("01_load.qmd", output_dir = output_directory)
+
+```
+
+```{r}
+
 
 ```

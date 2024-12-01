@@ -1,6 +1,8 @@
 ---
 title: "03_augment"
-format: html
+format: 
+  html:
+    embed-resources: true
 editor: visual
 ---
 
@@ -56,7 +58,7 @@ aug_clean_data <- cancer_data |>
 
 #### Making variable for classifying the reviews
 
-A new variable containing a classification of the reviews is made. The drug will be given either a label as poor, average or excellent based on where it has the highest socre in percentage from the Poor_Review\_%, Average_Review\_%, and Excellent_Review\_% variables. \
+A new variable containing a classification of the reviews is made. The drug will be given either a label as poor, average or excellent based on where it has the highest socre in percentage from the Poor_Review\_%, Average_Review\_%, and Excellent_Review\_% variables.\
 Furthermore, the drugs are given an ID number.
 
 ```{r}
