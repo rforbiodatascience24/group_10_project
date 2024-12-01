@@ -102,8 +102,7 @@ cancer_data_selected <- cancer_data_selected |>
                                                   "Average", 
                                                   "Excellent")))
 # Step 4: Create the bar plot
-#API_bar_plot <- 
-  cancer_data_selected |> 
+API_bar_plot <-   cancer_data_selected |> 
   ggplot(aes(x = Classification_Review, 
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
