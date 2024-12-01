@@ -86,8 +86,8 @@ Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
              fill=Administration_type)) + 
   geom_bar(stat= 'identity', 
            alpha = 0.8) + 
-  scale_fill_manual(values =c('#414487FF',
-                              '#DE9ED6FF'))+
+  scale_fill_manual(values =c('#A1D99B',
+                              '#414487FF')) +
   labs(x = "Drug name",
        y = "Number of side effects") + 
   ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
@@ -103,10 +103,14 @@ The visualization only yields 8 different types of drug names, which is explaine
 
 Furthermore, it appears, from the visualization, that administration type 'Injection' is related to 75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
 
-A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend.
+A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend. This is done for each of the medicines by using the ID in order to obtain unique observations.
 
 ```{r}
 Side_Effects_Administration_type <- cancer_data |>
+   distinct(ID, 
+           Administration_type,
+           Count_Side_Effects,
+           .keep_all = TRUE) |>
   # Using type of administration and side effect number from cancer data
   select(Administration_type, 
          Count_Side_Effects) |>
@@ -136,10 +140,11 @@ Side_Effects_Administration_type <- cancer_data |>
     fill = "Administration Type"
   )
 
+
 ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects_Administration_type, width = 6, height = 4)
 ```
 
-The density plot shows a general trend between Injection and a high number of side effects, hence confirming what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects at \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
+The density plot shows a general trend between Injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects aorund \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
 
 Lastly, administration through capsules seems to be associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
