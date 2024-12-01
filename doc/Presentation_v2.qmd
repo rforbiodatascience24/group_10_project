@@ -67,7 +67,13 @@ include_graphics(image_path)
 
 ::: columns
 ::: {.column width="50%"}
-skriv bullets points her
+```{r}
+
+# image_path <- here("results", "skrivnavn") for scatter plot fra analyse 1
+# 
+# include_graphics(image_path)
+
+```
 :::
 
 ::: {.column width="50%"}
@@ -105,7 +111,7 @@ include_graphics(image_path)
 :::
 :::
 
-## Results Analysis Two
+## Results Analysis Three
 
 ::: columns
 ::: {.column width="50%"}
