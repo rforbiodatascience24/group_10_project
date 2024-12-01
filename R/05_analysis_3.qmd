@@ -1,6 +1,6 @@
 ## Analysis of Review Classification
 
-This analysis aims to investigate whether the distribution of review classification has a relation to manufacturer or API. The top six of each variable are chosen to enable a meaningful and interpretative visualization.
+This analysis aims to investigate whether the manufacturer or API has relation to specific review classifications. The top six of each variable are chosen to enable a meaningful and interpretative visualization.
 
 Firstly, the environment is cleared and libraries and the augmented data set is loaded.
 
@@ -22,7 +22,7 @@ cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
 ### Influence of Manufacturer
 
-An interesting relation to investigate is the manufacturer's influence on review classification. The top six manufacturers are those with the most products in the data set. The distribution of review classifications of the products that each manufacturer produces is shown in a bar plot.
+An interesting relation to investigate is if the top six manufacturers have a certain distribution across its reviewed products. The top six manufacturers are those with the most products in the data set. The distribution of review classifications of the products that each manufacturer produces is shown in a bar plot.
 
 ```{r}
 # Step 1: Get the top 6 manufacturers with the most products
@@ -39,7 +39,8 @@ top_manufacturers <- cancer_data |>
 cancer_data_selected <- cancer_data |> 
   distinct(ID,
            .keep_all = TRUE) |> 
-  semi_join(top_manufacturers, by = "Manufacturer")
+  semi_join(top_manufacturers, 
+            by = "Manufacturer")
 
 # Step 3: Reorder Classification_Review factor to ensure "Average" is the middel bar
 cancer_data_selected <- cancer_data_selected |> 
@@ -58,16 +59,17 @@ Manufacturers_bar_plot <- cancer_data_selected |>
                                  "Average" = "#619CFF",
                                  "Excellent" = "#00BA38")) +
     labs(x = '',
-         y = "Total Number of Products", 
-         title = str_wrap("Distribution of Review Classification of Product from Top Six  Manufacturers", 55),
+         y = "Number of Products", 
+         title = str_wrap("Distribution of Review Classification of Products from Top Six  Manufacturers", 55),
          fill= "Review Classification") +
-    theme_minimal() +  # Apply a minimal theme
+    theme_minimal() +
     theme(axis.text.x=element_blank(),
           legend.position = 'bottom')  
 
 # Saving the plot
 ggsave(here("results/Manufacturers_bar_plot.png"), plot = Manufacturers_bar_plot, width = 6, height = 4)
 
+print(Manufacturers_bar_plot)
 ```
 
 From the bar plot it can be seen that there is no apparent correlation between being one of the top producers and having a higher number of excellent reviews. Lupin Ltd and Wockhardt Ltd has the most products with poor reviews. Oppositely, Sun Pharmaceuticals Industries Ltd has most products with excellent reviews. The distribution of the different reviews seems to be random across the top six manufacturers. The distribution of review classifications seems to be random across the top six manufacturers.
@@ -112,7 +114,7 @@ API_bar_plot <-   cancer_data_selected |>
                                  "Average" = "#619CFF",
                                  "Excellent" = "#00BA38")) +
     labs(x = "", 
-         y = "Total Number of Products", 
+         y = "Number of Products", 
          title = "Distribution of Review Classification of Top Six Used APIs",
          fill = "Review Classification") +
     theme_minimal() +  # Apply a minimal theme
@@ -122,10 +124,9 @@ API_bar_plot <-   cancer_data_selected |>
 # Saving the plot          
 ggsave(here("results/API_bar_plot.png"), plot = API_bar_plot, width = 6, height = 4)
 
+print(API_bar_plot)
 ```
 
 Once again, it seems there is a random distribution of review classification of the top six most used drugs in the cancer data set. Interestingly, the Recombinant Human Erythropoietin Alfa, which is the top 1 API, has mostly poor and least excellent reviews. Actually, 3 out of 6 APIs has the majority of reviews as poor. Only Leuprolide has excellent as the largest review classifications.
 
 All in all, neither manufacturer or API seems shows a tendency in regards to review classification distribution of products from the cancer data set. The conclusion might be different, when looking at the entire data set, while more difficult to visualize and interpret.
-
--   connect de to plots: er der mon en indreicte correlation mellem API and manufatures?? Amalie må gerne skabe den røde tråd her.

@@ -8,7 +8,7 @@ editor: visual
 
 This analysis aims to investigate the probable causes behind the excellent, average, and poor review levels for the cancer drugs.
 
-### Influence of Number of Side Effects 
+### Influence of Number of Side Effects
 
 It would be plausible to think that drugs with many side effects would be assiociated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage. Firstly, the environment is cleaned, and libraries and the cancer data is loaded.
 
