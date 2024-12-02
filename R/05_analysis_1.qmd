@@ -99,7 +99,11 @@ count_data <- Poor_review_distinct_data |>
   summarise(count = n_distinct(ID)) |> 
   ungroup()
 
-Poor_review_distinct_data <- left_join(Poor_review_distinct_data, count_data, by = "Administration_type")
+Poor_review_distinct_data <- Poor_review_distinct_data|>
+  left_join(count_data, by = "Administration_type")
+
+Poor_review_distinct_data <- Poor_review_distinct_data|>
+  mutate(Administration_type = str_c(Administration_type, " (n=", count, ")" ))
 
 # In order to color the boxplot based on amount of obs making a new column.
 Poor_review_distinct_data <-Poor_review_distinct_data |> 
@@ -147,9 +151,13 @@ count_data <- Average_review_distinct_data |>
   ungroup()
 
 
-Average_review_distinct_data <- left_join(Average_review_distinct_data,
-                                          count_data,
-                                          by = "Administration_type")
+Average_review_distinct_data <- Average_review_distinct_data|>
+  left_join(count_data, by = "Administration_type")
+
+Average_review_distinct_data <- Average_review_distinct_data|>
+  mutate(Administration_type = str_c(Administration_type, " (n=", count, ")" ))
+
+
 
 # In order to color the boxplot based on amount of obs making a new column.
 Average_review_distinct_data <-Average_review_distinct_data |> 
@@ -197,9 +205,12 @@ count_data <- excellent_review_distinct_data |>
   ungroup()
 
 
-excellent_review_distinct_data <- left_join(excellent_review_distinct_data,
-                                            count_data,
-                                            by = "Administration_type")
+excellent_review_distinct_data <- excellent_review_distinct_data|>
+  left_join(count_data, by = "Administration_type")
+
+excellent_review_distinct_data <- excellent_review_distinct_data|>
+  mutate(Administration_type = str_c(Administration_type, " (n=", count, ")" ))
+
 
 # In order to color the boxplot based on amount of obs making a new column.
 excellent_review_distinct_data <-excellent_review_distinct_data |> 
@@ -223,7 +234,8 @@ excellent_review_boxplot <- ggplot(excellent_review_distinct_data,
   theme(axis.text.x = element_text(angle = 45,
                                    hjust = 1),
         panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank())   
+        panel.grid.minor.x = element_blank(),
+        legend.position = "bottom")   
 
 
 ggsave(here("results/boxplot_Excellent_Administration_type.png"),

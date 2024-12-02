@@ -1,24 +1,34 @@
 ---
-title: "Presentation"
+title: "Cancer Medicine Data Project"
 subtitle: Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643), and Malou Bech Jakobsen (s203515)
 format:
   revealjs:
     width: 1800  # Increase the width of slides (default is ~960)
     height: 900  # Keep the height proportional
     margin: 0.05
+    theme: solarized
     embed-resources: true
+    slide-number: true
 ---
 
 ## Introduction
 
 ::: columns
-::: {.column width="40%"}
--   The Drug data set provides information about various types of medications ranging from treatments of cancer, Alzheimer's disease, and bacterial infections to more simple symptomatic drugs in treating dry cough, common colds, and for pain relief.
+::: {.column width="50%"}
+-   The Drug data set provides information about various medications: from treatments of cancer and Alzheimer's disease to common colds and pain relief
 
--   Variables: Medicine name, composition, Uses, side effects, manufacturer as well as how many poor, average and excellent reviews (%)
+-   Purpose: Assist healthcare professionals and patients in making decisions when choosing a medication
+
+-   The 3 rules for making a data set tidy are not satisfied
+
+    -   Each variable must have its own column
+
+    -   Each observation have its own row
+
+    -   Each value have its own cell
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 ```{r}
 rm(list=ls())
 library("tidyverse")
@@ -34,67 +44,83 @@ data <- read_tsv(here("data/01_dat_load.tsv"))
 data |>
   select(`Medicine Name`, Uses) |>
   print()
+
+data |>
+  select(`Excellent Review %`, `Average Review %`, `Poor Review %`) |>
+  print()
 ```
 :::
 :::
 
 ## Materials and Methods
 
-::: columns
-::: {.column width="50%"}
 ### Cleaning
 
-```{r, }
-
-image_path <- here("results", "flow_clean.png")
+```{r}
+image_path <- here("results/Images", "flow_clean.png")
 
 include_graphics(image_path)
 ```
-:::
 
-::: {.column width="50%"}
+## Materials and Methods
+
 ### Augmentation
 
 ```{r}
-
-image_path <- here("results", "flow_aug.png")
+image_path <- here("results/Images", "flow_aug.png")
 
 include_graphics(image_path)
 ```
-:::
-:::
 
 ## Description of the Cancer Data
 
 ::: columns
 ::: {.column width="50%"}
-### Cleaning
+-   **Variables:**\
+    Medicine_Name\
+    Manufacturer\
+    Administration_type\
+    Application type and number\
+    API name, amount, and unit\
+    Side_Effect\
+    Review_level and Review\_% (Poor, Average, and Excellent)\
+    Counts of Side_Effects, API, and Application\
+    Classification_Review
 
-```{r, }
-
-image_path <- here("results", "flow_clean.png")
-
-include_graphics(image_path)
-```
-:::
-
-::: {.column width="50%"}
-### Augmentation
+-   Distribution of Side Effects
 
 ```{r}
+source(here("R/99_proj_func.R"))
 
-image_path <- here("results", "flow_aug.png")
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
+SummaryStatistics(cancer_data, Count_Side_Effects)
+
+```
+:::
+
+::: {.column width="50%"}
+### The 10 most prevalent drugs
+
+```{r}
+image_path <- here("results", "Frequency_of_Unique_Drugs_plot.png")
+
+# Include the image in the document
 include_graphics(image_path)
+
 ```
 :::
 :::
 
-## Results Analysis One
+## Analysis 1: Review Levels
 
 ::: columns
+::: {.column width="100%"}
+What are the probable causes behind the excellent, average, and poor reviews for the cancer drugs?
+:::
+
 ::: {.column width="50%"}
-### Title
+### Influence of Number of Side Effects
 
 ```{r}
 
@@ -106,7 +132,7 @@ include_graphics(image_path)
 :::
 
 ::: {.column width="50%"}
-### Title
+### Influence of Administration Type
 
 ```{r}
 image_path <- here("results", "boxplot_Excellent_Administration_type.png")
@@ -116,10 +142,12 @@ include_graphics(image_path)
 :::
 :::
 
-## Results Analysis Two
+## Analysis 2: The 10 most prevalent medications
 
 ::: columns
 ::: {.column width="50%"}
+### Number of Side Effects for the 8 most prevalent drugs
+
 ```{r}
 
 image_path <- here("results", "Most_prevalent_medicines_plot.png")
@@ -134,6 +162,8 @@ include_graphics(image_path)
 :::
 
 ::: {.column width="50%"}
+### Number of side effects for a specific administration type
+
 ```{r}
 image_path <- here("results", "Side_Effects_Administration_type.png") 
 
@@ -142,14 +172,20 @@ include_graphics(image_path)
 :::
 :::
 
-## Results Analysis Three
+## Analysis 3: Manufacturer in relation to review classifications
 
 ::: columns
-::: {.column width="50%"}
-skriv bullets points
+::: {.column width="40%"}
+-   Distribution of the top 6 manufactures having most products on the market
+
+-   Classification of review levels
+
+-   In 4 out of 6 top manufactures a trend of most Excellent reviews, less Average and least poor reviews
+
+-   Interestingly, Lupin Ltd have equal amounts of poor and excellent reviews.
 :::
 
-::: {.column width="50%"}
+::: {.column width="60%"}
 ```{r}
 image_path <- here("results", "Manufacturers_bar_plot.png")  
 
@@ -159,6 +195,22 @@ include_graphics(image_path)
 :::
 
 ## Conclusion
+
+::: columns
+::: {.column width="75%"}
+-   There was no apparent tendency between the number of side effects and what type of review the specific drug got
+
+-   The review levels do not seem to be dependent on the type of administration
+
+-   The distribution of side effects seem random for different administration types for the 8 most prevalent drugs, although a rather high number of side effects are present for these drugs
+
+-   The 8 most prevalent drugs only have the administration types injection and tablet, 75% being injection
+
+-   Administration through capsules is associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
+
+-   The top 6 manufactures predominantly have excellent reviews
+:::
+:::
 
 ## Discussion
 
@@ -175,6 +227,10 @@ include_graphics(image_path)
 -   Augmentation: New administration type categories \[Topical, Oral, Parenteral\]
 
 -   Analysis of the cancer types
+
+-   Analyzing other variables: Influence of API and number of applications
+
+-   Hej
 :::
 :::
 
