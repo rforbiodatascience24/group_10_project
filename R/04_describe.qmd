@@ -10,18 +10,19 @@ editor: visual
 
 ### Loading Libraries
 
-Loading the relevant libraries.
+The relevant libraries are loaded. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
 ```{r}
 rm(list=ls())
 library("tidyverse")
 library("readr")
+library("here")
 source("99_proj_func.R")
 ```
 
-### Loading Long Format, Augmented, Clean Data
+### Loading the Long Format, Augmented, Clean Data
 
-```{r, 'show_col_types= FALSE'}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 # Loading the clean data tsv file 
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
@@ -68,7 +69,7 @@ cancer_data |>
 
 # Showing the data 
 cancer_data |> 
-  View()
+  print()
 
 ```
 
@@ -94,7 +95,7 @@ unique_cancer_rows |>
 
 # Overview of the cancer types
 unique_cancer_rows |>
-  View()
+  print()
 
 ```
 
@@ -136,7 +137,7 @@ SummaryStatistics(cancer_data, Count_Application)
 
 There are up to six different applications of the different cancer drugs and minimum one application. The average number of applications for the drugs is around 3, which means most drugs can treat more than one type of cancer. There is a median of 2 applications pr. drug, slightly lower than the mean, however still somewhat close related. When comparing with the minimum and maximum value a clear left-skewed distribution appears, as at half of the data lies at 2 applications or less, shown from the median.
 
-The number of unique applications is furthermore found to get a picture of the application span of the observations in the dataset.
+The number of unique applications is furthermore found to get a picture of the application span of the observations in the data set.
 
 ```{r}
 # Finding unique drug names from the Medicine_Name variable
@@ -152,7 +153,7 @@ unique_application |>
 
 # Viewing the different drug names
 unique_application |>
-  View()
+  print()
 ```
 
 **There are 49 different applications of the drugs from the cancer data set. Hence, the cancer drugs can also be used for treatment of other diseases than cancer.**
@@ -175,7 +176,7 @@ unique_drugs |>
 
 # Viewing the different drug names
 unique_drugs |>
-  View()
+  print()
 ```
 
 The dimensions of the cancer data show that it contains 131 unique drugs related to the application in 23 different types of cancer.
@@ -235,7 +236,7 @@ Best_reviewed_drugs <- cancer_data |>
   distinct()
 
 Best_reviewed_drugs |>
-  View()
+  print()
 ```
 
 It can be observed that multiple drugs have 100% excellent reviews, meaning these drugs have only gotten good reviews. Overall, there are 11 drugs with 85% or more excellent reviews.
@@ -251,7 +252,7 @@ Average_reviewed_drugs <- cancer_data |>
   distinct()
 
 Average_reviewed_drugs |>
-  View()
+  print()
 ```
 
 It can be observed that no drugs have 85% or more % average reviews, meaning these drugs have gotten more than a total of 15% good and/or bad reviews.
@@ -267,7 +268,7 @@ Worst_reviewed_drugs <- cancer_data |>
   distinct()
 
 Worst_reviewed_drugs |>
-  View()
+  print()
 
 ```
 
