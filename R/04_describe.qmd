@@ -257,7 +257,7 @@ cancer_data |>
   # Counting the medications and sort them in descending order
   count(Medicine_Name, sort = TRUE) |>
   # Selecting the first 10 rows 
-  head(10)
+  head(7)
 
 ```
 
