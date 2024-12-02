@@ -15,6 +15,7 @@ rm(list=ls())
 library("tidyverse")
 library("readr")
 library("here")
+library("scales")
 source("99_proj_func.R")
 ```
 
@@ -182,18 +183,27 @@ The dimensions of the cancer data shows that it contains 131 unique drugs relate
 The frequency of each drug is illustrated in a histogram, colored by a threshold of 2%. Drugs with a frequency of 2% or more are therefore highlighted.
 
 ```{r}
+
 # Creating the plot in one pipe
-Frequency_of_Unique_Drugs_plot <- cancer_data |>
-  # Grouping by mecidine name
-  group_by(Medicine_Name) |>
-  # Summarising the % of prevelance of each drug
-  summarise(Proportion = n() / nrow(cancer_data)) |>
+distinct_cancer_data <- cancer_data |>
+# Grouping by mecidine name
+  distinct(ID,
+    .keep_all=TRUE) |> 
+  nrow()
+
+Frequency_of_Unique_Drugs_plot <-cancer_data |> 
+  distinct(ID,
+           Medicine_Name,
+           .keep_all=TRUE) |> 
+  group_by(Medicine_Name) |> 
+# Summarising the % of prevelance of each drug
+  summarise(Proportion = n() / distinct_cancer_data) |>
   ungroup() |>
-  # Making the ggplot of the % prevelance of each drug
+# Making the ggplot of the % prevelance of each drug
   ggplot(aes(x = Medicine_Name, 
              y = Proportion, 
-             # Coloring by prevelance using threshold of 2%
-             fill = ifelse(Proportion > 0.02, "orange", "grey"))) +
+# Coloring by prevelance using threshold of 2%
+  fill = ifelse(Proportion > 0.015, "orange", "grey"))) +
   geom_bar(stat = "identity", color = "black") + 
   labs(x = "Drug name",
        y = "Frequency of drug [%]") + 
@@ -206,18 +216,48 @@ Frequency_of_Unique_Drugs_plot <- cancer_data |>
 
 ggsave(here("results/Frequency_of_Unique_Drugs_plot.png"), plot = Frequency_of_Unique_Drugs_plot, width = 6, height = 4)
 
+
 print(Frequency_of_Unique_Drugs_plot)
-  
+# Creating the plot in one pipe
+# Frequency_of_Unique_Drugs_plot <- cancer_data |>
+#   # Grouping by mecidine name
+#   group_by(ID,
+#            .keep_all=) |>
+#   # Summarising the % of prevelance of each drug
+#   summarise(Proportion = n() / nrow(cancer_data)) |>
+#   ungroup() |>
+#   # Making the ggplot of the % prevelance of each drug
+#   ggplot(aes(x = Medicine_Name, 
+#              y = Proportion, 
+#              # Coloring by prevelance using threshold of 2%
+#              fill = ifelse(Proportion > 0.02, "orange", "grey"))) +
+#   geom_bar(stat = "identity", color = "black") + 
+#   labs(x = "Drug name",
+#        y = "Frequency of drug [%]") + 
+#   theme_minimal() + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5)) +
+#   ggtitle("Frequency of Unique Drugs in Cancer Data") +
+#   theme(plot.title = element_text(hjust = 0.5)) +
+#   scale_y_continuous(labels = scales::percent_format()) +
+#   scale_fill_identity() 
+# 
+# ggsave(here("results/Frequency_of_Unique_Drugs_plot.png"), plot = Frequency_of_Unique_Drugs_plot, width = 6, height = 4)
+# 
+# print(Frequency_of_Unique_Drugs_plot)
+#   
 ```
 
 The histogram gives an overview of the distribution of the different frequencies for each drug. It is observed that there are 10 drugs that each account for 2% or more. Underneath these 10 drugs are extracted, showing the 10 drugs with highest frequency in the data.
 
 ```{r}
 cancer_data |>
+# Grouping by mecidine name
+  distinct(ID,
+    .keep_all=TRUE) |> 
   # Counting the medications and sort them in descending order
   count(Medicine_Name, sort = TRUE) |>
   # Selecting the first 10 rows 
-  head(10)
+  head(7)
 
 ```
 
