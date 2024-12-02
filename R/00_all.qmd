@@ -9,12 +9,12 @@ editor: visual
 ## Loading Libraries for including .qmd files
 
 ```{r}
-library(quarto)
-library(here)
+library("quarto")
+library("here")
 
 ```
 
-# Loading of Data and Data Wrangling 
+# Loading of Data and Data Wrangling
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false
@@ -87,7 +87,7 @@ quarto_render(here("R/05_analysis_2.qmd"))
 {{< include 05_analysis_2.qmd >}}
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-file.rename(here("R/05_analysis_2.html"), here("results/02_analysis_2.html"))
+file.rename(here("R/05_analysis_2.html"), here("results/05_analysis_2.html"))
 ```
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
@@ -103,3 +103,15 @@ file.rename(here("R/05_analysis_3.html"), here("results/05_analysis_3.html"))
 ```
 
 ## 
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+#| output: false      
+
+quarto_render(here("R/00_all.qmd"))
+```
+
+{{< include 00_all.qmd >}}
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+file.rename(here("R/00_all.html"), here("results/00_all.html"))
+```
