@@ -18,7 +18,7 @@ library(here)
 
 ## Including Load file (01_load)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false
 
 quarto_render(here("R/01_load.qmd"))
@@ -26,13 +26,13 @@ quarto_render(here("R/01_load.qmd"))
 
 {{< include 01_load.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/01_load.html"), here("results/01_load.html"))
 ```
 
 ## Including Clean file (02_clean)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false  
 
 quarto_render(here("R/02_clean.qmd"))
@@ -40,13 +40,13 @@ quarto_render(here("R/02_clean.qmd"))
 
 {{< include 02_clean.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/02_clean.html"), here("results/02_clean.html"))
 ```
 
 ## Including Augmentation file (03_augment)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false    
 
 quarto_render(here("R/03_augment.qmd"))
@@ -54,7 +54,7 @@ quarto_render(here("R/03_augment.qmd"))
 
 {{< include 03_augment.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/03_augment.html"), here("results/03_augment.html"))
 ```
 
@@ -62,7 +62,7 @@ file.rename(here("R/03_augment.html"), here("results/03_augment.html"))
 
 ## Including Describe (04_describe)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false    
 
 quarto_render(here("R/04_describe.qmd"))
@@ -70,13 +70,13 @@ quarto_render(here("R/04_describe.qmd"))
 
 {{< include 04_describe.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/04_describe.html"), here("results/04_decribe.html"))
 ```
 
 ## Including Analysis 1 file (05_analysis_1)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false    
 
 quarto_render(here("R/05_analysis_1.qmd"))
@@ -84,13 +84,13 @@ quarto_render(here("R/05_analysis_1.qmd"))
 
 {{< include 05_analysis_1.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/05_analysis_1.html"), here("results/05_analysis_1.html"))
 ```
 
 ## Including Analysis 2 file (05_analysis_2)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false    
 
 quarto_render(here("R/05_analysis_2.qmd"))
@@ -98,13 +98,13 @@ quarto_render(here("R/05_analysis_2.qmd"))
 
 {{< include 05_analysis_2.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/05_analysis_2.html"), here("results/02_analysis_2.html"))
 ```
 
 ## Including Analysis 3 file (05_analysis_3)
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 #| output: false      
 
 quarto_render(here("R/05_analysis_3.qmd"))
@@ -112,7 +112,7 @@ quarto_render(here("R/05_analysis_3.qmd"))
 
 {{< include 05_analysis_3.qmd >}}
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 file.rename(here("R/05_analysis_3.html"), here("results/05_analysis_3.html"))
 ```
 
