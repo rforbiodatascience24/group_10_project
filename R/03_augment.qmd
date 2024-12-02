@@ -64,7 +64,6 @@ A new variable containing a classification of the reviews is made. The drug will
 Furthermore, the drugs are given an ID number.
 
 ```{r}
-
 aug_clean_data <- aug_clean_data |> 
   rowwise() |> 
   mutate(
@@ -103,7 +102,6 @@ pivot_longer_1 <- aug_clean_data |>
     names_to = "Application_number",
     values_to = "Application_type"
   ) 
-
 ```
 
 ```{r}
@@ -131,7 +129,6 @@ pivot_longer_4 <- pivot_longer_3 |>
     names_to = "API_unit_number",
     values_to = "API_unit"
   )
-
 ```
 
 ```{r}
@@ -143,22 +140,21 @@ pivot_longer_5 <- pivot_longer_4 |>
   )
 ```
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
 aug_clean_data_long <- pivot_longer_5 |>
   pivot_longer(
     cols = starts_with("Side_Effects_"),
     names_to = "Side_Effect_number",
     values_to = "Side_Effect_type"
   )
-
-
 ```
 
 ### Extracting Unique Rows in the Data
 
-The data set has becomes very large when chaning to long format, but a lot of the rows do not contain any relevant information for the further descripton and analysis. Therefore, these duplicate rows are removed underneath.
+The data set has become very large when changing to long format, but a lot of the rows do not contain any relevant information for the further description and analysis. Therefore, these duplicate rows are removed underneath.
 
-This is done by by making sure rows are considered duplicates if all values in the columns, excluding Applicaton_number, API_name_numbere, API_amount_number, API_unit_number, and Side_Effect_number, are the same.
+This is done by by making sure rows are considered duplicates if all values in the columns, excluding Applicaton_number, API_name_number, API_amount_number, API_unit_number, and Side_Effect_number, are the same.
 
 ```{r}
 
