@@ -89,16 +89,16 @@ include_graphics(image_path)
 library("tidyverse")
 library("readr")
 library("here")
-source("99_proj_func.R")
+source(here("R/99_proj_func.R"))
 
 image_path <- here("results", "Frequency_of_Unique_Drugs_plot.png")
 
 # Include the image in the document
 include_graphics(image_path)
 
-# cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
 
-# SummaryStatistics(cancer_data, Count_Side_Effects)
+SummaryStatistics(cancer_data, Count_Side_Effects)
 ```
 :::
 :::
