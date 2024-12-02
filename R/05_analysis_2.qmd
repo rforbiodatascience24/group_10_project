@@ -6,7 +6,7 @@ format:
 editor: visual
 ---
 
-# Analysis of the 10 most prevalent medicines
+# Analysis of the 7 most prevalent medicines
 
 ## Loading library
 
@@ -29,45 +29,56 @@ library("ggridges")
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'), show_col_types = FALSE) 
 ```
 
-A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancer data set.
+A subset of the cancer data is made to investigate only the 7 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 1.5% prevalence in the cancer data set.
 
 This analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
 
-### Subset of 10 most prevalent medicines
+### Subset of 7 most prevalent medicines
 
-The subset is made for the 10 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names is created, ranked from highest prevalence to lowest. This list is used to subset the cancer data by semi joining the ranked list and the cancer data using ID. Semi join is used in order to join row wise in the data.
+The subset is made for the 7 most prevalent medicines, by sorting via ID, as some medicine names might appear twice. A list of the medicine names is created, ranked from highest prevalence to lowest. This list is used to subset the cancer data by semi joining the ranked list and the cancer data using ID. Semi join is used in order to join row wise in the data.
 
 ```{r}
 
+# Making a total nr. of distinct medicine names from cancer data
+distinct_cancer_data <- cancer_data |>
+# Grouping by mecidine name
+  distinct(ID,
+    .keep_all=TRUE) |> 
+  nrow()
+
+
 # Making list of 10 most prevalent drug ID's
-Prevalent_10_medicine_names <- cancer_data |>
-  # Sorting by unigue ID
-  group_by(ID) |>
-  # Finding prevalence of drugs
-  summarise(Proportion = n() / nrow(cancer_data)) |>
+Prevalent_10_medicine_names <-cancer_data |> 
+  # Sorting by unique drugs
+  distinct(ID,
+           Medicine_Name,
+           .keep_all=TRUE) |> 
+  # Searching pr. drug name
+  group_by(Medicine_Name) |> 
+  # Calculating the % of prevelance of each drug in new variable
+  mutate(Proportion = n() / distinct_cancer_data )  |>
   ungroup() |>
-  # Arranging with descending order
-  arrange(desc(Proportion)) |>
-  # Taking 10 most prevelant
-  slice_head(n = 10) 
+  distinct(Medicine_Name, 
+           Proportion, 
+           .keep_all=TRUE) |>
+  filter(Proportion >0.015) |>
+  slice_head(n=7)
 
 
 # Making subset of 10 most prevalent drug IDs
 Most_prevalent_medicines <- cancer_data |>
   # Making subset by join using prevalence list
   semi_join(Prevalent_10_medicine_names, 
-            by = "ID")  
-  
+            by = "ID")
 
-# Viewing 10 most prevalent drug IDs
+# Viewing our subset of 7 most prevalent drugs
 Most_prevalent_medicines |>
   distinct(ID, 
-           .keep_all = TRUE) |>
-  head(10)
-
+           .keep_all=TRUE) |>
+  head(7)
 ```
 
-The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the data frame, 10 distinct ID's appear
+The subset shows the 7 most prevalent drugs in the cancer data. From the dimension of the data frame, 7 distinct ID's appear
 
 ## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
 
@@ -75,14 +86,12 @@ The relationship between the most prevalent medicine names and the number of sid
 
 ```{r}
 
-Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
+# Most_prevalent_medicines_plot <- 
+Most_prevalent_medicines |>
   # Sorting and grouping by medicine name 
-  distinct(Medicine_Name,
+  distinct(ID,
            .keep_all = TRUE) |>
-  group_by(Medicine_Name) |> 
   # Looking at unique numbers of side effects for each drug
-  distinct(Count_Side_Effects, 
-           .keep_all = TRUE) |>
   # Plotting bar plot of side effect number pr. drug
   ggplot(aes(x = Medicine_Name, 
              y = Count_Side_Effects, 
@@ -90,7 +99,9 @@ Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
   geom_bar(stat= 'identity', 
            alpha = 0.8) + 
   scale_fill_manual(values =c('#A1D99B',
-                              '#414487FF')) +
+                              '#D6616B',
+                              '#414487FF'
+                              )) +
   labs(x = "Drug name",
        y = "Number of side effects") + 
   ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
@@ -100,17 +111,17 @@ Most_prevalent_medicines_plot <- Most_prevalent_medicines |>
   theme(panel.grid.major.x = element_blank(),  # Remove major vertical grid lines
         panel.grid.minor.x = element_blank()) 
 
-ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
+#ggsave(here("results/Most_prevalent_medicines_plot.png"), plot = Most_prevalent_medicines_plot, width = 6, height = 4)
 
-print(Most_prevalent_medicines_plot)
+#print(Most_prevalent_medicines_plot)
 
 ```
 
-The visualization only yields 8 different types of drug names, which is explained by one of the drugs, Anfoe, appearing three times out of the ten most prevalent, simply in different doses. Hence only 8 unique medicines exceed a prevalence of 2%. The distribution of side effects seems random, if not dominated by a rather high number of side effects. The number of side effects does therefore not seem to be the cause of the popularity of the prevalent drugs.
+The visualization shows the 7 different types of drug names, as these unique medicines exceed a prevalence of 1.5%. The distribution of side effects seems slightly random, however with majority having below 10 side effects. It can therefore not directly be concluded that lower number fo side effects explains the popularity of the drugs in the data set, but there is a trend of lower side effects for 6/8 drugs.
 
-Furthermore, it appears, from the visualization, that administration type 'Injection' is related to 75% of the 8 unique drugs. Only 'Tablet' and 'Injection' are present as administration types for the 8 drugs.
+Furthermore, it appears, from the visualization, that administration types cream, tablet, and injection only appear in the subset. Only one of the drugs is administrated by cream, whereas injection makes up 4 out of 7 drugs, \~55 %, of the administrations whereas tablet makes up 2 incidences, just below \~30%. Hence popularity of injection is observed, despite being the drug with the most associated side effects.
 
-A higher number of side effects also seem to be associated with administration of the drug via injection. To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend. This is done for each of the medicines by using the ID in order to obtain unique observations.
+To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend. This is done for each of the medicines by using the ID in order to obtain unique observations.
 
 ```{r}
 Side_Effects_Administration_type <- cancer_data |>
@@ -130,12 +141,12 @@ Side_Effects_Administration_type <- cancer_data |>
   # Including transparency due to overlap of density plots
   geom_density_ridges(alpha = 0.5) +
   scale_fill_manual(values =c('#20A387FF',
-                              '#95D840FF',
+                              '#D6616B',
                               '#A1D99B',
                               '#414487FF', 
                               '#E6550D',
                               '#FDE725FF',
-                              '#D6616B',
+                              '#95D840FF',
                               '#DE9ED6FF' ,
                               '#440154FF' ))  +
   theme_minimal() +
@@ -176,4 +187,4 @@ Most_prevalent_medicines |>
 
 ```
 
-The data frame shows 10 unique ID's, which can also found in the descriptive analysis. The drug Anfoe appears three times, supporting results from earlier. From the classification of review, the levels of average and excellent are somewhat appearing at the same frequency, 4 and 5 times respectively, whereas the review level poor only appear once. This indicates that a poor review might potentially affect the prescription and/or choice of a drug.
+The data frame shows 7 unique ID's, which can also found in the descriptive analysis. There is a majority of average reviews for the 7 most prevalent drugs. Whereas only one appears with an excellent review. Two reviews of the category poor are observed as well. This indicates that an excellent reviews does not seem to affect the prescription and/or choice of a drug, however poor might. Furthermore, that an average classification seems to be enough for a relative high distirbution. It should be noted that nothing conclusive can be said, merely indicative observations which can be used for further analysis.
