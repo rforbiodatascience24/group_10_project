@@ -117,7 +117,9 @@ Poor_review_boxplot <- ggplot(Poor_review_distinct_data,
                                "3 or less obs" = "lightgrey")) +
   theme_minimal() + 
   theme(axis.text.x = element_text(angle = 45,
-                                   hjust = 1))   
+                                   hjust = 1),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())   
   # scale_x_discrete(labels = function(x) {
   #   counts <- count_data$count[count_data$Administration_type %in% x]
   #   paste(x, " (n=", counts, ")", sep = "")
@@ -173,7 +175,9 @@ Average_review_boxplot <- ggplot(Average_review_distinct_data ,
                                "3 or less obs" = "lightgrey")) +
   theme_minimal() + 
   theme(axis.text.x = element_text(angle = 45,
-                                   hjust = 1))   
+                                   hjust = 1),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())  
 
 
 # Print the plot
@@ -221,7 +225,9 @@ excellent_review_boxplot <- ggplot(excellent_review_distinct_data,
                                "3 or less obs" = "lightgrey")) +
   theme_minimal() + 
   theme(axis.text.x = element_text(angle = 45,
-                                   hjust = 1))   
+                                   hjust = 1),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())   
 
 
 ggsave(here("results/boxplot_Excellent_Administration_type.png"),
