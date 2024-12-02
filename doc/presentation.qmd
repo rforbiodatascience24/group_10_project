@@ -15,9 +15,9 @@ format:
 
 ::: columns
 ::: {.column width="50%"}
--   The Drug data set provides information about various medications: from treatments of cancer and Alzheimer's disease to common colds and pain relief
+-   Drugs for a broad range of health issues
 
--   Purpose: Assist healthcare professionals and patients in making decisions when choosing a medication
+-   Purpose: Assist in making decisions when choosing a medication
 
 -   The 3 rules for making a data set tidy are not satisfied
 
@@ -149,7 +149,7 @@ What is the relationship between the side effects and administration type for th
 :::
 
 ::: {.column width="50%"}
-### Number of Side Effects for the 7 most prevalent drugs
+### Side Effects for the 7 most prevalent drugs
 
 ```{r}
 
@@ -165,7 +165,7 @@ include_graphics(image_path)
 :::
 
 ::: {.column width="50%"}
-### Number of side effects for a specific administration type
+### Side effects for a specific administration type
 
 ```{r}
 image_path <- here("results", "Side_Effects_Administration_type.png") 
@@ -222,6 +222,7 @@ include_graphics(image_path)
 ### Keep in Mind
 
 -   Representativeness of data
+-   Nothing conclusive, merely indicative observations which can be used for further analysis.
 :::
 
 ::: {.column width="50%"}
@@ -234,5 +235,3 @@ include_graphics(image_path)
 -   Analyzing other variables: Influence of API and number of applications
 :::
 :::
-
-## Thank you for your attention :)
