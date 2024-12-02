@@ -1,5 +1,5 @@
 ---
-title: "Cancer Data Project"
+title: "Cancer Medicine Data Project"
 subtitle: Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643), and Malou Bech Jakobsen (s203515)
 format:
   revealjs:
@@ -49,7 +49,7 @@ data |>
 
 ```{r, }
 
-image_path <- here("results", "flow_clean.png")
+image_path <- here("results/Images", "flow_clean.png")
 
 include_graphics(image_path)
 ```
@@ -60,7 +60,7 @@ include_graphics(image_path)
 
 ```{r}
 
-image_path <- here("results", "flow_aug.png")
+image_path <- here("results/Images", "flow_aug.png")
 
 include_graphics(image_path)
 ```
@@ -89,6 +89,7 @@ include_graphics(image_path)
 library("tidyverse")
 library("readr")
 library("here")
+source("99_proj_func.R")
 
 image_path <- here("results", "Frequency_of_Unique_Drugs_plot.png")
 
@@ -180,6 +181,8 @@ include_graphics(image_path)
 
 ## Conclusion
 
+::: columns
+::: {.column width="75%"}
 -   There was no apparent tendency between the number of side effects and what type of review the specific drug got
 
 -   The review levels do not seem to be dependent on the type of administration
@@ -189,8 +192,8 @@ include_graphics(image_path)
 -   The 8 most prevalent drugs only have the administration types injection and tablet, 75% being injection
 
 -   Administration through capsules is associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
-
--   
+:::
+:::
 
 ## Discussion
 
