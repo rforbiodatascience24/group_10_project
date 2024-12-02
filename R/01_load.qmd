@@ -21,10 +21,10 @@ library(readr)
 ## Loading of Raw Data from URL
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-
 raw_dir <- here("data/_raw")
 data_dir <- here("data/")
 
+# Create directories if they don't exist
 if (!dir.exists(raw_dir)) {
   dir.create(path = raw_dir)
   message("Created directory: ", raw_dir)
@@ -35,21 +35,24 @@ if (!dir.exists(data_dir)) {
   message("Created directory: ", data_dir)
 }
 
+# Download and unzip dataset
 url <- "https://www.kaggle.com/api/v1/datasets/download/aadyasingh55/drug-dataset"
-temp_zip <- tempfile(fileext = ".zip")   
-temp_dir <- tempdir()  
+temp_zip <- tempfile(fileext = ".zip")
+temp_dir <- tempdir()
 
 response <- GET(url, write_disk(temp_zip, overwrite = TRUE))
 
 unzip(temp_zip, exdir = temp_dir)
 
-extracted_files <- list.files(temp_dir, full.names = TRUE)
-message("Extracted files: ", paste(extracted_files, collapse = ", "))
+# Extract CSV files using tidyverse approach
+csv_file <- list.files(temp_dir, full.names = TRUE) %>%
+  as_tibble() %>%
+  filter(str_detect(value, "\\.csv$")) %>%
+  slice(1) %>%  # Select the first row
+  pull(value)   # Extract the file name as a string
 
-csv_file <- grep("\\.csv$", extracted_files, value = TRUE)
-
-dataset <- read_csv(csv_file[1], show_col_types = FALSE)
-
+# Read the first CSV file
+dataset <- read_csv(csv_file, show_col_types = FALSE)
 ```
 
 ## Saving Raw Data as CSV in Raw Data Folder

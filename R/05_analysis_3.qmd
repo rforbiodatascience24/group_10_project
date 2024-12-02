@@ -63,7 +63,7 @@ Manufacturers_bar_plot <- cancer_data_selected |>
              fill = Classification_Review)) +
     geom_bar(stat = "count", 
              show.legend = TRUE) + 
-    facet_wrap(~ Manufacturer) + 
+    facet_wrap(~ str_wrap(Manufacturer, 20)) + 
     scale_fill_manual(values = c("Poor" = "#F8766D",  # Making sure color match meaning
                                  "Average" = "#619CFF",
                                  "Excellent" = "#00BA38")) +
