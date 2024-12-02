@@ -1,5 +1,5 @@
 ---
-title: "02_clean"
+title: "Cleaning Raw Data"
 format: 
   html:
     embed-resources: true
@@ -10,7 +10,7 @@ editor: visual
 
 Loading libraries which will be used for the data wrangling. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE, output = FALSE}
 rm(list=ls())
 library("tidyverse")
 library("purrr")
@@ -128,35 +128,34 @@ clean_data <- clean_data |>
     
     # Defines the first character to save the first apllication for a correct split
     
-    first_char <- str_sub(trimmed_string, 1, 1)
+    first_char <- str_sub(trimmed_string, 
+                          1, 
+                          1)
     
     # Define the rest of the string (from the second character onwards)
-    rest <- str_sub(trimmed_string, 2,str_length(trimmed_string))
+    rest <- str_sub(trimmed_string, 
+                    2,
+                    str_length(trimmed_string))
   
     
     # Split the rest on capital letters
-    split_rest <- str_split(rest, pattern = "(?=[A-Z])") [[1]]
+    split_rest <- str_split(rest, 
+                            pattern = "(?=[A-Z])") [[1]]
     
     # Add the first character back to the first element and keep the rest
-    c(str_c(first_char, split_rest[1]), split_rest[-1])
+    c(str_c(first_char, 
+            split_rest[1]), 
+            split_rest[-1])
   }))  |>
   
   # Unnest the list column and unnest them into multiple columns
-  unnest_wider(Application, names_sep = "_")
+  unnest_wider(Application, 
+               names_sep = "_")
 
 clean_data <- clean_data |>
   select(-Uses)
 
 ```
-
-To ensure the right amount of application variables are made in the code above it is checked whether there is anything in the column other than NAs.
-
-```{r}
-clean_data |>
-  summarize(sum(!is.na(`Application_8`)))
-```
-
-It isn't until application number 9 that there are only NAs. Therefore 8 application columns are sufficient.
 
 ### Making the API Variables
 
@@ -179,7 +178,8 @@ In the Composition variable it can be seen that there are multiple active pharma
 clean_data <- clean_data |>
 
   # Splits on "+" charater.
-  mutate(API = str_split(Composition, pattern = "\\+")) |>
+  mutate(API = str_split(Composition, 
+                         pattern = "\\+")) |>
 
   # For each API column make a new column for each element and make the new name seqential after a "_"
   unnest_wider(API, names_sep = "_")
@@ -230,41 +230,41 @@ A search is done for the words in the vector and if a word appears in Medicine N
 
 # List of administration types based on the first 333 rows in "Medicin Name" column.
 types <- c("Injection", 
-                 "Tablet", 
-                 "Syrup", 
-                 "Cream", 
-                 "Oral Suspension", 
-                 "Capsule", 
-                 "Eye Drop", 
-                 "Liquid", 
-                 "Suspension", 
-                 "Inhaler", 
-                 "Gel", 
-                 "Drops", 
-                 "Lozenges", 
-                 "Eye/Ear Drops", 
-                 "Expectorant", 
-                 "Nasal Spray", 
-                 "Respules", 
-                 "Eye Ointment", 
-                 "Soap", 
-                 "Penfill", 
-                 "Scalp Solution", 
-                 "Respirator Solution", 
-                 "Cartridge", 
-                 "Eye Drops",
-                 "Ophthalmic Solution", 
-                 "Nail Lacquer", 
-                 "Infusion", 
-                 "Drop", 
-                 "Readymix", 
-                 "Oral Solution")
+           "Tablet", 
+           "Syrup", 
+           "Cream", 
+           "Oral Suspension", 
+           "Capsule", 
+           "Eye Drop", 
+           "Liquid", 
+           "Suspension", 
+           "Inhaler", 
+           "Gel", 
+           "Drops", 
+           "Lozenges", 
+           "Eye/Ear Drops", 
+           "Expectorant", 
+           "Nasal Spray", 
+           "Respules", 
+           "Eye Ointment", 
+           "Soap", 
+           "Penfill", 
+           "Scalp Solution", 
+           "Respirator Solution", 
+           "Cartridge", 
+           "Eye Drops",
+           "Ophthalmic Solution", 
+           "Nail Lacquer", 
+           "Infusion", 
+           "Drop", 
+           "Readymix", 
+           "Oral Solution")
 
 
 # Creating Administration_type variable. If a type from the type list matches with Medicine Name, matching type is inserted under Administration_type.
 clean_data <- clean_data |>
   mutate(Administration_type = str_extract(`Medicine Name`,
-                                           paste(types, 
+                                           str_c(types, 
                                                  collapse = "|")
                                            ) |>
   # N/As are replaced with "Other".
@@ -273,14 +273,15 @@ clean_data <- clean_data |>
 
 # Filtering the observations containing "Other" in administration type.
 clean_data |>
-  select(`Medicine Name`, Administration_type) |>
-  filter(str_detect(Administration_type, "Other")) |>
+  select(`Medicine Name`, 
+         Administration_type) |>
+  filter(str_detect(Administration_type, 
+                    "Other")) |>
   print()
 
 ```
 
-To make sure as many administration types as possible are added, the NAs are investigated to add further, missed types to a new vector.\
-In the end there were 336 observations left which were NAs, and these administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into an categories/observations called "Other".
+To make sure as many administration types as possible are added, the NAs are investigated manually to add further, missed types to a new vector.
 
 ```{r}
 
@@ -302,7 +303,7 @@ updated_types <- c("Solution",
 # Second iteration of creating Administration_type as more types have been added to the list.
 clean_data <- clean_data |>
   mutate(Administration_type = str_extract(`Medicine Name`,
-                                           paste(c(types,
+                                           str_c(c(types,
                                                    updated_types), 
                                            collapse = "|")
                                            ) |>
@@ -312,11 +313,15 @@ clean_data <- clean_data |>
 
 # Filtering the observations containing "Other" in administration type to see how many have not been types have not been decided.
 clean_data |>
-  select(`Medicine Name`, Administration_type) |>
-  filter(str_detect(Administration_type, "Other")) |>
+  select(`Medicine Name`, 
+         Administration_type) |>
+  filter(str_detect(Administration_type, 
+                    "Other")) |>
   print()
 
 ```
+
+In the end there were 336 observations left which were NAs, and these administration types are roughly unique administration types appearing only ones or a few times. Therefore, to avoid having very small categories these are grouped into an categories/observations called "Other".
 
 ### Tidying the Medicine Name Variable
 
@@ -326,13 +331,14 @@ The Medicine Name variable currently contains information about both name, amoun
 # Extracts the first word of the variable by stopping when a number or a space is encountered
 clean_data <- clean_data |>
   mutate(
-    `Medicine Name` = str_extract(`Medicine Name`, "^[^0-9 ]+"
+    `Medicine Name` = str_extract(`Medicine Name`, 
+                                  "^[^0-9 ]+"
 )
   )
 
 ```
 
-### Splitting side effects into separate columns
+### Splitting Side Effects into Separate Columns
 
 All the side effects from the various medications are collected into a single variable called 'Side_effects.' These are split into separate variables by dividing the text at capital letters and words that only consist of capital letters are changed to lower case, so "Abnormal ACG" becomes "Abnormal acg"
 
@@ -355,20 +361,27 @@ clean_data <- clean_data |>
 
     # Defining first character and saving for adding later
     
-    first_char <- str_sub(.x, 1, 1)
+    first_char <- str_sub(.x, 
+                          1, 
+                          1)
     
     # Defining the rest of the string which we now can split on
-    rest <- substring(.x, 2)
+    rest <- substring(.x, 
+                      2)
     
     # Splitting on substring with removed first captial letter to avoid empty first column
-    split_rest <- str_split(rest, pattern = "(?=[A-Z])")[[1]]
+    split_rest <- str_split(rest, 
+                            pattern = "(?=[A-Z])")[[1]]
     
     # And adding the first character back for the first Side-Effects column for each row 
-    c(paste0(first_char, split_rest[1]), split_rest[-1])
+    c(paste0(first_char, 
+             split_rest[1]),
+             split_rest[-1])
   }))  |>
   
   # Unnest the list column into multiple columns
-  unnest_wider(Side_Effects, names_sep = "_")
+  unnest_wider(Side_Effects, 
+               names_sep = "_")
 
 clean_data <- clean_data |>
   select(-`Side_effects`)
@@ -380,7 +393,8 @@ To ensure that the side effects can be factorized and compared trailing spaces a
 # Removes whitespaces from the end of the data string.
 clean_data <- clean_data |>
   mutate(across(starts_with("Side_Effects_"),
-                ~ str_trim(.x, side = "right")))
+                ~ str_trim(.x, 
+                           side = "right")))
 ```
 
 ### Removing URL variable
@@ -415,8 +429,10 @@ Lastly, the data is stored as a TSV file in the data folder for later use.
 
 ```{r}
 dir_save <- here("data")
-save_path <- file.path(dir_save, "02_dat_clean.tsv")
+save_path <- file.path(dir_save, 
+                       "02_dat_clean.tsv")
 
 # Save the augmented data as a TSV file
-write_tsv(clean_data, save_path)
+write_tsv(clean_data, 
+          save_path)
 ```
