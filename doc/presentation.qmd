@@ -8,6 +8,7 @@ format:
     margin: 0.05
     theme: solarized
     embed-resources: true
+    slide-number: true
 ---
 
 ## Introduction
@@ -35,7 +36,11 @@ library("knitr")
 data <- read_tsv(here("data/01_dat_load.tsv"))
 
 data |>
-  select(`Medicine Name`, Uses, Composition) |>
+  select(`Medicine Name`, Uses) |>
+  print()
+
+data |>
+  select(`Excellent Review %`, `Average Review %`, `Poor Review %`) |>
   print()
 ```
 :::
@@ -43,62 +48,60 @@ data |>
 
 ## Materials and Methods
 
-::: columns
-::: {.column width="50%"}
 ### Cleaning
 
-```{r, }
-
+```{r}
 image_path <- here("results/Images", "flow_clean.png")
 
 include_graphics(image_path)
 ```
-:::
 
-::: {.column width="50%"}
+## Materials and Methods
+
 ### Augmentation
 
 ```{r}
-
 image_path <- here("results/Images", "flow_aug.png")
 
 include_graphics(image_path)
 ```
-:::
-:::
 
 ## Description of the Cancer Data
 
 ::: columns
 ::: {.column width="50%"}
 -   **Variables:**\
-    Medicine name\
-    Composition\
-    Uses\
-    Side effects\
+    Medicine_Name\
     Manufacturer\
-    Poor, Average, Excellent reviews (%)
+    Administration_type\
+    Application type and number\
+    API name, amount, and unit\
+    Side_Effect\
+    Review_level and Review\_% (Poor, Average, and Excellent)\
+    Counts of Side_Effects, API, and Application\
+    Classification_Review
 
 -   Distribution of Side Effects
+
+```{r}
+source(here("R/99_proj_func.R"))
+
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
+
+SummaryStatistics(cancer_data, Count_Side_Effects)
+
+```
 :::
 
 ::: {.column width="50%"}
-### Hej
+### The 10 most prevalent drugs
 
 ```{r}
-library("tidyverse")
-library("readr")
-library("here")
-source(here("R/99_proj_func.R"))
-
 image_path <- here("results", "Frequency_of_Unique_Drugs_plot.png")
 
 # Include the image in the document
 include_graphics(image_path)
 
-cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
-
-SummaryStatistics(cancer_data, Count_Side_Effects)
 ```
 :::
 :::
@@ -166,11 +169,15 @@ include_graphics(image_path)
 ## Analysis 3: Manufacturer and API in relation to review classifications
 
 ::: columns
-::: {.column width="50%"}
-skriv bullets points
+::: {.column width="40%"}
+-   The plot shows
+
+-   The top 6 manufactures predominantly have excellent reviews
+
+-   Interestingly, Lupin Ltd have equal amounts of poor and excellent reviews.
 :::
 
-::: {.column width="50%"}
+::: {.column width="60%"}
 ```{r}
 image_path <- here("results", "Manufacturers_bar_plot.png")  
 
@@ -192,6 +199,8 @@ include_graphics(image_path)
 -   The 8 most prevalent drugs only have the administration types injection and tablet, 75% being injection
 
 -   Administration through capsules is associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
+
+-   The top 6 manufactures predominantly have excellent reviews
 :::
 :::
 
