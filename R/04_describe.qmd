@@ -23,7 +23,7 @@ source("99_proj_func.R")
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 # Loading the clean data tsv file 
-cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'), show_col_types = FALSE)
 ```
 
 ## Descriptive Statistics of the Data
@@ -183,7 +183,7 @@ The frequency of each drug is illustrated in a histogram, colored by a threshold
 
 ```{r}
 # Creating the plot in one pipe
-cancer_data |>
+Frequency_of_Unique_Drugs_plot <- cancer_data |>
   # Grouping by mecidine name
   group_by(Medicine_Name) |>
   # Summarising the % of prevelance of each drug
@@ -203,6 +203,10 @@ cancer_data |>
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent_format()) +
   scale_fill_identity() 
+
+ggsave(here("results/Frequency_of_Unique_Drugs_plot.png"), plot = Frequency_of_Unique_Drugs_plot, width = 6, height = 4)
+
+print(Frequency_of_Unique_Drugs_plot)
   
 ```
 

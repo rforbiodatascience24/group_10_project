@@ -10,7 +10,7 @@ editor: visual
 
 ## Loading library
 
-Loading libraries which will be used for the data wrangling. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
+Loading libraries which will be used for the data analysis. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
 ```{r}
 rm(list=ls()) 
@@ -26,10 +26,10 @@ library("ggridges")
 ```{r, warning=FALSE, message=FALSE}
 
 # Loading the cleaned and augmented file:  
-cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'), show_col_types = FALSE) 
 ```
 
-A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancer dataset.
+A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancer data set.
 
 This analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
 
@@ -67,7 +67,7 @@ Most_prevalent_medicines |>
 
 ```
 
-The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the data frame, 10 disitinct ID's appear
+The subset shows the 10 most prevalent drugs in the cancer data. From the dimension of the data frame, 10 distinct ID's appear
 
 ## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
 
@@ -153,7 +153,7 @@ ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects
 print(Side_Effects_Administration_type)
 ```
 
-The density plot shows a general trend between Injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects aorund \~10 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
+The density plot shows a general trend between Injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects aorund \~8 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
 
 Lastly, administration through capsules seems to be associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
