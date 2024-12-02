@@ -87,7 +87,7 @@ include_graphics(image_path)
     Counts of Side_Effects, API, and Application\
     Classification_Review
 
--   Distribution of Side Effects
+-   **Distribution of Side Effects**
 
 ```{r}
 source(here("R/99_proj_func.R"))
@@ -127,11 +127,12 @@ What are the probable causes behind the excellent, average, and poor reviews for
 image_path <- here("results", "Scatter_Side_Effects_Review_all.png")
  
 include_graphics(image_path)
-
 ```
 :::
+:::
 
-::: {.column width="50%"}
+## Analysis 1: Review Levels
+
 ### Influence of Administration Type
 
 ```{r}
@@ -139,14 +140,16 @@ image_path <- here("results", "boxplot_Excellent_Administration_type.png")
 
 include_graphics(image_path)
 ```
-:::
-:::
 
-## Analysis 2: The 10 most prevalent medications
+## Analysis 2: The 7 most prevalent medications
 
 ::: columns
+::: {.column width="100%"}
+What is the relationship between the side effects and administration type for the 7 most prevalent drugs, compared to the overall administration types for all cancer medicines?
+:::
+
 ::: {.column width="50%"}
-### Number of Side Effects for the 8 most prevalent drugs
+### Number of Side Effects for the 7 most prevalent drugs
 
 ```{r}
 
@@ -204,7 +207,7 @@ include_graphics(image_path)
 
 -   The distribution of side effects seem random for different administration types for the 8 most prevalent drugs, although a rather high number of side effects are present for these drugs
 
--   The 8 most prevalent drugs only have the administration types injection and tablet, 75% being injection
+-   The 7 most prevalent drugs have the administration types injection, cream, and tablet, most being injection
 
 -   Administration through capsules is associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
@@ -229,9 +232,9 @@ include_graphics(image_path)
 -   Analysis of the cancer types
 
 -   Analyzing other variables: Influence of API and number of applications
-
--   Hej
 :::
 :::
 
-## 
+## Cancer Medicine Data Project 
+
+### Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643), and Malou Bech Jakobsen (s203515)

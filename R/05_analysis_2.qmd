@@ -29,7 +29,7 @@ library("ggridges")
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv'), show_col_types = FALSE) 
 ```
 
-A subset of the cancer data is made to investigate only the 7 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 1.5% prevalence in the cancer data set.
+A subset of the cancer data is made to investigate the 7 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 1.5% prevalence in the cancer data set.
 
 This analysis aims to investigate potential reasons explaining why these exact medicines appear as the most common in treatment of cancer.
 
@@ -78,9 +78,9 @@ Most_prevalent_medicines |>
   head(7)
 ```
 
-The subset shows the 7 most prevalent drugs in the cancer data. From the dimension of the data frame, 7 distinct ID's appear
+The subset shows the 7 most prevalent drugs in the cancer data. From the dimension of the data frame 7 distinct ID's appear
 
-## Relationship of Prevalent Drugs with Corresponding Side Effects and Administration Type
+## Relationship between Prevalent Drugs with Corresponding Side Effects and Administration Type
 
 The relationship between the most prevalent medicine names and the number of side effects is investigated, as it is plausible, that a lower number of side effects might explain a higher usage, making the drug more common. As we only aim to investigate unique medicine names, we make sure to distinguish by this in the pipeline of plotting. As the medicines will carry the same API, active pharmaceutical ingredients, the number of side effects will not differ, making the subset valid. The administration type is furthermore highlighted for each drug, as this is also a plausible variable affecting popularity and consumption.
 
@@ -104,7 +104,7 @@ Most_prevalent_medicines |>
                               )) +
   labs(x = "Drug name",
        y = "Number of side effects") + 
-  ggtitle(str_wrap("Relationship between side effects and ten most commmon cancer drugs", 50)) +
+  ggtitle(str_wrap("Relationship between side effects and 7 most commmon cancer drugs", 50)) +
   theme_minimal() +
   theme(legend.position = 'bottom') +
   guides(fill=guide_legend(title="Adimnistration type")) +
@@ -117,9 +117,9 @@ Most_prevalent_medicines |>
 
 ```
 
-The visualization shows the 7 different types of drug names, as these unique medicines exceed a prevalence of 1.5%. The distribution of side effects seems slightly random, however with majority having below 10 side effects. It can therefore not directly be concluded that lower number fo side effects explains the popularity of the drugs in the data set, but there is a trend of lower side effects for 6/8 drugs.
+The visualization shows the 7 different types of drug names, as these unique medicines exceed a prevalence of 1.5%. The distribution of side effects seems slightly random, however with majority having below 10 side effects. It can therefore not directly be concluded that lower number of side effects explains the popularity of the drugs in the data set, but there is a trend of lower side effects for 5/7 drugs.
 
-Furthermore, it appears, from the visualization, that administration types cream, tablet, and injection only appear in the subset. Only one of the drugs is administrated by cream, whereas injection makes up 4 out of 7 drugs, \~55 %, of the administrations whereas tablet makes up 2 incidences, just below \~30%. Hence popularity of injection is observed, despite being the drug with the most associated side effects.
+Furthermore, it appears, from the visualization, that administration types cream, tablet, and injection only appear in the subset. Only one of the drugs is administrated by cream, whereas injection makes up 4 out of 7 drugs, \~55 %, of the administrations whereas tablet makes up 2 incidences, just below \~30%. Hence, popularity of injection is observed, despite being the drug with the most associated side effects.
 
 To investigate this trend further, the density of side effects related to each of the different administration types is visualized in the cancer data with the aim of finding a general trend. This is done for each of the medicines by using the ID in order to obtain unique observations.
 
@@ -165,7 +165,7 @@ ggsave(here("results/Side_Effects_Administration_type.png"), plot = Side_Effects
 print(Side_Effects_Administration_type)
 ```
 
-The density plot shows a general trend between Injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects aorund \~8 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
+The density plot shows a general trend between injection and a medium to high number of side effects. The peak at \~20 confirms what is found in the subset of the prevalent drugs. Furthermore, a peak in the density of side effects around \~8 is observed for tablets, which is in accordance with tablet-administrated drugs Advancan and Rolimus in the prevalence medicine subset.
 
 Lastly, administration through capsules seems to be associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
@@ -187,4 +187,4 @@ Most_prevalent_medicines |>
 
 ```
 
-The data frame shows 7 unique ID's, which can also found in the descriptive analysis. There is a majority of average reviews for the 7 most prevalent drugs. Whereas only one appears with an excellent review. Two reviews of the category poor are observed as well. This indicates that an excellent reviews does not seem to affect the prescription and/or choice of a drug, however poor might. Furthermore, that an average classification seems to be enough for a relative high distirbution. It should be noted that nothing conclusive can be said, merely indicative observations which can be used for further analysis.
+The data frame shows 7 unique ID's, which can also be found in the descriptive analysis. There is a majority of average reviews for the 7 most prevalent drugs. Whereas only one appears with an excellent review. Two reviews of the category poor are observed as well. This indicates that an excellent reviews does not seem to affect the prescription and/or choice of a drug, however poor might. Furthermore, an average classification seems to be enough for a relatively high distribution. It should be noted that nothing conclusive can be said, merely indicative observations which can be used for further analysis.
