@@ -230,7 +230,7 @@ include_graphics(image_path)
 
 -   Analyzing other variables: Influence of API and number of applications
 
--   
+-   Hej
 :::
 :::
 
