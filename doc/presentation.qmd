@@ -1,6 +1,6 @@
 ---
-title: "Presentation_v2"
-subtitle: Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643) and Malou Bech Jakobsen (s203515)
+title: "Presentation"
+subtitle: Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643), and Malou Bech Jakobsen (s203515)
 format:
   revealjs:
     width: 1800  # Increase the width of slides (default is ~960)
@@ -39,6 +39,32 @@ data |>
 :::
 
 ## Materials and Methods
+
+::: columns
+::: {.column width="50%"}
+### Cleaning
+
+```{r, }
+
+image_path <- here("results", "flow_clean.png")
+
+include_graphics(image_path)
+```
+:::
+
+::: {.column width="50%"}
+### Augmentation
+
+```{r}
+
+image_path <- here("results", "flow_aug.png")
+
+include_graphics(image_path)
+```
+:::
+:::
+
+## Description of the Cancer Data
 
 ::: columns
 ::: {.column width="50%"}
@@ -132,7 +158,7 @@ include_graphics(image_path)
 :::
 :::
 
-## 
+## Conclusion
 
 ## Discussion
 
