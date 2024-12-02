@@ -12,13 +12,13 @@ This analysis aims to investigate the probable causes behind the excellent, aver
 
 ### Influence of Number of Side Effects
 
-It would be plausible to think that drugs with many side effects would be assiociated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage.
+It would be plausible to think that drugs with many side effects would be associated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage.
 
 ### Loading Libraries and the Augmented Data
 
-Firstly, the environment is cleaned, and libraries and the cancer data is loaded.
+Firstly, the environment is cleaned, then libraries and the cancer data is loaded.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 # Cleaning environment
 rm(list=ls())
@@ -28,7 +28,7 @@ library("tidyverse")
 library("here")
 
 # Loading the augmented data tsv file 
-cancer_data <- read_tsv(here('data/03_dat_aug.tsv'))
+cancer_data <- read_tsv(here('data/03_dat_aug.tsv'), show_col_types = FALSE)
 
 ```
 
@@ -53,9 +53,9 @@ Scatter_Side_Effects_Review <- cancer_data |>
   geom_point(shape = 21,
              color = "black",
              size = 2) + 
-  labs(x = "Count of Side Effects", 
+  labs(x = "Number of Side Effects", 
        y = "Review Percentage", 
-       title = "Number of Side Effects vs Review Percentage by Review Level") +
+       title = "Number of Side Effects vs Review Percentage") +
   theme_minimal() +
   facet_wrap(~ Review_level,
              labeller = as_labeller(c("Poor_Review_%" = "Poor Review", 
@@ -74,13 +74,13 @@ print(Scatter_Side_Effects_Review)
 
 ```
 
-From this plot no tendency is seen of drugs with fewer side effects having a better review classification or vice versa. The correlation seems completly random.
+From this plot no tendency is seen of drugs with fewer side effects having a better review classification or vice versa. The correlation seems completely random.
 
 As no correlation is found for number of side effects, perhaps another variable is influencing the review percentages.
 
 ### Influence of Administration Type
 
-Another variable that might influence the drug review levels, could be the type of administration. Therefore, the distribution of each review level of administration type is investigated. If administration type is essential for review level percentages, the distribution would be different for each administration type with a lower variance. All review levels are shown in individual box plots. As some administration types include to few observations (\<= 3 obs), these are visualized in grey. A distribution based on three or less observations is too few to conclude an actual distribution.
+Another variable, that might influence the drug review levels, could be the type of administration. Therefore, the distribution of each review level of administration type is investigated. If administration type is essential for review level percentages, the distribution would be different for each administration type with a lower variance. All review levels are shown in individual box plots. As some administration types include too few observations (\<= 3 obs), these are visualized in grey. A distribution based on three or less observations is too few to conclude an actual distribution.
 
 #### Poor Review Distribution
 
@@ -124,13 +124,9 @@ Poor_review_boxplot <- ggplot(Poor_review_distinct_data,
                                    hjust = 1),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank())   
-  
-
 
 # Print the plot
 print(Poor_review_boxplot)
-
-
 
 ```
 
