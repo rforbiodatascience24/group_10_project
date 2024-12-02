@@ -1,5 +1,5 @@
 ---
-title: "01_load"
+title: "Loading Raw Data"
 format: 
   html:
     embed-resources: true
@@ -70,9 +70,11 @@ Furthermore, the data is stored in the data folder, which will allow for use lat
 
 ```{r}
 
-save_path <- file.path(data_dir, "01_dat_load.tsv")
+save_path <- file.path(data_dir, 
+                       "01_dat_load.tsv")
 
 # Save the dataframe as a TSV file
-write_tsv(dataset, save_path)
+write_tsv(dataset, 
+          save_path)
 
 ```

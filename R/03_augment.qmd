@@ -1,5 +1,5 @@
 ---
-title: "03_augment"
+title: "Augmenting the Clean Data"
 format: 
   html:
     embed-resources: true
@@ -10,7 +10,7 @@ editor: visual
 
 When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
-```{r}
+```{r, echo = TRUE, warning = FALSE, message = FALSE, output = FALSE}
 rm(list=ls())
 library("tidyverse")
 library("here")
@@ -31,17 +31,20 @@ clean_data <- read_tsv(here('data/02_dat_clean.tsv'))
 
 ## Subsetting the Data into Data Related to Cancer
 
-The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer, as will be further elaborated on in the describe file. Underneath in the clean data set the Application variables are used to filter and keep only columns containing the word "cancer". The cancer_data is the only data being argumented, described, and analyzed moving forward.
+The types of medications vary greatly, therefore this project will only be investigating drugs applicable for the treatment of cancer, as will be further elaborated on in the describe file. Underneath in the clean data set the Application variables are used to filter and keep only columns containing the word "cancer". The cancer_data is the only data being augmented, described, and analyzed moving forward.
 
 ```{r}
 # Any columns starting with "Application" are filtered and elements containng the word "cancer" detected 
 cancer_data <- clean_data |>
-  filter(if_any(starts_with("Application"), ~ str_detect(., regex("cancer", ignore_case = TRUE))))
+  filter(if_any(starts_with("Application"), 
+                ~ str_detect(., 
+                             regex("cancer", 
+                                   ignore_case = TRUE))))
 ```
 
 ## Augmentation of the Data
 
-#### Augmenting Data by Adding Count Variables for 'Side_Effects', 'API' and 'Application'.
+#### Augmenting Data by Adding Count Variables for 'Side_Effects', 'API', and 'Application'
 
 It is interesting to investigate how many side effects each person has experienced for the different drugs, in order to see whether some drugs might carry a higher amount than others, as well as certain combination of drugs. Therefore, new variables are made, counting the amount of side effects and API for each observation. Furthermore, the counts of applications are made into a new variable in order to investigate how many applications each drug have.
 
@@ -58,7 +61,7 @@ aug_clean_data <- cancer_data |>
 
 ```
 
-#### Making variable for classifying the reviews
+#### Making Variable for Classifying the Reviews
 
 A new variable containing a classification of the reviews is made. The drug will be given either a label as poor, average or excellent based on where it has the highest socre in percentage from the Poor_Review\_%, Average_Review\_%, and Excellent_Review\_% variables.\
 Furthermore, the drugs are given an ID number.
@@ -160,7 +163,11 @@ This is done by by making sure rows are considered duplicates if all values in t
 
 # Only unique/distinct rows are kept
 unique_aug_clean_data_long <- aug_clean_data_long |>
-  distinct(across(-c(Application_number, API_name_number, API_amount_number, API_unit_number, Side_Effect_number)), .keep_all = TRUE)
+  distinct(across(-c(Application_number, 
+                     API_name_number, 
+                     API_amount_number, 
+                     API_unit_number, 
+                     Side_Effect_number)), .keep_all = TRUE)
 
 ```
 
@@ -172,9 +179,11 @@ The cleaned augmented data is saved into a .tsv in the data folder.
 # Defining the directory which the file should be saved to} 
 dir_save <- here("data")
 # Defining the save path with correct name and directory
-save_path <- file.path(dir_save, "03_dat_aug.tsv")
+save_path <- file.path(dir_save, 
+                       "03_dat_aug.tsv")
 
 # Save the augmented data as a TSV file
-write_tsv(unique_aug_clean_data_long, save_path)
+write_tsv(unique_aug_clean_data_long, 
+          save_path)
 
 ```
