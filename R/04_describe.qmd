@@ -243,7 +243,7 @@ cancer_data |>
 
 ```
 
-These are the 10 most common drugs for cancer treatment in the data set, based on the frequency.
+These are the 7 most common drugs for cancer treatment in the data set, based on the frequency.
 
 ### Drugs Related to Review Category
 
