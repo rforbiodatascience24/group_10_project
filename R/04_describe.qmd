@@ -202,48 +202,28 @@ Frequency_of_Unique_Drugs_plot <-cancer_data |>
 # Making the ggplot of the % prevelance of each drug
   ggplot(aes(x = Medicine_Name, 
              y = Proportion, 
-# Coloring by prevelance using threshold of 2%
+# Coloring by prevelance using threshold of 1.5%
   fill = ifelse(Proportion > 0.015, "orange", "grey"))) +
   geom_bar(stat = "identity", color = "black") + 
   labs(x = "Drug name",
        y = "Frequency of drug [%]") + 
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5)) +
+  theme(axis.text.x = element_blank(),  # Removes x-axis labels
+    panel.grid.major.x = element_blank(),  # Removes major vertical grid lines
+    panel.grid.minor.x = element_blank()) +
   ggtitle("Frequency of Unique Drugs in Cancer Data") +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent_format()) +
-  scale_fill_identity() 
+  scale_fill_identity()+
+  geom_text(aes(label = ifelse(Proportion > 0.015, as.character(Medicine_Name), "")),
+            angle = 90, hjust = 1, size = 4, vjust = -0.5, 
+            fontface = "bold", color = "darkorange")
 
 ggsave(here("results/Frequency_of_Unique_Drugs_plot.png"), plot = Frequency_of_Unique_Drugs_plot, width = 6, height = 4)
 
 
 print(Frequency_of_Unique_Drugs_plot)
-# Creating the plot in one pipe
-# Frequency_of_Unique_Drugs_plot <- cancer_data |>
-#   # Grouping by mecidine name
-#   group_by(ID,
-#            .keep_all=) |>
-#   # Summarising the % of prevelance of each drug
-#   summarise(Proportion = n() / nrow(cancer_data)) |>
-#   ungroup() |>
-#   # Making the ggplot of the % prevelance of each drug
-#   ggplot(aes(x = Medicine_Name, 
-#              y = Proportion, 
-#              # Coloring by prevelance using threshold of 2%
-#              fill = ifelse(Proportion > 0.02, "orange", "grey"))) +
-#   geom_bar(stat = "identity", color = "black") + 
-#   labs(x = "Drug name",
-#        y = "Frequency of drug [%]") + 
-#   theme_minimal() + 
-#   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5)) +
-#   ggtitle("Frequency of Unique Drugs in Cancer Data") +
-#   theme(plot.title = element_text(hjust = 0.5)) +
-#   scale_y_continuous(labels = scales::percent_format()) +
-#   scale_fill_identity() 
-# 
-# ggsave(here("results/Frequency_of_Unique_Drugs_plot.png"), plot = Frequency_of_Unique_Drugs_plot, width = 6, height = 4)
-# 
-# print(Frequency_of_Unique_Drugs_plot)
+
 #   
 ```
 
