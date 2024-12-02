@@ -19,7 +19,7 @@ s203515 = mebjak
 ## Direct Link to Presentation
 
 Direct link to presentation in github:
-<https://github.com/rforbiodatascience24/group_10_project/blob/main/doc/Presentation_v2.html>
+<https://raw.githack.com/rforbiodatascience24/group_10_project/main/doc/presentation.html>
 
 ## How to Access The Data
 
