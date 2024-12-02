@@ -235,6 +235,4 @@ include_graphics(image_path)
 :::
 :::
 
-## Cancer Medicine Data Project 
-
-### Johanna Haraldsdottir (s204657), Marie Kragh (s203566), Sofie Bruun (s194678), Amalie Schultz-Nielsen (s204643), and Malou Bech Jakobsen (s203515)
+## Thank you for your attention :)
