@@ -42,7 +42,7 @@ file.rename(here("R/02_clean.html"), here("results/02_clean.html"))
 quarto_render(here("R/03_augment.qmd"))
 ```
 
-{{< include 03_augment.qmd >}}
+#{{< include 03_augment.qmd >}}
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 file.rename(here("R/03_augment.html"), here("results/03_augment.html"))
@@ -99,13 +99,12 @@ file.rename(here("R/05_analysis_3.html"), here("results/05_analysis_3.html"))
 ## 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
-#| output: false      
-
+#| output: false  
 quarto_render(here("R/00_all.qmd"))
 ```
 
 {{< include 00_all.qmd >}}
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r}
 file.rename(here("R/00_all.html"), here("results/00_all.html"))
 ```
