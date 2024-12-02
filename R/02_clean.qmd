@@ -8,7 +8,7 @@ editor: visual
 
 ## Loading Libraries
 
-Loading libraries which will be used for the data wrangling
+Loading libraries which will be used for the data wrangling. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
 ```{r}
 rm(list=ls())
@@ -16,15 +16,14 @@ library("tidyverse")
 library("purrr")
 library("broom")
 library("readr")
-library("here")
+library("here") 
 ```
 
 ## Loading Data
 
 Loading the TSV file from the data folder.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 data <- read_tsv(here("data/01_dat_load.tsv"))
 ```

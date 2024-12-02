@@ -8,18 +8,19 @@ editor: visual
 
 ## Loading Libraries
 
+When the "here" library is loaded, the directory placement is printed.
+
 ```{r}
 #Loading libraries
 rm(list=ls())
-library(here)
+library(here) # This prints the placement of the directory
 library(httr)
 library(readr)
 ```
 
 ## Loading of Raw Data from URL
 
-```{r}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 raw_dir <- here("data/_raw")
 data_dir <- here("data/")

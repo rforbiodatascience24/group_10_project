@@ -6,27 +6,28 @@ format:
 editor: visual
 ---
 
+# Analysis of the 10 most prevalent medicines
+
 ## Loading library
+
+Loading libraries which will be used for the data wrangling. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
 
 ```{r}
 rm(list=ls()) 
 library("tidyverse") 
 library("dplyr") 
 library("readr")
-library('here')
-library('ggridges')
+library("here")
+library("ggridges")
 ```
 
 ## Loading cancer data file
 
-```{r, warning=FALSE}
-#| message: false
+```{r, warning=FALSE, message=FALSE}
 
 # Loading the cleaned and augmented file:  
 cancer_data <- read_tsv(here('data/03_dat_aug.tsv')) 
 ```
-
-# Analysis of the 10 most prevalent medicines
 
 A subset of the cancer data is made to investigate only the 10 most prevalent types of medicine. These medicines were identified through the descriptive statistics and appear to be the only ones exceeding 2% prevalence in the cancer dataset.
 

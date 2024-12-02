@@ -12,15 +12,19 @@ This analysis aims to investigate the probable causes behind the excellent, aver
 
 ### Influence of Number of Side Effects
 
-It would be plausible to think that drugs with many side effects would be assiociated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage. Firstly, the environment is cleaned, and libraries and the cancer data is loaded.
+It would be plausible to think that drugs with many side effects would be assiociated with a high percentage of poor reviews. This is investigated by looking into the number of side effects and their associated review percentage.
 
-```{r, warning=FALSE}
-#| message: false
+### Loading Libraries and the Augmented Data
+
+Firstly, the environment is cleaned, and libraries and the cancer data is loaded.
+
+```{r, warning=FALSE, message=FALSE}
+
 # Cleaning environment
 rm(list=ls())
 
 # Loading libraries
-library(tidyverse)
+library("tidyverse")
 library("here")
 
 # Loading the augmented data tsv file 
@@ -70,7 +74,7 @@ print(Scatter_Side_Effects_Review)
 
 ```
 
-From this plot no tendency is seen of drugs with fewer side effects having a better review classification or vice versa. The correlation seems completelt random.
+From this plot no tendency is seen of drugs with fewer side effects having a better review classification or vice versa. The correlation seems completly random.
 
 As no correlation is found for number of side effects, perhaps another variable is influencing the review percentages.
 
@@ -120,11 +124,7 @@ Poor_review_boxplot <- ggplot(Poor_review_distinct_data,
                                    hjust = 1),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank())   
-  # scale_x_discrete(labels = function(x) {
-  #   counts <- count_data$count[count_data$Administration_type %in% x]
-  #   paste(x, " (n=", counts, ")", sep = "")
-
-  #})
+  
 
 
 # Print the plot

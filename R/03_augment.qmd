@@ -8,9 +8,12 @@ editor: visual
 
 ## Loading Libraries
 
+When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
+
 ```{r}
 rm(list=ls())
 library("tidyverse")
+library("here")
 library("dplyr")
 library("readr")
 ```
@@ -19,8 +22,7 @@ library("readr")
 
 Loading the cleaned data file from the data folder as a .tsv file.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
 
 # Loading the clean data tsv file 
 clean_data <- read_tsv(here('data/02_dat_clean.tsv'))

@@ -10,10 +10,11 @@ editor: visual
 
 This analysis aims to investigate whether the manufacturer or API has relation to specific review classifications. The top six of each variable are chosen to enable a meaningful and interpretative visualization.
 
-Firstly, the environment is cleared and libraries and the augmented data set is loaded.
+## Loading Libraries and Augmented Data
 
-```{r, warning=FALSE}
-#| message: false
+Firstly, the environment is cleared and libraries and the augmented data set is loaded. When the "tidyverse" library is loaded, the packages included in the tidyverse are displayed. Similarly, when the "here" library is loaded, the directory placement is printed.
+
+```{r, warning=FALSE, message=FALSE}
 
 # Clearing environment
 rm(list=ls())
