@@ -6,6 +6,7 @@ format:
     width: 1800  # Increase the width of slides (default is ~960)
     height: 900  # Keep the height proportional
     margin: 0.05
+    embed-resources: true
 ---
 
 ## Introduction
