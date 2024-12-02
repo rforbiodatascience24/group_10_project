@@ -20,6 +20,12 @@ format:
 -   Purpose: Assist healthcare professionals and patients in making decisions when choosing a medication
 
 -   The 3 rules for making a data set tidy are not satisfied
+
+    -   Each variable must have its own column
+
+    -   Each observation have its own row
+
+    -   Each value have its own cell
 :::
 
 ::: {.column width="50%"}
@@ -166,13 +172,15 @@ include_graphics(image_path)
 :::
 :::
 
-## Analysis 3: Manufacturer and API in relation to review classifications
+## Analysis 3: Manufacturer in relation to review classifications
 
 ::: columns
 ::: {.column width="40%"}
--   The plot shows
+-   Distribution of the top 6 manufactures having most products on the market
 
--   The top 6 manufactures predominantly have excellent reviews
+-   Classification of review levels
+
+-   In 4 out of 6 top manufactures a trend of most Excellent reviews, less Average and least poor reviews
 
 -   Interestingly, Lupin Ltd have equal amounts of poor and excellent reviews.
 :::
@@ -222,7 +230,7 @@ include_graphics(image_path)
 
 -   Analyzing other variables: Influence of API and number of applications
 
--   
+-   Hej
 :::
 :::
 
