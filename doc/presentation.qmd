@@ -207,7 +207,7 @@ include_graphics(image_path)
 
 -   The distribution of side effects seem random for different administration types for the 8 most prevalent drugs, although a rather high number of side effects are present for these drugs
 
--   The 8 most prevalent drugs only have the administration types injection and tablet, 75% being injection
+-   The 7 most prevalent drugs have the administration types injection, cream, and tablet, most being injection
 
 -   Administration through capsules is associated with a high number of side effects whereas administrations such as cream and lotion are associated with a very low number or no side effects.
 
